@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+use Phpactor\Container\PhpactorContainer;
+use Phpactor\Extension\Console\ConsoleExtension;
+use Symfony\Component\Console\Application;
+use DTL\Extension\Fink\FinkExtension;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+$container = PhpactorContainer::fromExtensions([
+    ConsoleExtension::class,
+    FinkExtension::class
+], []);
+
+$application = new Application();
+$application->setCommandLoader(
+    $container->get(ConsoleExtension::SERVICE_COMMAND_LOADER)
+);
+$application->run();

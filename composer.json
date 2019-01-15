@@ -9,9 +9,12 @@
             "email": "daniel@dantleech.com"
         }
     ],
-
+    "minimum-stability": "dev",
     "require": {
-        "phpactor/container": "^1.0"
+        "phpactor/container": "^1.0",
+        "amphp/parallel": "^1.1",
+        "amphp/artax": "^3.0",
+        "phpactor/console-extension": "~0.1"
     },
     "require-dev": {
         "phpstan/phpstan": "^0.10.8",
@@ -20,12 +23,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Phpactor\\Extension\\Fink\\": "lib/"
+            "DTL\\Extension\\Fink\\": "lib/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Phpactor\\Extension\\Fink\\Tests\\": "tests/"
+            "DTL\\Extension\\Fink\\Tests\\": "tests/"
         }
     },
     "extra": {
