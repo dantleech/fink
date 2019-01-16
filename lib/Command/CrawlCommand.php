@@ -7,10 +7,11 @@ use Amp\Artax\Response;
 use Amp\Loop;
 use Amp\Promise;
 use Amp\Success;
-use Amp\Uri\Uri;
 use DOMDocument;
 use DOMXPath;
 use DTL\Extension\Fink\Model\Crawler;
+use DTL\Extension\Fink\Model\Url;
+use DTL\Extension\Fink\Model\UrlFactory;
 use Generator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -60,14 +61,11 @@ class CrawlCommand extends Command
 
     private function crawl(OutputInterface $output, string $url): Generator
     {
-        if (!Uri::isValid($url)) {
-            return;
-        }
+        $documentUrl = UrlFactory::fromUrl($url);
 
-        $requestedUri = new Uri($url);
-        $response = yield $this->client->request($url);
+        $response = yield $this->client->request($documentUrl->__toString());
         assert($response instanceof Response);
-        $output->writeln(sprintf('<info>%s</>: %s', $response->getStatus(), $url));
+        $output->writeln(sprintf('<%s>%s</>: %s', $response->getStatus() == 200 ? 'info':'error', $response->getStatus(), $url));
         $body = yield $response->getBody();
         $dom = new DOMDocument('1.0');
         
@@ -81,27 +79,13 @@ class CrawlCommand extends Command
                 continue;
             }
 
-            $url = parse_url($href);
+            $url = $documentUrl->resolveUrl($href);
 
-            if (!isset($url['path'])) {
-                $href = $requestedUri->getPath() . $href;
-            }
-
-            if (!isset($url['host'])) {
-                $href = $requestedUri->getHost() . '/' . ltrim($href, '/');
-            }
-
-            if (!isset($url['scheme'])) {
-                $href = $requestedUri->getScheme() . '://' . $href; 
-            }
-
-            $href = rtrim($href, '/');
-
-            if (substr($href, 0, 4) !== 'http') {
+            if (!$url->isHttp()) {
                 continue;
             }
 
-            $linkUrls[] = $href;
+            $linkUrls[] = $url->__toString();
         }
 
         return $linkUrls;

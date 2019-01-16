@@ -14,7 +14,8 @@
         "phpactor/container": "^1.0",
         "amphp/parallel": "^1.1",
         "amphp/artax": "^3.0",
-        "phpactor/console-extension": "~0.1"
+        "phpactor/console-extension": "~0.1",
+        "league/uri-schemes": "^1.0"
     },
     "require-dev": {
         "phpstan/phpstan": "^0.10.8",
