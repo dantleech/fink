@@ -15,11 +15,14 @@ use DTL\Extension\Fink\Model\Crawler;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
+use DTL\Extension\Fink\Model\Runner;
+use DTL\Extension\Fink\Model\Status;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlFactory;
 use DTL\Extension\Fink\Model\UrlQueue;
 use Generator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -30,6 +33,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CrawlCommand extends Command
 {
     const ARG_URL = 'url';
+    const DISPLAY_POLL_TIME = 100;
 
     /**
      * @var Crawler
@@ -38,7 +42,6 @@ class CrawlCommand extends Command
 
     public function __construct()
     {
-        $this->crawler = new Crawler();
         parent::__construct();
     }
 
@@ -51,42 +54,37 @@ class CrawlCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $urlPromise = $input->getArgument('url');
+        $url = (string) $input->getArgument('url');
         $maxConcurrency = (int) $input->getOption('concurrency');
+
         $queue = new RealUrlQueue();
 
         if (!$input->getOption('no-dedupe')) {
             $queue = new DedupeQueue($queue);
         }
 
-        $documentUrl = Url::fromUrl($urlPromise);
-        $queue->enqueue($documentUrl);
-        $concurrency = 0;
-        $requestCount = 0;
+        $queue->enqueue(Url::fromUrl($url));
 
-        Loop::repeat(50, function () use ($queue, $maxConcurrency, &$concurrency, &$requestCount){
-            while ($concurrency < $maxConcurrency && $url = $queue->dequeue()) {
+        $runner = new Runner($maxConcurrency);
 
-                \Amp\asyncCall(function (Url $documentUrl) use ($queue, &$concurrency, &$requestCount) {
-                    $concurrency++;
-
-                    $queue = yield from $this->crawler->crawl($documentUrl, $queue);
-
-                    $requestCount++;
-                    $concurrency--;
-                }, $url);
-            }
+        Loop::repeat(50, function () use ($runner, $queue) {
+            $runner->run($queue);
         });
 
         assert($output instanceof ConsoleOutput);
         $section = $output->section();
 
-        Loop::repeat(100, function () use ($section, $queue, &$concurrency, &$requestCount) {
+        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section, $runner, $queue) {
+            static $spinner = 0;
+            $status = ['-','/', '-', '\\'];
+
             $section->overwrite(sprintf(
-                'Requests: %s, Concurrency: %s, URL queue size: %s',
-                $requestCount,
-                $concurrency,
-                $queue->count()
+                '%s Requests: %s, Concurrency: %s, URL queue size: %s %s',
+                $status[$spinner % 4],
+                $runner->status()->requestCount,
+                $runner->status()->concurrentRequests,
+                $queue->count(),
+                $status[$spinner++ % 4],
             ));
         });
 
