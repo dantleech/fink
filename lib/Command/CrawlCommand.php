@@ -9,6 +9,7 @@ use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use DTL\Extension\Fink\Model\Runner;
 use DTL\Extension\Fink\Model\Url;
+use DTL\Extension\Fink\Model\UrlQueue;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -19,10 +20,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CrawlCommand extends Command
 {
     const ARG_URL = 'url';
-    const DISPLAY_POLL_TIME = 100;
+
     const OPT_DESCENDANTS_ONLY = 'descendants-only';
     const OPT_NO_DEDUPE = 'no-dedupe';
     const OPT_CONCURRENCY = 'concurrency';
+
+    const DISPLAY_POLL_TIME = 100;
+    const RUNNER_POLL_TIME = 10;
 
     /**
      * @var Crawler
@@ -36,11 +40,31 @@ class CrawlCommand extends Command
 
     protected function configure()
     {
-        $this->addArgument(self::ARG_URL, InputArgument::REQUIRED, 'URL to crawl');
+        $this->addArgument(
+            self::ARG_URL,
+            InputArgument::REQUIRED,
+            'URL to crawl'
+        );
 
-        $this->addOption(self::OPT_CONCURRENCY, 'c', InputOption::VALUE_REQUIRED, 'Concurrency', 10);
-        $this->addOption(self::OPT_NO_DEDUPE, null, InputOption::VALUE_NONE, 'Do not de-duplicate URLs');
-        $this->addOption(self::OPT_DESCENDANTS_ONLY, null, InputOption::VALUE_NONE, 'Only crawl descendants of the given path');
+        $this->addOption(
+            self::OPT_CONCURRENCY,
+            'c',
+            InputOption::VALUE_REQUIRED,
+            'Concurrency',
+            self::RUNNER_POLL_TIME
+        );
+        $this->addOption(
+            self::OPT_NO_DEDUPE,
+            null,
+            InputOption::VALUE_NONE,
+            'Do not de-duplicate URLs'
+        );
+        $this->addOption(
+            self::OPT_DESCENDANTS_ONLY,
+            null,
+            InputOption::VALUE_NONE,
+            'Only crawl descendants of the given path'
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -52,37 +76,33 @@ class CrawlCommand extends Command
         $queue = $this->buildQueue($input, $url);
         $queue->enqueue($url);
 
-        $maxConcurrency = (int) $input->getOption(self::OPT_CONCURRENCY);
-        $runner = new Runner($maxConcurrency);
+        $runner = $this->buildRunner($input);
 
-        Loop::repeat(50, function () use ($runner, $queue) {
+        Loop::repeat(self::RUNNER_POLL_TIME, function () use ($runner, $queue) {
             $runner->run($queue);
         });
 
         $section = $output->section();
 
         Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section, $runner, $queue) {
-            static $spinner = 0;
-
-            $spinnerStates = ['-','/', '-', '\\'];
-
             $section->overwrite(sprintf(
-                '%s Requests: %s, Concurrency: %s, URL queue size: %s %s',
-                $spinnerStates[$spinner % 4],
+                'Requests: %s, Concurrency: %s, URL queue size: %s' . PHP_EOL .
+                '%s',
                 $runner->status()->requestCount,
                 $runner->status()->concurrentRequests,
                 $queue->count(),
-                $spinnerStates[$spinner++ % count($spinnerStates)],
+                $runner->status()->lastUrl,
             ));
+
+            if ($runner->status()->requestCount > 0 && count($queue) === 0) {
+                Loop::stop();
+            }
         });
 
         Loop::run();
     }
-}
 
-class Command
-{
-    private function buildQueue(InputInterface $input, Url $url): OnlyDescendantOrSelfQueue
+    private function buildQueue(InputInterface $input, Url $url): UrlQueue
     {
         $queue = new RealUrlQueue();
         
@@ -94,5 +114,13 @@ class Command
             $queue = new OnlyDescendantOrSelfQueue($queue, $url);
         }
         return $queue;
+    }
+
+    private function buildRunner(InputInterface $input): Runner
+    {
+        $maxConcurrency = (int) $input->getOption(self::OPT_CONCURRENCY);
+        $runner = new Runner($maxConcurrency);
+
+        return $runner;
     }
 }

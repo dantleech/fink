@@ -46,6 +46,7 @@ class Runner
 
             yield from $this->crawler->crawl($url, $queue);
 
+            $this->status->lastUrl = $url->__toString();
             $this->status->requestCount++;
             $this->status->concurrentRequests--;
         }, $url);
