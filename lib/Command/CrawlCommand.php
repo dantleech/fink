@@ -14,6 +14,7 @@ use DOMXPath;
 use DTL\Extension\Fink\Model\Crawler;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
+use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use DTL\Extension\Fink\Model\Runner;
 use DTL\Extension\Fink\Model\Status;
@@ -34,6 +35,9 @@ class CrawlCommand extends Command
 {
     const ARG_URL = 'url';
     const DISPLAY_POLL_TIME = 100;
+    const OPT_DESCENDANTS_ONLY = 'descendants-only';
+    const OPT_NO_DEDUPE = 'no-dedupe';
+    const OPT_CONCURRENCY = 'concurrency';
 
     /**
      * @var Crawler
@@ -48,22 +52,30 @@ class CrawlCommand extends Command
     protected function configure()
     {
         $this->addArgument(self::ARG_URL, InputArgument::REQUIRED, 'URL to crawl');
-        $this->addOption('concurrency', 'c', InputOption::VALUE_REQUIRED, 'Concurrency', 10);
-        $this->addOption('no-dedupe', null, InputOption::VALUE_NONE, 'Do not de-duplicate URLs');
+
+        $this->addOption(self::OPT_CONCURRENCY, 'c', InputOption::VALUE_REQUIRED, 'Concurrency', 10);
+        $this->addOption(self::OPT_NO_DEDUPE, null, InputOption::VALUE_NONE, 'Do not de-duplicate URLs');
+        $this->addOption(self::OPT_DESCENDANTS_ONLY, null, InputOption::VALUE_NONE, 'Only crawl descendants of the given path');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $url = (string) $input->getArgument('url');
-        $maxConcurrency = (int) $input->getOption('concurrency');
+        assert($output instanceof ConsoleOutput);
+
+        $url = Url::fromUrl((string) $input->getArgument('url'));
+        $maxConcurrency = (int) $input->getOption(self::OPT_CONCURRENCY);
 
         $queue = new RealUrlQueue();
 
-        if (!$input->getOption('no-dedupe')) {
+        if (!$input->getOption(self::OPT_NO_DEDUPE)) {
             $queue = new DedupeQueue($queue);
         }
 
-        $queue->enqueue(Url::fromUrl($url));
+        if ($input->getOption(self::OPT_DESCENDANTS_ONLY)) {
+            $queue = new OnlyDescendantOrSelfQueue($queue, $url);
+        }
+
+        $queue->enqueue($url);
 
         $runner = new Runner($maxConcurrency);
 
@@ -71,66 +83,23 @@ class CrawlCommand extends Command
             $runner->run($queue);
         });
 
-        assert($output instanceof ConsoleOutput);
         $section = $output->section();
 
         Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section, $runner, $queue) {
             static $spinner = 0;
-            $status = ['-','/', '-', '\\'];
+
+            $spinnerStates = ['-','/', '-', '\\'];
 
             $section->overwrite(sprintf(
                 '%s Requests: %s, Concurrency: %s, URL queue size: %s %s',
-                $status[$spinner % 4],
+                $spinnerStates[$spinner % 4],
                 $runner->status()->requestCount,
                 $runner->status()->concurrentRequests,
                 $queue->count(),
-                $status[$spinner++ % 4],
+                $spinnerStates[$spinner++ % count($spinnerStates)],
             ));
         });
 
         Loop::run();
-    }
-
-    private function crawl(OutputInterface $output, Url $documentUrl, UrlQueue $queue): Generator
-    {
-        try {
-            $response = yield $this->client->request($documentUrl->__toString());
-        } catch (HttpException $e) {
-            $output->writeln(sprintf('<error>%s</>', $e->getMessage()));
-            return;
-        }
-
-        assert($response instanceof Response);
-
-        $body = yield $response->getBody();
-        $dom = new DOMDocument('1.0');
-
-        @$dom->loadHTML($body);
-        $xpath = new DOMXPath($dom);
-
-        $linkUrls = [];
-        foreach ($xpath->query('//a') as $linkElement) {
-
-            $href = $linkElement->getAttribute('href');
-
-            if (!$href) {
-                continue;
-            }
-
-            try {
-                $url = $documentUrl->resolveUrl($href);
-            } catch (InvalidUrl $invalidUrl) {
-                $output->writeln(sprintf('<error>%s</>', $invalidUrl->getMessage()), 0, $invalidUrl);
-                continue;
-            }
-
-            if (!$url->isHttp()) {
-                continue;
-            }
-
-            $queue->enqueue($url);
-        }
-
-        return $queue;
     }
 }

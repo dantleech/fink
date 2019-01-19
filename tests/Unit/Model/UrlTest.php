@@ -97,4 +97,36 @@ tids[n]+" ];
         $this->assertTrue(Url::fromUrl('http://foo.com')->isHttp());
         $this->assertFalse(Url::fromUrl('ftp://foo.com')->isHttp());
     }
+
+    /**
+     * @dataProvider provideIsEqualToOrDescendant
+     */
+    public function testIsEqualToOrDescenant(string $baseUrl, string $url, bool $expected)
+    {
+        $this->assertEquals(
+            $expected,
+            Url::fromUrl($url)->equalsOrDescendantOf(Url::fromUrl($baseUrl))
+        );
+    }
+
+    public function provideIsEqualToOrDescendant()
+    {
+        yield 'equal' => [
+            'https://www.dantleech.com',
+            'https://www.dantleech.com',
+            true
+        ];
+
+        yield 'descendant' => [
+            'https://www.dantleech.com',
+            'https://www.dantleech.com/foo',
+            true
+        ];
+
+        yield 'not descendant' => [
+            'https://www.dantleech.com/foo',
+            'https://www.dantleech.com',
+            false
+        ];
+    }
 }

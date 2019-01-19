@@ -3,6 +3,7 @@
 namespace DTL\Extension\Fink\Model;
 
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
+use DTL\Extension\Fink\Model\Url;
 use League\Uri\Exception;
 use League\Uri\Uri;
 
@@ -71,5 +72,15 @@ final class Url
     public function isHttp(): bool
     {
         return in_array($this->uri->getScheme(), ['http', 'https']);
+    }
+
+    public function equals(Url $url): bool
+    {
+        return $url->__toString() === $this->__toString();
+    }
+
+    public function equalsOrDescendantOf(Url $url): bool
+    {
+        return 0 === strpos($this->__toString(), $url->__toString());
     }
 }
