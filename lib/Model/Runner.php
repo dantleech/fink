@@ -34,17 +34,24 @@ class Runner
 
     public function run(UrlQueue $queue)
     {
-        while ($this->status->concurrentRequests < $this->maxConcurrency && $url = $queue->dequeue()) {
-
-            \Amp\asyncCall(function (Url $url) use ($queue) {
-                $this->status->concurrentRequests++;
-
-                yield from $this->crawler->crawl($url, $queue);
-
-                $this->status->requestCount++;
-                $this->status->concurrentRequests--;
-            }, $url);
+        if ($this->status->concurrentRequests >= $this->maxConcurrency ) {
+            return;
         }
+
+        $url = $queue->dequeue();
+
+        if (null === $url) {
+            return;
+        }
+
+        \Amp\asyncCall(function (Url $url) use ($queue) {
+            $this->status->concurrentRequests++;
+
+            yield from $this->crawler->crawl($url, $queue);
+
+            $this->status->requestCount++;
+            $this->status->concurrentRequests--;
+        }, $url);
     }
 
     public function status(): Status
