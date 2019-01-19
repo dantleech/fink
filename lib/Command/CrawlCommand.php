@@ -32,20 +32,21 @@ class CrawlCommand extends Command
     const ARG_URL = 'url';
 
     /**
-     * @var DefaultClient
+     * @var Crawler
      */
-    private $client;
+    private $crawler;
 
     public function __construct()
     {
+        $this->crawler = new Crawler();
         parent::__construct();
-        $this->client = new DefaultClient();
     }
 
     protected function configure()
     {
         $this->addArgument(self::ARG_URL, InputArgument::REQUIRED, 'URL to crawl');
         $this->addOption('concurrency', 'c', InputOption::VALUE_REQUIRED, 'Concurrency', 10);
+        $this->addOption('no-dedupe', null, InputOption::VALUE_NONE, 'Do not de-duplicate URLs');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -54,22 +55,22 @@ class CrawlCommand extends Command
         $maxConcurrency = (int) $input->getOption('concurrency');
         $queue = new RealUrlQueue();
 
-        if (true) {
+        if (!$input->getOption('no-dedupe')) {
             $queue = new DedupeQueue($queue);
         }
 
-        $documentUrl = UrlFactory::fromUrl($urlPromise);
+        $documentUrl = Url::fromUrl($urlPromise);
         $queue->enqueue($documentUrl);
         $concurrency = 0;
         $requestCount = 0;
 
-        Loop::repeat(50, function () use ($queue, $output, $maxConcurrency, &$concurrency, &$requestCount){
+        Loop::repeat(50, function () use ($queue, $maxConcurrency, &$concurrency, &$requestCount){
             while ($concurrency < $maxConcurrency && $url = $queue->dequeue()) {
 
-                \Amp\asyncCall(function (Url $documentUrl) use ($output, $queue, &$concurrency, &$requestCount) {
+                \Amp\asyncCall(function (Url $documentUrl) use ($queue, &$concurrency, &$requestCount) {
                     $concurrency++;
 
-                    $queue = yield from $this->crawl($output, $documentUrl, $queue);
+                    $queue = yield from $this->crawler->crawl($documentUrl, $queue);
 
                     $requestCount++;
                     $concurrency--;
@@ -102,13 +103,6 @@ class CrawlCommand extends Command
         }
 
         assert($response instanceof Response);
-
-        //$output->writeln(sprintf(
-        //    '<%s>%s</>: %s',
-        //    $response->getStatus() == 200 ? 'info':'error',
-        //    $response->getStatus(),
-        //    $documentUrl->__toString()
-        //));
 
         $body = yield $response->getBody();
         $dom = new DOMDocument('1.0');

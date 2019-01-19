@@ -4,7 +4,6 @@ namespace DTL\Extension\Fink\Tests\Unit\Model;
 
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use DTL\Extension\Fink\Model\Url;
-use DTL\Extension\Fink\Model\UrlFactory;
 use PHPUnit\Framework\TestCase;
 
 class UrlTest extends TestCase
@@ -14,7 +13,7 @@ class UrlTest extends TestCase
      */
     public function testFromString(string $url)
     {
-        $this->assertEquals($url, UrlFactory::fromUrl($url));
+        $this->assertEquals($url, Url::fromUrl($url));
     }
 
     public function provideFromString()
@@ -48,7 +47,7 @@ tids[n]+" ];
      */
     public function testResolve(string $documentUrl, string $linkUri, string $expected)
     {
-        $url = UrlFactory::fromUrl($documentUrl);
+        $url = Url::fromUrl($documentUrl);
         $result = $url->resolveUrl($linkUri);
         $this->assertEquals($expected, $result->__toString());
     }
@@ -94,8 +93,8 @@ tids[n]+" ];
 
     public function testIsHttp()
     {
-        $this->assertTrue(UrlFactory::fromUrl('https://foo.com')->isHttp());
-        $this->assertTrue(UrlFactory::fromUrl('http://foo.com')->isHttp());
-        $this->assertFalse(UrlFactory::fromUrl('ftp://foo.com')->isHttp());
+        $this->assertTrue(Url::fromUrl('https://foo.com')->isHttp());
+        $this->assertTrue(Url::fromUrl('http://foo.com')->isHttp());
+        $this->assertFalse(Url::fromUrl('ftp://foo.com')->isHttp());
     }
 }
