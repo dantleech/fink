@@ -23,6 +23,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CrawlCommand extends Command
@@ -59,21 +61,32 @@ class CrawlCommand extends Command
         $documentUrl = UrlFactory::fromUrl($urlPromise);
         $queue->enqueue($documentUrl);
         $concurrency = 0;
+        $requestCount = 0;
 
-        Loop::repeat(50, function () use ($queue, $output, $maxConcurrency, &$concurrency){
-            $output->write('.');
-
+        Loop::repeat(50, function () use ($queue, $output, $maxConcurrency, &$concurrency, &$requestCount){
             while ($concurrency < $maxConcurrency && $url = $queue->dequeue()) {
 
-                \Amp\asyncCall(function (Url $documentUrl) use ($output, $queue, &$concurrency) {
+                \Amp\asyncCall(function (Url $documentUrl) use ($output, $queue, &$concurrency, &$requestCount) {
                     $concurrency++;
 
                     $queue = yield from $this->crawl($output, $documentUrl, $queue);
 
+                    $requestCount++;
                     $concurrency--;
                 }, $url);
-
             }
+        });
+
+        assert($output instanceof ConsoleOutput);
+        $section = $output->section();
+
+        Loop::repeat(100, function () use ($section, $queue, &$concurrency, &$requestCount) {
+            $section->overwrite(sprintf(
+                'Requests: %s, Concurrency: %s, URL queue size: %s',
+                $requestCount,
+                $concurrency,
+                $queue->count()
+            ));
         });
 
         Loop::run();
@@ -90,12 +103,12 @@ class CrawlCommand extends Command
 
         assert($response instanceof Response);
 
-        $output->writeln(sprintf(
-            '<%s>%s</>: %s',
-            $response->getStatus() == 200 ? 'info':'error',
-            $response->getStatus(),
-            $documentUrl->__toString()
-        ));
+        //$output->writeln(sprintf(
+        //    '<%s>%s</>: %s',
+        //    $response->getStatus() == 200 ? 'info':'error',
+        //    $response->getStatus(),
+        //    $documentUrl->__toString()
+        //));
 
         $body = yield $response->getBody();
         $dom = new DOMDocument('1.0');
