@@ -29,9 +29,8 @@ class Crawler
             $start = microtime(true);
             $response = yield $this->client->request($documentUrl->__toString());
             $time = (microtime(true) - $start) * 1E6;
-            $report->withRequestTime($time);
+            $report->withRequestTime((int) $time);
         } catch (HttpException $e) {
-
             $report->withException($e);
             return;
         }

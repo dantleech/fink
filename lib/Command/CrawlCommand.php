@@ -12,6 +12,7 @@ use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use DTL\Extension\Fink\Model\Runner;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlQueue;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -85,7 +86,14 @@ class CrawlCommand extends Command
     {
         assert($output instanceof ConsoleOutput);
 
-        $url = Url::fromUrl((string) $input->getArgument('url'));
+        $url = $input->getArgument('url');
+        if (!is_string($url)) {
+            throw new RuntimeException(sprintf(
+                'URL was not a string'
+            ));
+        }
+
+        $url = Url::fromUrl($url);
 
         $queue = $this->buildQueue($input, $url);
         $queue->enqueue($url);
@@ -120,6 +128,7 @@ class CrawlCommand extends Command
         });
 
         Loop::run();
+
         return self::EXIT_STATUS_SUCCESS;
     }
 
@@ -139,14 +148,33 @@ class CrawlCommand extends Command
 
     private function buildRunner(InputInterface $input): Runner
     {
-        $maxConcurrency = (int) $input->getOption(self::OPT_CONCURRENCY);
+        $maxConcurrency = $input->getOption(self::OPT_CONCURRENCY);
+
+        if (!is_numeric($maxConcurrency)) {
+            throw new RuntimeException(sprintf(
+                'Concurrency was not an int, got "%s"',
+                var_export($maxConcurrency, true)
+            ));
+        }
         $publisher = null;
 
         if ($outfile = $input->getOption('output')) {
-            $stream = new ResourceOutputStream(fopen($outfile, 'w'));
+            if (!is_string($outfile)) {
+                throw new RuntimeException(sprintf(
+                    'Outfile is not a string'
+                ));
+            }
+            $resource = fopen($outfile, 'w');
+            if (false === $resource) {
+                throw new RuntimeException(sprintf(
+                    'Could not open file "%s"',
+                    $outfile
+                ));
+            }
+            $stream = new ResourceOutputStream($resource);
             $publisher = new StreamPublisher($stream);
         }
 
-        return new Runner($maxConcurrency, $publisher);
+        return new Runner((int) $maxConcurrency, $publisher);
     }
 }

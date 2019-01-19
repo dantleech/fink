@@ -31,8 +31,7 @@ class Report
         HttpStatusCode $statusCode = null,
         Exception $exception = null,
         int $requestTime = 0
-    )
-    {
+    ) {
         $this->url = $url;
         $this->statusCode = $statusCode;
         $this->requestTime = $requestTime;
@@ -64,9 +63,10 @@ class Report
 
     public function toArray(): array
     {
+        $referrer = $this->url->referrer();
         return [
             'url' => $this->url->__toString(),
-            'referrer' => $this->url->referrer() ? $this->url->referrer()->__toString() : null,
+            'referrer' => $referrer ? $referrer->__toString() : null,
             'status' => $this->statusCode ? $this->statusCode->toInt() : null,
             'request-time' => $this->requestTime,
             'exception' => $this->exception ? $this->exception->getMessage() : null,

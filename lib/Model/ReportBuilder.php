@@ -12,7 +12,7 @@ class ReportBuilder
     private $url;
 
     /**
-     * @var int
+     * @var HttpStatusCode
      */
     private $statusCode;
 
