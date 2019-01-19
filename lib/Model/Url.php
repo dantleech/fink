@@ -13,9 +13,15 @@ final class Url
      */
     private $uri;
 
-    public function __construct(Uri $uri)
+    /**
+     * @var ?Url
+     */
+    private $referrer;
+
+    private function __construct(Uri $uri, Url $referrer = null)
     {
         $this->uri = $uri;
+        $this->referrer = $referrer;
     }
 
     public static function fromUrl(string $url): self
@@ -65,7 +71,7 @@ final class Url
             $link = $link->withQuery($this->uri->getQuery());
         }
 
-        return new self($link);
+        return new self($link, $this);
     }
 
     public function isHttp(): bool
@@ -81,5 +87,10 @@ final class Url
     public function equalsOrDescendantOf(Url $url): bool
     {
         return 0 === strpos($this->__toString(), $url->__toString());
+    }
+
+    public function referrer(): ?Url
+    {
+        return $this->referrer;
     }
 }

@@ -7,21 +7,29 @@ class Status
     /**
      * @var int
      */
-    public $concurrentRequests;
+    public $nbConcurrentRequests = 0;
 
     /**
      * @var int
      */
-    public $requestCount;
+    public $requestCount = 0;
 
     /**
      * @var string
      */
     public $lastUrl;
 
-    public function __construct(int $concurrentRequests = 0, int $requestCount = 0)
+    /**
+     * @var int
+     */
+    public $nbFailures = 0;
+
+    public function failurePercentage(): float
     {
-        $this->concurrentRequests = $concurrentRequests;
-        $this->requestCount = $requestCount;
+        if ($this->nbFailures === 0) {
+            return 0;
+        }
+
+        return $this->nbFailures / $this->requestCount * 100;
     }
 }

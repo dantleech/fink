@@ -2,8 +2,10 @@
 
 namespace DTL\Extension\Fink\Command;
 
+use Amp\ByteStream\ResourceOutputStream;
 use Amp\Loop;
 use DTL\Extension\Fink\Model\Crawler;
+use DTL\Extension\Fink\Model\Publisher\StreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
@@ -27,6 +29,9 @@ class CrawlCommand extends Command
 
     const DISPLAY_POLL_TIME = 100;
     const RUNNER_POLL_TIME = 10;
+
+    const EXIT_STATUS_FAILURE = 1;
+    const EXIT_STATUS_SUCCESS = 0;
 
     /**
      * @var Crawler
@@ -53,12 +58,21 @@ class CrawlCommand extends Command
             'Concurrency',
             self::RUNNER_POLL_TIME
         );
+
+        $this->addOption(
+            'output',
+            'o',
+            InputOption::VALUE_REQUIRED,
+            'Output file'
+        );
+
         $this->addOption(
             self::OPT_NO_DEDUPE,
             null,
             InputOption::VALUE_NONE,
             'Do not de-duplicate URLs'
         );
+
         $this->addOption(
             self::OPT_DESCENDANTS_ONLY,
             null,
@@ -86,20 +100,27 @@ class CrawlCommand extends Command
 
         Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section, $runner, $queue) {
             $section->overwrite(sprintf(
-                'Requests: %s, Concurrency: %s, URL queue size: %s' . PHP_EOL .
+                '<comment>Concurrency</>: %s, <comment>URL queue size</>: %s, <comment>Failures</>: %s/%s (%s%%)' . PHP_EOL .
                 '%s',
-                $runner->status()->requestCount,
-                $runner->status()->concurrentRequests,
+                $runner->status()->nbConcurrentRequests,
                 $queue->count(),
+                $runner->status()->nbFailures,
+                $runner->status()->requestCount,
+                number_format($runner->status()->failurePercentage(), 2),
                 $runner->status()->lastUrl,
             ));
 
-            if ($runner->status()->requestCount > 0 && count($queue) === 0) {
+            if ($runner->status()->nbConcurrentRequests === 0 && $queue->count() === 0) {
                 Loop::stop();
+
+                if ($runner->status()->nbFailures) {
+                    return self::EXIT_STATUS_FAILURE;
+                }
             }
         });
 
         Loop::run();
+        return self::EXIT_STATUS_SUCCESS;
     }
 
     private function buildQueue(InputInterface $input, Url $url): UrlQueue
@@ -119,8 +140,13 @@ class CrawlCommand extends Command
     private function buildRunner(InputInterface $input): Runner
     {
         $maxConcurrency = (int) $input->getOption(self::OPT_CONCURRENCY);
-        $runner = new Runner($maxConcurrency);
+        $publisher = null;
 
-        return $runner;
+        if ($outfile = $input->getOption('output')) {
+            $stream = new ResourceOutputStream(fopen($outfile, 'w'));
+            $publisher = new StreamPublisher($stream);
+        }
+
+        return new Runner($maxConcurrency, $publisher);
     }
 }

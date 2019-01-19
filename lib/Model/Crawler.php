@@ -23,15 +23,21 @@ class Crawler
         $this->client = $client ?: new DefaultClient();
     }
 
-    public function crawl(Url $documentUrl, UrlQueue $queue): Generator
+    public function crawl(Url $documentUrl, UrlQueue $queue, ReportBuilder $report): Generator
     {
         try {
+            $start = microtime(true);
             $response = yield $this->client->request($documentUrl->__toString());
+            $time = (microtime(true) - $start) * 1E6;
+            $report->withRequestTime($time);
         } catch (HttpException $e) {
+
+            $report->withException($e);
             return;
         }
 
         assert($response instanceof Response);
+        $report->withStatus($response->getStatus());
 
         $body = yield $response->getBody();
         $dom = new DOMDocument('1.0');
@@ -50,6 +56,7 @@ class Crawler
             try {
                 $url = $documentUrl->resolveUrl($href);
             } catch (InvalidUrl $invalidUrl) {
+                $report->withException($invalidUrl);
                 continue;
             }
 
