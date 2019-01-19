@@ -23,7 +23,7 @@ final class Url
 
     public function __toString(): string
     {
-        return $this->uri->__toString();
+        return rtrim($this->uri->__toString(), '/');
     }
 
     public function resolveUrl($link): self

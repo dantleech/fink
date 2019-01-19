@@ -4,6 +4,7 @@ namespace DTL\Extension\Fink\Command;
 
 use Amp\Artax\DefaultClient;
 use Amp\Artax\Response;
+use Amp\Coroutine;
 use Amp\Loop;
 use Amp\Promise;
 use Amp\Success;
@@ -41,31 +42,43 @@ class CrawlCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $url = $input->getArgument('url');
+        $urlPromise = $input->getArgument('url');
+        $documentUrl = UrlFactory::fromUrl($urlPromise);
 
-        $promise = \Amp\call(function () use ($url, $output) {
-            return $this->crawl($output, $url);
+        // TODO: create URL stack
+        $promise = \Amp\call(function () use ($output, $documentUrl) {
+            $promises = [];
+            $urls = yield from $this->crawl($output, $documentUrl);
+
+            foreach ($urls as $url) {
+                if (isset($seen[$url->__toString()])) {
+                    continue;
+                }
+
+                $seen[$url->__toString()] = true;
+
+                $promises[] = \Amp\call(function () use ($url, $output) {
+                    return $this->crawl($output, $url);
+                });
+            }
+
+            \Amp\Promise\wait(\Amp\Promise\all($promises));
         });
-        $urls = \Amp\Promise\wait($promise);
 
-        $promises = [];
-        foreach ($urls as $url) {
-            $output->write('.');
-            $promises[] = \Amp\call(function () use ($url, $output) {
-                return $this->crawl($output, $url);
-            });
-        }
-        $output->writeln('');
-        \Amp\Promise\wait(\Amp\Promise\all($promises));
+        \Amp\Promise\wait($promise);
     }
 
-    private function crawl(OutputInterface $output, string $url): Generator
+    private function crawl(OutputInterface $output, Url $documentUrl): Generator
     {
-        $documentUrl = UrlFactory::fromUrl($url);
-
+        $output->writeln($documentUrl->__toString());
         $response = yield $this->client->request($documentUrl->__toString());
         assert($response instanceof Response);
-        $output->writeln(sprintf('<%s>%s</>: %s', $response->getStatus() == 200 ? 'info':'error', $response->getStatus(), $url));
+        $output->writeln(sprintf(
+            '<%s>%s</>: %s',
+            $response->getStatus() == 200 ? 'info':'error',
+            $response->getStatus(),
+            $documentUrl->__toString()
+        ));
         $body = yield $response->getBody();
         $dom = new DOMDocument('1.0');
         
@@ -85,7 +98,7 @@ class CrawlCommand extends Command
                 continue;
             }
 
-            $linkUrls[] = $url->__toString();
+            $linkUrls[] = $url;
         }
 
         return $linkUrls;
