@@ -2,7 +2,6 @@
 
 namespace DTL\Extension\Fink\Tests\Unit\Model;
 
-use DTL\Extension\Fink\Model\Exception\UrlQueueEmpty;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use PHPUnit\Framework\TestCase;

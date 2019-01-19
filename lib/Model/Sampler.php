@@ -23,6 +23,5 @@ class Sampler
         $response = yield $this->client->request($url);
         assert($response instanceof Response);
         $response->getStatus();
-
     }
 }

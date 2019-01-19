@@ -3,7 +3,6 @@
 namespace DTL\Extension\Fink\Model;
 
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
-use DTL\Extension\Fink\Model\Url;
 use League\Uri\Exception;
 use League\Uri\Uri;
 
@@ -63,7 +62,7 @@ final class Url
         }
 
         if (!$link->getQuery()) {
-            $link = $link->withQuery($this->uri->getQuery()); 
+            $link = $link->withQuery($this->uri->getQuery());
         }
 
         return new self($link);

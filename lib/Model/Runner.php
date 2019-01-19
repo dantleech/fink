@@ -2,8 +2,6 @@
 
 namespace DTL\Extension\Fink\Model;
 
-use Generator;
-
 class Runner
 {
     /**
@@ -25,8 +23,7 @@ class Runner
         int $maxConcurrency,
         Crawler $crawler = null,
         Status $status = null
-    )
-    {
+    ) {
         $this->crawler = $crawler ?: new Crawler();
         $this->status = $status ?: new Status();
         $this->maxConcurrency = $maxConcurrency;
@@ -34,7 +31,7 @@ class Runner
 
     public function run(UrlQueue $queue)
     {
-        if ($this->status->concurrentRequests >= $this->maxConcurrency ) {
+        if ($this->status->concurrentRequests >= $this->maxConcurrency) {
             return;
         }
 

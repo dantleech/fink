@@ -41,7 +41,6 @@ class Crawler
 
         $linkUrls = [];
         foreach ($xpath->query('//a') as $linkElement) {
-
             $href = $linkElement->getAttribute('href');
 
             if (!$href) {

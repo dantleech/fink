@@ -2,33 +2,18 @@
 
 namespace DTL\Extension\Fink\Command;
 
-use Amp\Artax\DefaultClient;
-use Amp\Artax\HttpException;
-use Amp\Artax\Response;
-use Amp\Coroutine;
 use Amp\Loop;
-use Amp\Promise;
-use Amp\Success;
-use DOMDocument;
-use DOMXPath;
 use DTL\Extension\Fink\Model\Crawler;
-use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use DTL\Extension\Fink\Model\Runner;
-use DTL\Extension\Fink\Model\Status;
 use DTL\Extension\Fink\Model\Url;
-use DTL\Extension\Fink\Model\UrlFactory;
-use DTL\Extension\Fink\Model\UrlQueue;
-use Generator;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CrawlCommand extends Command
@@ -63,20 +48,11 @@ class CrawlCommand extends Command
         assert($output instanceof ConsoleOutput);
 
         $url = Url::fromUrl((string) $input->getArgument('url'));
-        $maxConcurrency = (int) $input->getOption(self::OPT_CONCURRENCY);
 
-        $queue = new RealUrlQueue();
-
-        if (!$input->getOption(self::OPT_NO_DEDUPE)) {
-            $queue = new DedupeQueue($queue);
-        }
-
-        if ($input->getOption(self::OPT_DESCENDANTS_ONLY)) {
-            $queue = new OnlyDescendantOrSelfQueue($queue, $url);
-        }
-
+        $queue = $this->buildQueue($input, $url);
         $queue->enqueue($url);
 
+        $maxConcurrency = (int) $input->getOption(self::OPT_CONCURRENCY);
         $runner = new Runner($maxConcurrency);
 
         Loop::repeat(50, function () use ($runner, $queue) {
@@ -101,5 +77,22 @@ class CrawlCommand extends Command
         });
 
         Loop::run();
+    }
+}
+
+class Command
+{
+    private function buildQueue(InputInterface $input, Url $url): OnlyDescendantOrSelfQueue
+    {
+        $queue = new RealUrlQueue();
+        
+        if (!$input->getOption(self::OPT_NO_DEDUPE)) {
+            $queue = new DedupeQueue($queue);
+        }
+        
+        if ($input->getOption(self::OPT_DESCENDANTS_ONLY)) {
+            $queue = new OnlyDescendantOrSelfQueue($queue, $url);
+        }
+        return $queue;
     }
 }

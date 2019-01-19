@@ -2,8 +2,6 @@
 
 namespace DTL\Extension\Fink\Model\Queue;
 
-use Countable;
-use DTL\Extension\Fink\Model\Exception\UrlQueueEmpty;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlQueue as UrlQueueInterface;
 

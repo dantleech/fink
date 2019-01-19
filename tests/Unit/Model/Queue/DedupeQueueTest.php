@@ -5,7 +5,6 @@ namespace DTL\Extension\Fink\Tests\Unit\Model\Queue;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use DTL\Extension\Fink\Model\Url;
-use DTL\Extension\Fink\Model\UrlFactory;
 use PHPUnit\Framework\TestCase;
 
 class DedupeQueueTest extends TestCase
