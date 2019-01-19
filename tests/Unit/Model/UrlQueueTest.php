@@ -4,7 +4,7 @@ namespace DTL\Extension\Fink\Tests\Unit\Model;
 
 use DTL\Extension\Fink\Model\Exception\UrlQueueEmpty;
 use DTL\Extension\Fink\Model\Url;
-use DTL\Extension\Fink\Model\UrlQueue;
+use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use PHPUnit\Framework\TestCase;
 
 class UrlQueueTest extends TestCase
@@ -12,7 +12,7 @@ class UrlQueueTest extends TestCase
     public function testEnqueueDequeue()
     {
         $url = Url::fromUrl('http://www.dantleech.com');
-        $queue = new UrlQueue();
+        $queue = new RealUrlQueue();
         $queue->enqueue($url);
         $this->assertSame($url, $queue->dequeue());
     }
@@ -22,7 +22,7 @@ class UrlQueueTest extends TestCase
         $url1 = Url::fromUrl('http://www.dantleech.com');
         $url2 = Url::fromUrl('http://www.example.com');
 
-        $queue = new UrlQueue();
+        $queue = new RealUrlQueue();
         $queue->enqueue($url1);
         $queue->enqueue($url2);
 
@@ -32,20 +32,9 @@ class UrlQueueTest extends TestCase
         $this->assertCount(0, $queue);
     }
 
-    public function testSaysIfItIsEmpty()
+    public function testReturnsNullIfEmpty()
     {
-        $queue = new UrlQueue();
-        $this->assertTrue($queue->isEmpty());
-        $queue->enqueue(Url::fromUrl('https://www.dantleech.com'));
-        $this->assertFalse($queue->isEmpty());
-        $queue->dequeue();
-        $this->assertTrue($queue->isEmpty());
-    }
-
-    public function testThrowsExceptionOnDequeueIfQueueIsEmpty()
-    {
-        $this->expectException(UrlQueueEmpty::class);
-        $queue = new UrlQueue();
-        $queue->dequeue();
+        $queue = new RealUrlQueue();
+        $this->assertNull($queue->dequeue());
     }
 }

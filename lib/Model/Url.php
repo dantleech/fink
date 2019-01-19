@@ -2,6 +2,8 @@
 
 namespace DTL\Extension\Fink\Model;
 
+use DTL\Extension\Fink\Model\Exception\InvalidUrl;
+use League\Uri\Exception;
 use League\Uri\Uri;
 
 final class Url
@@ -18,7 +20,13 @@ final class Url
 
     public static function fromUrl(string $url): self
     {
-        return new self(Uri::createFromString($url));
+        try {
+            $new = new self(Uri::createFromString($url));
+        } catch (Exception $e) {
+            throw new InvalidUrl($e->getMessage(), 0, $e);
+        }
+
+        return $new;
     }
 
     public function __toString(): string
@@ -28,7 +36,11 @@ final class Url
 
     public function resolveUrl($link): self
     {
-        $link = Uri::createFromString($link);
+        try {
+            $link = Uri::createFromString($link);
+        } catch (Exception $e) {
+            throw new InvalidUrl($e->getMessage(), 0, $e);
+        }
 
         if ($link->getPath()) {
             // prepend non-absolute paths with "/" to prevent them being

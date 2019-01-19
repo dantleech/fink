@@ -3,6 +3,7 @@
 namespace DTL\Extension\Fink\Command;
 
 use Amp\Artax\DefaultClient;
+use Amp\Artax\HttpException;
 use Amp\Artax\Response;
 use Amp\Coroutine;
 use Amp\Loop;
@@ -11,12 +12,17 @@ use Amp\Success;
 use DOMDocument;
 use DOMXPath;
 use DTL\Extension\Fink\Model\Crawler;
+use DTL\Extension\Fink\Model\Exception\InvalidUrl;
+use DTL\Extension\Fink\Model\Queue\DedupeQueue;
+use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlFactory;
+use DTL\Extension\Fink\Model\UrlQueue;
 use Generator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CrawlCommand extends Command
@@ -37,70 +43,89 @@ class CrawlCommand extends Command
     protected function configure()
     {
         $this->addArgument(self::ARG_URL, InputArgument::REQUIRED, 'URL to crawl');
-        $this->addOption('concurrency');
+        $this->addOption('concurrency', 'c', InputOption::VALUE_REQUIRED, 'Concurrency', 10);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $urlPromise = $input->getArgument('url');
+        $maxConcurrency = (int) $input->getOption('concurrency');
+        $queue = new RealUrlQueue();
+
+        if (true) {
+            $queue = new DedupeQueue($queue);
+        }
+
         $documentUrl = UrlFactory::fromUrl($urlPromise);
+        $queue->enqueue($documentUrl);
+        $concurrency = 0;
 
-        // TODO: create URL stack
-        $promise = \Amp\call(function () use ($output, $documentUrl) {
-            $promises = [];
-            $urls = yield from $this->crawl($output, $documentUrl);
+        Loop::repeat(50, function () use ($queue, $output, $maxConcurrency, &$concurrency){
+            $output->write('.');
 
-            foreach ($urls as $url) {
-                if (isset($seen[$url->__toString()])) {
-                    continue;
-                }
+            while ($concurrency < $maxConcurrency && $url = $queue->dequeue()) {
 
-                $seen[$url->__toString()] = true;
+                \Amp\asyncCall(function (Url $documentUrl) use ($output, $queue, &$concurrency) {
+                    $concurrency++;
 
-                $promises[] = \Amp\call(function () use ($url, $output) {
-                    return $this->crawl($output, $url);
-                });
+                    $queue = yield from $this->crawl($output, $documentUrl, $queue);
+
+                    $concurrency--;
+                }, $url);
+
             }
-
-            \Amp\Promise\wait(\Amp\Promise\all($promises));
         });
 
-        \Amp\Promise\wait($promise);
+        Loop::run();
     }
 
-    private function crawl(OutputInterface $output, Url $documentUrl): Generator
+    private function crawl(OutputInterface $output, Url $documentUrl, UrlQueue $queue): Generator
     {
-        $output->writeln($documentUrl->__toString());
-        $response = yield $this->client->request($documentUrl->__toString());
+        try {
+            $response = yield $this->client->request($documentUrl->__toString());
+        } catch (HttpException $e) {
+            $output->writeln(sprintf('<error>%s</>', $e->getMessage()));
+            return;
+        }
+
         assert($response instanceof Response);
+
         $output->writeln(sprintf(
             '<%s>%s</>: %s',
             $response->getStatus() == 200 ? 'info':'error',
             $response->getStatus(),
             $documentUrl->__toString()
         ));
+
         $body = yield $response->getBody();
         $dom = new DOMDocument('1.0');
-        
+
         @$dom->loadHTML($body);
         $xpath = new DOMXPath($dom);
-        
+
         $linkUrls = [];
         foreach ($xpath->query('//a') as $linkElement) {
+
             $href = $linkElement->getAttribute('href');
+
             if (!$href) {
                 continue;
             }
 
-            $url = $documentUrl->resolveUrl($href);
+            try {
+                $url = $documentUrl->resolveUrl($href);
+            } catch (InvalidUrl $invalidUrl) {
+                $output->writeln(sprintf('<error>%s</>', $invalidUrl->getMessage()), 0, $invalidUrl);
+                continue;
+            }
 
             if (!$url->isHttp()) {
                 continue;
             }
 
-            $linkUrls[] = $url;
+            $queue->enqueue($url);
         }
 
-        return $linkUrls;
+        return $queue;
     }
 }

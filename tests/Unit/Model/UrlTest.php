@@ -2,6 +2,7 @@
 
 namespace DTL\Extension\Fink\Tests\Unit\Model;
 
+use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlFactory;
 use PHPUnit\Framework\TestCase;
@@ -25,6 +26,21 @@ class UrlTest extends TestCase
         yield [
             'example.com'
         ];
+    }
+
+    /**
+     * @dataProvider provideInvalidUrl
+     */
+    public function testInvalidUrl(string $invalid)
+    {
+        $this->expectException(InvalidUrl::class);
+        Url::fromUrl($invalid);
+    }
+
+    public function provideInvalidUrl()
+    {
+        yield [ "https://twitter.com/intent/favorite?tweet_id='+
+tids[n]+" ];
     }
 
     /**
