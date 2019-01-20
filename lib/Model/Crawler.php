@@ -43,7 +43,6 @@ class Crawler
         @$dom->loadHTML($body);
         $xpath = new DOMXPath($dom);
 
-        $linkUrls = [];
         foreach ($xpath->query('//a') as $linkElement) {
             $href = $linkElement->getAttribute('href');
 
