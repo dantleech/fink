@@ -5,9 +5,16 @@ namespace DTL\Extension\Fink\Tests\Integration\Adapter\Artax;
 use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
 use DTL\Extension\Fink\Tests\IntegrationTestCase;
 use DateTimeImmutable;
+use RuntimeException;
 
 class NetscapeCookieFileJarTest extends IntegrationTestCase
 {
+    public function testThrowsExceptionIfFileDoesNotExist()
+    {
+        $this->expectException(RuntimeException::class);
+        new NetscapeCookieFileJar('asd.com');
+    }
+
     public function testLoadCookies()
     {
         $expire = (new DateTimeImmutable())->modify('+1 day')->format('U');

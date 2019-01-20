@@ -14,7 +14,7 @@ class IntegrationTestCase extends TestCase
 
     public function setUp()
     {
-        $this->workspace = Workspace::create(__DIR__ . '/../Workspace');
+        $this->workspace = Workspace::create(__DIR__ . '/Workspace');
         $this->workspace->reset();
     }
 

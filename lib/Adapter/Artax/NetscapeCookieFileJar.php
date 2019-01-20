@@ -26,13 +26,15 @@ class NetscapeCookieFileJar extends ArrayCookieJar
         }
 
         while (!feof($cookieFileHandle)) {
-            if ($line = fgets($cookieFileHandle)) {
-                if (!$cookie = $this->parse($line)) {
-                    continue;
-                }
-
-                $this->store($cookie);
+            if (!$line = fgets($cookieFileHandle)) {
+                continue;
             }
+
+            if (!$cookie = $this->parse($line)) {
+                continue;
+            }
+
+            $this->store($cookie);
         }
     }
 
@@ -50,6 +52,7 @@ class NetscapeCookieFileJar extends ArrayCookieJar
 
         $parts = explode("\t", $line);
 
+        // invalid cookie line, just ignore it
         if (count($parts) < 5) {
             return null;
         }
