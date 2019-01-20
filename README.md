@@ -8,6 +8,8 @@ PHP Link Checker Command Line Tool
 - Check websites for broken links or error pages.
 - Fast concurrent HTTP requests.
 
+![recording](https://user-images.githubusercontent.com/530801/51439839-c28b1b00-1cb7-11e9-9538-cf7c7b8215b4.gif)
+
 Usage
 -----
 
