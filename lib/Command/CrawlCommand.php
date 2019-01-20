@@ -2,18 +2,9 @@
 
 namespace DTL\Extension\Fink\Command;
 
-use Amp\ByteStream\ResourceOutputStream;
 use Amp\Loop;
-use DTL\Extension\Fink\Model\Crawler;
-use DTL\Extension\Fink\Model\DispatcherBuilder;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
-use DTL\Extension\Fink\Model\Publisher\StreamPublisher;
-use DTL\Extension\Fink\Model\Queue\DedupeQueue;
-use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
-use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use DTL\Extension\Fink\Model\Dispatcher;
-use DTL\Extension\Fink\Model\Url;
-use DTL\Extension\Fink\Model\UrlQueue;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -51,6 +42,8 @@ class CrawlCommand extends Command
 
     protected function configure()
     {
+        $this->setDescription('Crawl the given URL');
+
         $this->addArgument(self::ARG_URL, InputArgument::REQUIRED, 'URL to crawl');
 
         $this->addOption(self::OPT_CONCURRENCY, 'c', InputOption::VALUE_REQUIRED, 'Concurrency', 10);
@@ -99,6 +92,28 @@ class CrawlCommand extends Command
         return self::EXIT_STATUS_SUCCESS;
     }
 
+    private function buildDispatcher(InputInterface $input): Dispatcher
+    {
+        $url = $this->castToString($input->getArgument('url'));
+        
+        $maxConcurrency = $this->castToInt($input->getOption(self::OPT_CONCURRENCY));
+        $outfile = $input->getOption(self::OPT_OUTPUT);
+        $noDedupe = $this->castToBool($input->getOption(self::OPT_NO_DEDUPE));
+        $descendantsOnly = $this->castToBool($input->getOption(self::OPT_DESCENDANTS_ONLY));
+        $insecure = $this->castToBool($input->getOption(self::OPT_INSECURE));
+        
+        $builder = $this->factory->createForUrl($url);
+        $builder->maxConcurrency($maxConcurrency);
+        if ($outfile) {
+            $builder->publishTo($this->castToString($outfile));
+        }
+        $builder->noDeduplication($noDedupe);
+        $builder->descendantsOnly($descendantsOnly);
+        $builder->noPeerVerification($insecure);
+
+        return $builder->build();
+    }
+
     private function castToInt($value): int
     {
         if (!is_numeric($value)) {
@@ -131,26 +146,5 @@ class CrawlCommand extends Command
         }
 
         return $value;
-    }
-
-    private function buildDispatcher(InputInterface $input): Dispatcher
-    {
-        $url = $this->castToString($input->getArgument('url'));
-        
-        $maxConcurrency = $this->castToInt($input->getOption(self::OPT_CONCURRENCY));
-        $outfile = $input->getOption(self::OPT_OUTPUT);
-        $noDedupe = $this->castToBool($input->getOption(self::OPT_NO_DEDUPE));
-        $descendantsOnly = $this->castToBool($input->getOption(self::OPT_DESCENDANTS_ONLY));
-        $insecure = $this->castToBool($input->getOption(self::OPT_INSECURE));
-        
-        $builder = $this->factory->createForUrl($url);
-        $builder->maxConcurrency($maxConcurrency);
-        if ($outfile) {
-            $builder->publishTo($this->castToString($outfile));
-        }
-        $builder->noDeduplication($noDedupe);
-        $builder->descendantsOnly($descendantsOnly);
-        $builder->noPeerVerification($insecure);
-        return $builder->build();
     }
 }

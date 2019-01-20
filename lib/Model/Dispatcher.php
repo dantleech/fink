@@ -2,8 +2,6 @@
 
 namespace DTL\Extension\Fink\Model;
 
-use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
-
 class Dispatcher
 {
     /**

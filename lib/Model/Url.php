@@ -71,6 +71,10 @@ final class Url
             $link = $link->withQuery($this->uri->getQuery());
         }
 
+        if (!$link->getPort()) {
+            $link = $link->withPort($this->uri->getPort());
+        }
+
         return new self($link, $this);
     }
 

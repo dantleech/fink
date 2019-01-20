@@ -89,6 +89,12 @@ tids[n]+" ];
             'templates.html',
             'https://example.com/templates.html'
         ];
+
+        yield 'with port' => [
+            'https://example.com:1234',
+            'templates.html',
+            'https://example.com:1234/templates.html'
+        ];
     }
 
     public function testIsHttp()

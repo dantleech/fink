@@ -3,7 +3,6 @@
 namespace DTL\Extension\Fink\Model;
 
 use Amp\Artax\Client;
-use Amp\Artax\DefaultClient;
 use Amp\Artax\HttpException;
 use Amp\Artax\Response;
 use DOMDocument;
