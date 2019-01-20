@@ -11,6 +11,7 @@ use Amp\Socket\ClientTlsContext;
 use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
 use DTL\Extension\Fink\Model\Publisher\StreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
+use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
 use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use RuntimeException;
@@ -47,6 +48,11 @@ class DispatcherBuilder
      */
     private $noPeerVerification = false;
 
+    /**
+     * @var int
+     */
+    private $maxDistance = null;
+
     public function __construct(Url $baseUrl)
     {
         $this->baseUrl = $baseUrl;
@@ -62,6 +68,13 @@ class DispatcherBuilder
     public function maxConcurrency(int $maxConcurrency): self
     {
         $this->maxConcurrency = $maxConcurrency;
+
+        return $this;
+    }
+
+    public function maxDistance(int $maxDistance): self
+    {
+        $this->maxDistance = $maxDistance;
 
         return $this;
     }
@@ -140,6 +153,11 @@ class DispatcherBuilder
         if ($this->descendantsOnly) {
             $queue = new OnlyDescendantOrSelfQueue($queue, $this->baseUrl);
         }
+
+        if (null !== $this->maxDistance) {
+            $queue = new MaxDistanceQueue($queue, $this->maxDistance);
+        }
+
         return $queue;
     }
 

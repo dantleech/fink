@@ -18,8 +18,8 @@ class CrawlCommandTest extends EndToEndTestCase
     {
         $process = $this->execute([
             'crawl',
+            '--output='.$this->workspace()->path('/out.json'),
             self::EXAMPLE_URL,
-            '--output='.$this->workspace()->path('/out.json')
         ]);
 
         $this->assertProcessSuccess($process);
@@ -101,6 +101,24 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
+    public function testMaxDisatance()
+    {
+        $process = $this->execute([
+            'crawl',
+            self::EXAMPLE_URL,
+            '--max-distance=1',
+            '--output='.$this->workspace()->path('/out.json'),
+        ]);
+
+        $this->assertProcessSuccess($process);
+
+        $rows = $this->parseResults($this->workspace()->path('/out.json'));
+
+        $this->assertStatus($rows, 200, 'blog.html');
+        $this->assertStatus($rows, 200, 'about.html');
+        $this->assertUrlCount($rows, 0, 'posts/post1.html');
+        $this->assertUrlCount($rows, 0, 'posts/post2.html');
+    }
 
     private function assertStatus(array $results, int $code, string $target): void
     {

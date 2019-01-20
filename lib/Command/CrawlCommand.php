@@ -19,7 +19,7 @@ class CrawlCommand extends Command
 
     const OPT_CONCURRENCY = 'concurrency';
     const OPT_DESCENDANTS_ONLY = 'descendants-only';
-    const OPT_MAX_DEPTH = 'max-depth';
+    const OPT_MAX_DISTANCE = 'max-distance';
     const OPT_NO_DEDUPE = 'no-dedupe';
 
     const DISPLAY_POLL_TIME = 100;
@@ -49,10 +49,10 @@ class CrawlCommand extends Command
 
         $this->addOption(self::OPT_CONCURRENCY, 'c', InputOption::VALUE_REQUIRED, 'Concurrency', 10);
         $this->addOption(self::OPT_OUTPUT, 'o', InputOption::VALUE_REQUIRED, 'Output file');
-        $this->addOption(self::OPT_NO_DEDUPE, null, InputOption::VALUE_NONE, 'Do not de-duplicate URLs');
-        $this->addOption(self::OPT_DESCENDANTS_ONLY, null, InputOption::VALUE_NONE, 'Only crawl descendants of the given path');
+        $this->addOption(self::OPT_NO_DEDUPE, 'D', InputOption::VALUE_NONE, 'Do not de-duplicate URLs');
+        $this->addOption(self::OPT_DESCENDANTS_ONLY, 'l', InputOption::VALUE_NONE, 'Only crawl descendants of the given path');
         $this->addOption(self::OPT_INSECURE, 'k', InputOption::VALUE_NONE, 'Allow insecure server connections with SSL');
-        $this->addOption(self::OPT_MAX_DEPTH, 'm', InputOption::VALUE_REQUIRED, 'Maximum recursion depth');
+        $this->addOption(self::OPT_MAX_DISTANCE, 'm', InputOption::VALUE_REQUIRED, 'Maximum link distance from base URL');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -103,6 +103,7 @@ class CrawlCommand extends Command
         $noDedupe = $this->castToBool($input->getOption(self::OPT_NO_DEDUPE));
         $descendantsOnly = $this->castToBool($input->getOption(self::OPT_DESCENDANTS_ONLY));
         $insecure = $this->castToBool($input->getOption(self::OPT_INSECURE));
+        $maxDistance = $input->getOption(self::OPT_MAX_DISTANCE);
         
         $builder = $this->factory->createForUrl($url);
         $builder->maxConcurrency($maxConcurrency);
@@ -112,6 +113,10 @@ class CrawlCommand extends Command
         $builder->noDeduplication($noDedupe);
         $builder->descendantsOnly($descendantsOnly);
         $builder->noPeerVerification($insecure);
+
+        if (null !== $maxDistance) {
+            $builder->maxDistance($this->castToInt($maxDistance));
+        }
 
         return $builder->build();
     }

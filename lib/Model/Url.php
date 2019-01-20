@@ -108,4 +108,9 @@ final class Url
     {
         return $this->distance;
     }
+
+    public function distanceIsGreaterThan(int $int): bool
+    {
+        return $this->distance > $int;
+    }
 }

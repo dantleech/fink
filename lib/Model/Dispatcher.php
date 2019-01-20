@@ -29,6 +29,11 @@ class Dispatcher
      */
     private $queue;
 
+    /**
+     * @var ?int
+     */
+    private $maxDistance;
+
     public function __construct(
         int $maxConcurrency,
         Publisher $publisher,
