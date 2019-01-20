@@ -50,6 +50,8 @@ tids[n]+" ];
         $url = Url::fromUrl($documentUrl);
         $result = $url->resolveUrl($linkUri);
         $this->assertEquals($expected, $result->__toString());
+        $this->assertEquals($url, $result->referrer());
+        $this->assertEquals(1, $result->distance());
     }
 
     public function provideResolve()
@@ -134,5 +136,16 @@ tids[n]+" ];
             'https://www.dantleech.com',
             false
         ];
+    }
+
+    public function testResolveDistanceFromOriginalLink()
+    {
+        $baseLink = Url::fromUrl('http://www.dantleech.com');
+        $this->assertEquals(0, $baseLink->distance());
+
+        $result = $baseLink->resolveUrl('http://www.dantleech.com/1');
+        $this->assertEquals(1, $result->distance());
+        $result = $result->resolveUrl('http://www.dantleech.com/1');
+        $this->assertEquals(2, $result->distance());
     }
 }

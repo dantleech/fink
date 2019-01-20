@@ -17,9 +17,10 @@ class CrawlCommand extends Command
 {
     const ARG_URL = 'url';
 
-    const OPT_DESCENDANTS_ONLY = 'descendants-only';
-    const OPT_NO_DEDUPE = 'no-dedupe';
     const OPT_CONCURRENCY = 'concurrency';
+    const OPT_DESCENDANTS_ONLY = 'descendants-only';
+    const OPT_MAX_DEPTH = 'max-depth';
+    const OPT_NO_DEDUPE = 'no-dedupe';
 
     const DISPLAY_POLL_TIME = 100;
     const RUNNER_POLL_TIME = 10;
@@ -51,6 +52,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_NO_DEDUPE, null, InputOption::VALUE_NONE, 'Do not de-duplicate URLs');
         $this->addOption(self::OPT_DESCENDANTS_ONLY, null, InputOption::VALUE_NONE, 'Only crawl descendants of the given path');
         $this->addOption(self::OPT_INSECURE, 'k', InputOption::VALUE_NONE, 'Allow insecure server connections with SSL');
+        $this->addOption(self::OPT_MAX_DEPTH, 'm', InputOption::VALUE_REQUIRED, 'Maximum recursion depth');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

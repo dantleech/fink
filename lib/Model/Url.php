@@ -18,10 +18,16 @@ final class Url
      */
     private $referrer;
 
-    private function __construct(Uri $uri, Url $referrer = null)
+    /**
+     * @var int
+     */
+    private $distance;
+
+    private function __construct(Uri $uri, Url $referrer = null, int $distance = 0)
     {
         $this->uri = $uri;
         $this->referrer = $referrer;
+        $this->distance = $distance;
     }
 
     public static function fromUrl(string $url): self
@@ -75,7 +81,7 @@ final class Url
             $link = $link->withPort($this->uri->getPort());
         }
 
-        return new self($link, $this);
+        return new self($link, $this, $this->distance + 1);
     }
 
     public function isHttp(): bool
@@ -96,5 +102,10 @@ final class Url
     public function referrer(): ?Url
     {
         return $this->referrer;
+    }
+
+    public function distance(): int
+    {
+        return $this->distance;
     }
 }

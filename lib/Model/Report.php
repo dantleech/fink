@@ -57,15 +57,13 @@ class Report
         return false;
     }
 
-    public function withRequestTime(int $requestTime): int
-    {
-    }
-
     public function toArray(): array
     {
         $referrer = $this->url->referrer();
+
         return [
             'url' => $this->url->__toString(),
+            'distance' => $this->url->distance(),
             'referrer' => $referrer ? $referrer->__toString() : null,
             'status' => $this->statusCode ? $this->statusCode->toInt() : null,
             'request-time' => $this->requestTime,

@@ -13,7 +13,7 @@ Usage
 
 Install as a stand-alone tool or as a project dependency:
 
-```
+```bash
 $ composer require dantleech/fink
 $ ./vendor/bin/fink https://www.dantleech.com
 Concurrency: 2, URL queue size: 10, Failures: 0/60 (0.00%)
