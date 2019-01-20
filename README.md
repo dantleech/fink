@@ -10,17 +10,34 @@ Fink (pronounced "Phpink") is a command line tool for checking HTTP links writte
 
 ![recording](https://user-images.githubusercontent.com/530801/51439839-c28b1b00-1cb7-11e9-9538-cf7c7b8215b4.gif)
 
-Usage
------
+Installation
+------------
 
 Install as a stand-alone tool or as a project dependency:
 
+### Installing as a project dependency
+
 ```bash
-$ composer require dantleech/fink
-$ ./vendor/bin/fink https://www.dantleech.com
-Concurrency: 2, URL queue size: 10, Failures: 0/60 (0.00%)
-https://www.dantleech.com/page/12
+$ composer require dantleech/fink --dev
 ```
+
+Usage
+-----
+
+Run the command with a single URL to start crawling:
+
+```
+$ ./vendor/bin/fink crawl https://www.example.com
+```
+
+Use `--output=somefile` to log verbose information for each URL in JSON format, including:
+
+- `url`: Then tested URL.
+- `status`: The HTTP status code.
+- `referrer`: The page which linked to the URL.
+- `distance`: The number of links away from the start document.
+- `request-time`: Number of microseconds taken to make the request.
+- `exception`: Any runtime exception encountered (e.g. malformed URL, etc).
 
 Options
 -------
@@ -34,14 +51,11 @@ Options
 - `--insecure`: Do not verify SSL certificates.
 - `--max-distance`: Maximum allowed distance from base URL (if not specified
   then there is no limitation).
-  
-Todo
-----
-
-- [ ] Cookie support
+- `--load-cookies`: Load from a [cookies.txt](http://www.cookiecentral.com/faq/#3.5).
 
 Exit Codes
 ----------
 
 - `0`: All URLs were successful.
+- `1`: Unexpected runtime error.
 - `2`: At least one URL failed to resolve successfully.
