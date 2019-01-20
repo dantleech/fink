@@ -11,7 +11,7 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testCrawlsUrl()
     {
         $process = $this->execute(['crawl', self::EXAMPLE_URL]);
-        $this->assertEquals(0, $process->getExitCode());
+        $this->assertProcessSuccess($process);
     }
 
     public function testCrawlsUrlPublishesReport()
@@ -54,23 +54,20 @@ class CrawlCommandTest extends EndToEndTestCase
 
     public function testAllowsUrlDuplication()
     {
-        $this->markTestIncomplete('This test does not terminate');
-
         $process = $this->execute([
             'crawl',
-            self::EXAMPLE_URL . '/posts',
+            self::EXAMPLE_URL,
             '--output='.$this->workspace()->path('/out.json'),
-            '--no-dedupe'
+            '--no-dedupe',
+            '--max-distance=3'
         ]);
 
         $this->assertProcessSuccess($process);
 
         $rows = $this->parseResults($this->workspace()->path('/out.json'));
 
-        $this->assertUrlCount($rows, 0, 'blog.html');
-        $this->assertUrlCount($rows, 0, 'about.html');
-        $this->assertStatus($rows, 200, 'posts/post1.html');
-        $this->assertStatus($rows, 200, 'posts/post2.html');
+        $this->assertUrlCount($rows, 2, 'blog.html');
+        $this->assertUrlCount($rows, 1, 'posts/post1.html');
     }
 
     public function testAllowsTheConcurrencyToBeSet()

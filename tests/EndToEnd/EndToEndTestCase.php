@@ -2,6 +2,7 @@
 
 namespace DTL\Extension\Fink\Tests\EndToEnd;
 
+use DTL\Extension\Fink\Command\CrawlCommand;
 use PHPUnit\Framework\TestCase;
 use Phpactor\TestUtils\Workspace;
 use RuntimeException;
@@ -70,7 +71,7 @@ class EndToEndTestCase extends TestCase
 
     protected function assertProcessSuccess(Process $process)
     {
-        if ($process->getExitCode() !== 0) {
+        if (!in_array($process->getExitCode(), [ CrawlCommand::EXIT_STATUS_FAILURE, CrawlCommand::EXIT_STATUS_SUCCESS ])) {
             throw new RuntimeException(sprintf(
                 'Process exited with code "%s": STDOUT: %s STDERR: %s',
                 $process->getExitCode(),

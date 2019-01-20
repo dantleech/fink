@@ -25,8 +25,9 @@ class CrawlCommand extends Command
     const DISPLAY_POLL_TIME = 100;
     const RUNNER_POLL_TIME = 10;
 
-    const EXIT_STATUS_FAILURE = 1;
+    const EXIT_STATUS_FAILURE = 2;
     const EXIT_STATUS_SUCCESS = 0;
+
     const OPT_OUTPUT = 'output';
     const OPT_INSECURE = 'insecure';
 
@@ -84,12 +85,16 @@ class CrawlCommand extends Command
                 Loop::stop();
 
                 if ($dispatcher->status()->nbFailures) {
-                    return self::EXIT_STATUS_FAILURE;
+                    throw new FailureException();
                 }
             }
         });
 
-        Loop::run();
+        try {
+            Loop::run();
+        } catch (FailureException $e) {
+            return self::EXIT_STATUS_FAILURE;
+        }
 
         return self::EXIT_STATUS_SUCCESS;
     }

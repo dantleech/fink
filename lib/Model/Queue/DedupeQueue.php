@@ -14,8 +14,6 @@ class DedupeQueue implements UrlQueue
 
     private $seen = [];
 
-    private $duplicated = [];
-
     public function __construct(UrlQueue $innerQueue)
     {
         $this->innerQueue = $innerQueue;
@@ -32,11 +30,6 @@ class DedupeQueue implements UrlQueue
     public function enqueue(Url $url): void
     {
         if (isset($this->seen[$url->__toString()])) {
-            if (isset($this->duplicated[$url->__toString()])) {
-                $this->duplicated[$url->__toString()]++;
-                return;
-            }
-            $this->duplicated[$url->__toString()] = 1;
             return;
         }
 
