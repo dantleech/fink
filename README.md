@@ -34,6 +34,11 @@ Options
 - `--insecure`: Do not verify SSL certificates.
 - `--max-distance`: Maximum allowed distance from base URL (if not specified
   then there is no limitation).
+  
+Todo
+----
+
+- [ ] Cookie support
 
 Exit Codes
 ----------
