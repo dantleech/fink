@@ -1,0 +1,8 @@
+/vendor
+/.php_cs.cache
+/composer.lock
+/tests/Workspace
+/.phpactor.yml
+/.phpactor/*
+/.php_cs.cache
+/.phpunit.result.cache
