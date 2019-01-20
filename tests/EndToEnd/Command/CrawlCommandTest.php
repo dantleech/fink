@@ -105,7 +105,7 @@ class CrawlCommandTest extends EndToEndTestCase
             self::EXAMPLE_URL,
             '--max-distance=1',
             '--output='.$this->workspace()->path('/out.json'),
-        ], 'cookie-protected');
+        ], 'website');
 
         $this->assertProcessSuccess($process);
 

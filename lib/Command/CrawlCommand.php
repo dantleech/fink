@@ -12,6 +12,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use DTL\Extension\Fink\Command\Exception\AtLeastOneFailure;
 
 class CrawlCommand extends Command
 {
@@ -87,14 +88,14 @@ class CrawlCommand extends Command
                 Loop::stop();
 
                 if ($dispatcher->status()->nbFailures) {
-                    throw new FailureException();
+                    throw new AtLeastOneFailure();
                 }
             }
         });
 
         try {
             Loop::run();
-        } catch (FailureException $e) {
+        } catch (AtLeastOneFailure $e) {
             return self::EXIT_STATUS_FAILURE;
         }
 
