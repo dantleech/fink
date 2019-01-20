@@ -77,7 +77,7 @@ class CrawlCommand extends Command
                 $status->nbFailures,
                 $status->requestCount,
                 number_format($dispatcher->status()->failurePercentage(), 2),
-                $status->lastUrl,
+                $status->lastUrl
             ));
 
             if ($status->nbConcurrentRequests === 0 && $status->queueSize === 0) {
