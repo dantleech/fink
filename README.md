@@ -34,3 +34,9 @@ Options
 - `--insecure`: Do not verify SSL certificates.
 - `--max-distance`: Maximum allowed distance from base URL (if not specified
   then there is no limitation).
+
+Exit Codes
+----------
+
+- `0`: All URLs were successful.
+- `2`: At least one URL failed to resolve successfully.
