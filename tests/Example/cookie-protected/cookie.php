@@ -1,6 +1,5 @@
 <?php
 
-if (!isset($_COOKIES['hello'])) {
-    http_response_code(404);
+if (!isset($_COOKIE['hello'])) {
+    http_response_code(403);
 }
-setcookie('hello', 'world');

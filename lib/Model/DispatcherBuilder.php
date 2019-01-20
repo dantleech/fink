@@ -3,11 +3,13 @@
 namespace DTL\Extension\Fink\Model;
 
 use Amp\Artax\Client;
+use Amp\Artax\Cookie\FileCookieJar;
 use Amp\Artax\Cookie\NullCookieJar;
 use Amp\Artax\DefaultClient;
 use Amp\Artax\HttpSocketPool;
 use Amp\ByteStream\ResourceOutputStream;
 use Amp\Socket\ClientTlsContext;
+use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
 use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
 use DTL\Extension\Fink\Model\Publisher\StreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
@@ -52,6 +54,11 @@ class DispatcherBuilder
      * @var int
      */
     private $maxDistance = null;
+
+    /**
+     * @var string
+     */
+    private $loadCookies;
 
     public function __construct(Url $baseUrl)
     {
@@ -103,6 +110,13 @@ class DispatcherBuilder
     public function noPeerVerification(bool $value): self
     {
         $this->noPeerVerification = $value;
+
+        return $this;
+    }
+
+    public function loadCookies(string $file): self
+    {
+        $this->loadCookies = $file;
 
         return $this;
     }
@@ -166,6 +180,17 @@ class DispatcherBuilder
         $cookieJar = new NullCookieJar;
         $tlsContext = new ClientTlsContext;
         $socketPool = new HttpSocketPool;
+
+        if ($this->loadCookies) {
+            if (!file_exists($this->loadCookies)) {
+                throw new RuntimeException(sprintf(
+                    'Cookie file "%s" does not exist',
+                    $this->loadCookies
+                ));
+            }
+
+            $cookieJar = new ImmutableCookieJar(new FileCookieJar($this->loadCookies));
+        }
 
         if ($this->noPeerVerification) {
             $tlsContext = $tlsContext->withoutPeerVerification();

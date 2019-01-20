@@ -112,15 +112,19 @@ class CrawlCommand extends Command
         $descendantsOnly = $this->castToBool($input->getOption(self::OPT_DESCENDANTS_ONLY));
         $insecure = $this->castToBool($input->getOption(self::OPT_INSECURE));
         $maxDistance = $input->getOption(self::OPT_MAX_DISTANCE);
+        $cookieFile = $input->getOption(self::OPT_LOAD_COOKIES);
         
         $builder = $this->factory->createForUrl($url);
         $builder->maxConcurrency($maxConcurrency);
-        if ($outfile) {
-            $builder->publishTo($this->castToString($outfile));
-        }
         $builder->noDeduplication($noDedupe);
         $builder->descendantsOnly($descendantsOnly);
         $builder->noPeerVerification($insecure);
+        if ($outfile) {
+            $builder->publishTo($this->castToString($outfile));
+        }
+        if ($cookieFile) {
+            $builder->loadCookies($this->castToString($cookieFile));
+        }
 
         if (null !== $maxDistance) {
             $builder->maxDistance($this->castToInt($maxDistance));

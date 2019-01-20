@@ -35,7 +35,9 @@ class EndToEndTestCase extends TestCase
         ], $args), __DIR__ . '/../..');
 
         $fink->run(function ($error, $data) {
-            fwrite(STDERR, $data);
+            if (getenv('FINK_DEBUG')) {
+                fwrite(STDERR, $data);
+            }
         });
 
         $server->stop();
