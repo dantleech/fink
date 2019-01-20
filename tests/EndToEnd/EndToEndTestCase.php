@@ -3,29 +3,13 @@
 namespace DTL\Extension\Fink\Tests\EndToEnd;
 
 use DTL\Extension\Fink\Command\CrawlCommand;
-use PHPUnit\Framework\TestCase;
+use DTL\Extension\Fink\Tests\IntegrationTestCase;
 use Phpactor\TestUtils\Workspace;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 
-class EndToEndTestCase extends TestCase
+class EndToEndTestCase extends IntegrationTestCase
 {
-    /**
-     * @var Workspace
-     */
-    private $workspace;
-
-    public function setUp()
-    {
-        $this->workspace = Workspace::create(__DIR__ . '/../Workspace');
-        $this->workspace->reset();
-    }
-
-    protected function workspace(): Workspace
-    {
-        return $this->workspace;
-    }
-
     protected function execute(array $args, string $project = 'website'): Process
     {
         $server = $this->serve($project);

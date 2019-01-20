@@ -10,6 +10,7 @@ use Amp\Artax\HttpSocketPool;
 use Amp\ByteStream\ResourceOutputStream;
 use Amp\Socket\ClientTlsContext;
 use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
+use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
 use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
 use DTL\Extension\Fink\Model\Publisher\StreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
@@ -189,7 +190,9 @@ class DispatcherBuilder
                 ));
             }
 
-            $cookieJar = new ImmutableCookieJar(new FileCookieJar($this->loadCookies));
+            $cookieJar = new ImmutableCookieJar(
+                new NetscapeCookieFileJar($this->loadCookies)
+            );
         }
 
         if ($this->noPeerVerification) {
