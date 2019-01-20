@@ -30,6 +30,7 @@ class CrawlCommand extends Command
 
     const OPT_OUTPUT = 'output';
     const OPT_INSECURE = 'insecure';
+    const OPT_LOAD_COOKIES = 'load-cookies';
 
     /**
      * @var DispatcherBuilderFactory
@@ -54,6 +55,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_DESCENDANTS_ONLY, 'l', InputOption::VALUE_NONE, 'Only crawl descendants of the given path');
         $this->addOption(self::OPT_INSECURE, 'k', InputOption::VALUE_NONE, 'Allow insecure server connections with SSL');
         $this->addOption(self::OPT_MAX_DISTANCE, 'm', InputOption::VALUE_REQUIRED, 'Maximum link distance from base URL');
+        $this->addOption(self::OPT_LOAD_COOKIES, null, InputOption::VALUE_REQUIRED, 'Load cookies from file');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

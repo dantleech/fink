@@ -26,16 +26,16 @@ class EndToEndTestCase extends TestCase
         return $this->workspace;
     }
 
-    protected function execute(array $array): Process
+    protected function execute(array $args, string $project = 'website'): Process
     {
-        $server = $this->serve('website');
+        $server = $this->serve($project);
 
         $fink = new Process(array_merge([
             'bin/fink'
-        ], $array), __DIR__ . '/../..');
+        ], $args), __DIR__ . '/../..');
 
         $fink->run(function ($error, $data) {
-            //fwrite(STDERR, $data);
+            fwrite(STDERR, $data);
         });
 
         $server->stop();

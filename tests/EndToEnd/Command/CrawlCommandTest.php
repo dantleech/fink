@@ -105,7 +105,7 @@ class CrawlCommandTest extends EndToEndTestCase
             self::EXAMPLE_URL,
             '--max-distance=1',
             '--output='.$this->workspace()->path('/out.json'),
-        ]);
+        ], 'cookie-protected');
 
         $this->assertProcessSuccess($process);
 
@@ -115,6 +115,22 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertStatus($rows, 200, 'about.html');
         $this->assertUrlCount($rows, 0, 'posts/post1.html');
         $this->assertUrlCount($rows, 0, 'posts/post2.html');
+    }
+
+    public function testUsesCookieFile()
+    {
+        $process = $this->execute([
+            'crawl',
+            self::EXAMPLE_URL . '/cookie.php',
+            '--load-cookies=' . __DIR__ . '/../../Example/cookie-protected/cookies.txt'  ,
+            '--output='.$this->workspace()->path('/out.json'),
+        ], 'cookie-protected');
+
+        $this->assertProcessSuccess($process);
+
+        $rows = $this->parseResults($this->workspace()->path('/out.json'));
+
+        $this->assertStatus($rows, 200, 'cookie.php');
     }
 
     private function assertStatus(array $results, int $code, string $target): void
