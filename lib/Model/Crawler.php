@@ -18,9 +18,9 @@ class Crawler
      */
     private $client;
 
-    public function __construct(Client $client = null)
+    public function __construct(Client $client)
     {
-        $this->client = $client ?: new DefaultClient();
+        $this->client = $client;
     }
 
     public function crawl(Url $documentUrl, UrlQueue $queue, ReportBuilder $report): Generator

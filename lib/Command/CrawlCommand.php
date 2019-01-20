@@ -5,11 +5,13 @@ namespace DTL\Extension\Fink\Command;
 use Amp\ByteStream\ResourceOutputStream;
 use Amp\Loop;
 use DTL\Extension\Fink\Model\Crawler;
+use DTL\Extension\Fink\Model\DispatcherBuilder;
+use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use DTL\Extension\Fink\Model\Publisher\StreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
-use DTL\Extension\Fink\Model\Runner;
+use DTL\Extension\Fink\Model\Dispatcher;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlQueue;
 use RuntimeException;
@@ -33,95 +35,60 @@ class CrawlCommand extends Command
 
     const EXIT_STATUS_FAILURE = 1;
     const EXIT_STATUS_SUCCESS = 0;
+    const OPT_OUTPUT = 'output';
+    const OPT_INSECURE = 'insecure';
 
     /**
-     * @var Crawler
+     * @var DispatcherBuilderFactory
      */
-    private $crawler;
+    private $factory;
 
-    public function __construct()
+    public function __construct(DispatcherBuilderFactory $factory)
     {
         parent::__construct();
+        $this->factory = $factory;
     }
 
     protected function configure()
     {
-        $this->addArgument(
-            self::ARG_URL,
-            InputArgument::REQUIRED,
-            'URL to crawl'
-        );
+        $this->addArgument(self::ARG_URL, InputArgument::REQUIRED, 'URL to crawl');
 
-        $this->addOption(
-            self::OPT_CONCURRENCY,
-            'c',
-            InputOption::VALUE_REQUIRED,
-            'Concurrency',
-            self::RUNNER_POLL_TIME
-        );
-
-        $this->addOption(
-            'output',
-            'o',
-            InputOption::VALUE_REQUIRED,
-            'Output file'
-        );
-
-        $this->addOption(
-            self::OPT_NO_DEDUPE,
-            null,
-            InputOption::VALUE_NONE,
-            'Do not de-duplicate URLs'
-        );
-
-        $this->addOption(
-            self::OPT_DESCENDANTS_ONLY,
-            null,
-            InputOption::VALUE_NONE,
-            'Only crawl descendants of the given path'
-        );
+        $this->addOption(self::OPT_CONCURRENCY, 'c', InputOption::VALUE_REQUIRED, 'Concurrency', 10);
+        $this->addOption(self::OPT_OUTPUT, 'o', InputOption::VALUE_REQUIRED, 'Output file');
+        $this->addOption(self::OPT_NO_DEDUPE, null, InputOption::VALUE_NONE, 'Do not de-duplicate URLs');
+        $this->addOption(self::OPT_DESCENDANTS_ONLY, null, InputOption::VALUE_NONE, 'Only crawl descendants of the given path');
+        $this->addOption(self::OPT_INSECURE, 'k', InputOption::VALUE_NONE, 'Allow insecure server connections with SSL');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         assert($output instanceof ConsoleOutput);
 
-        $url = $input->getArgument('url');
-        if (!is_string($url)) {
-            throw new RuntimeException(sprintf(
-                'URL was not a string'
-            ));
-        }
+        $dispatcher = $this->buildDispatcher($input);
 
-        $url = Url::fromUrl($url);
-
-        $queue = $this->buildQueue($input, $url);
-        $queue->enqueue($url);
-
-        $runner = $this->buildRunner($input);
-
-        Loop::repeat(self::RUNNER_POLL_TIME, function () use ($runner, $queue) {
-            $runner->run($queue);
+        Loop::repeat(self::RUNNER_POLL_TIME, function () use ($dispatcher) {
+            $dispatcher->dispatch();
         });
 
         $section = $output->section();
 
-        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section, $runner, $queue) {
+        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section, $dispatcher) {
+            $status = $dispatcher->status();
             $section->overwrite(sprintf(
                 '<comment>Concurrency</>: %s, <comment>URL queue size</>: %s, <comment>Failures</>: %s/%s (%s%%)' . PHP_EOL .
                 '%s',
-                $runner->status()->nbConcurrentRequests,
-                $queue->count(),
-                $runner->status()->nbFailures,
-                $runner->status()->requestCount,
-                number_format($runner->status()->failurePercentage(), 2),
-                $runner->status()->lastUrl,
+                $status->nbConcurrentRequests,
+                $status->queueSize,
+                $status->nbFailures,
+                $status->requestCount,
+                number_format($dispatcher->status()->failurePercentage(), 2),
+                $status->lastUrl,
             ));
 
-            if ($runner->status()->nbConcurrentRequests === 0 && $queue->count() === 0) {
+            if ($status->nbConcurrentRequests === 0 && $status->queueSize === 0) {
                 Loop::stop();
 
-                if ($runner->status()->nbFailures) {
+                if ($dispatcher->status()->nbFailures) {
                     return self::EXIT_STATUS_FAILURE;
                 }
             }
@@ -132,49 +99,58 @@ class CrawlCommand extends Command
         return self::EXIT_STATUS_SUCCESS;
     }
 
-    private function buildQueue(InputInterface $input, Url $url): UrlQueue
+    private function castToInt($value): int
     {
-        $queue = new RealUrlQueue();
-        
-        if (!$input->getOption(self::OPT_NO_DEDUPE)) {
-            $queue = new DedupeQueue($queue);
-        }
-        
-        if ($input->getOption(self::OPT_DESCENDANTS_ONLY)) {
-            $queue = new OnlyDescendantOrSelfQueue($queue, $url);
-        }
-        return $queue;
-    }
-
-    private function buildRunner(InputInterface $input): Runner
-    {
-        $maxConcurrency = $input->getOption(self::OPT_CONCURRENCY);
-
-        if (!is_numeric($maxConcurrency)) {
+        if (!is_numeric($value)) {
             throw new RuntimeException(sprintf(
-                'Concurrency was not an int, got "%s"',
-                var_export($maxConcurrency, true)
+                'value was not an int, got "%s"',
+                var_export($value, true)
             ));
         }
-        $publisher = null;
 
-        if ($outfile = $input->getOption('output')) {
-            if (!is_string($outfile)) {
-                throw new RuntimeException(sprintf(
-                    'Outfile is not a string'
-                ));
-            }
-            $resource = fopen($outfile, 'w');
-            if (false === $resource) {
-                throw new RuntimeException(sprintf(
-                    'Could not open file "%s"',
-                    $outfile
-                ));
-            }
-            $stream = new ResourceOutputStream($resource);
-            $publisher = new StreamPublisher($stream);
+        return (int) $value;
+    }
+
+    private function castToString($value): string
+    {
+        if (!is_string($value)) {
+            throw new RuntimeException(sprintf(
+                'value was not a string'
+            ));
         }
 
-        return new Runner((int) $maxConcurrency, $publisher);
+        return $value;
+    }
+
+    private function castToBool($value): bool
+    {
+        if (!is_bool($value)) {
+            throw new RuntimeException(sprintf(
+                'value was not a bool'
+            ));
+        }
+
+        return $value;
+    }
+
+    private function buildDispatcher(InputInterface $input): Dispatcher
+    {
+        $url = $this->castToString($input->getArgument('url'));
+        
+        $maxConcurrency = $this->castToInt($input->getOption(self::OPT_CONCURRENCY));
+        $outfile = $input->getOption(self::OPT_OUTPUT);
+        $noDedupe = $this->castToBool($input->getOption(self::OPT_NO_DEDUPE));
+        $descendantsOnly = $this->castToBool($input->getOption(self::OPT_DESCENDANTS_ONLY));
+        $insecure = $this->castToBool($input->getOption(self::OPT_INSECURE));
+        
+        $builder = $this->factory->createForUrl($url);
+        $builder->maxConcurrency($maxConcurrency);
+        if ($outfile) {
+            $builder->publishTo($this->castToString($outfile));
+        }
+        $builder->noDeduplication($noDedupe);
+        $builder->descendantsOnly($descendantsOnly);
+        $builder->noPeerVerification($insecure);
+        return $builder->build();
     }
 }

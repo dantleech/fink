@@ -24,6 +24,11 @@ class Status
      */
     public $nbFailures = 0;
 
+    /**
+     * @var int
+     */
+    public $queueSize = 0;
+
     public function failurePercentage(): float
     {
         if ($this->nbFailures === 0) {
