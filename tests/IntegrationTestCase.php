@@ -22,5 +22,4 @@ class IntegrationTestCase extends TestCase
     {
         return $this->workspace;
     }
-
 }

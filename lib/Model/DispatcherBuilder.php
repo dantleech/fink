@@ -3,7 +3,6 @@
 namespace DTL\Extension\Fink\Model;
 
 use Amp\Artax\Client;
-use Amp\Artax\Cookie\FileCookieJar;
 use Amp\Artax\Cookie\NullCookieJar;
 use Amp\Artax\DefaultClient;
 use Amp\Artax\HttpSocketPool;

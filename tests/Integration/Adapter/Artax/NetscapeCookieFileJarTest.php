@@ -5,7 +5,6 @@ namespace DTL\Extension\Fink\Tests\Integration\Adapter\Artax;
 use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
 use DTL\Extension\Fink\Tests\IntegrationTestCase;
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
 
 class NetscapeCookieFileJarTest extends IntegrationTestCase
 {
@@ -37,23 +36,23 @@ EOT
         $this->assertCount(4, $jar->getAll()['.php-fig.org']['/']);
 
         $this->assertEquals(
-            '-5061451:' ,
+            '-5061451:',
             $jar->get('.google.com', '', 'OGP')[0]->getValue()
         );
         $this->assertEquals(
-            '19010135-2:' ,
+            '19010135-2:',
             $jar->get('.google.com', '/', 'OGPC')[0]->getValue()
         );
         $this->assertEquals(
-            'hello' ,
+            'hello',
             $jar->get('.google.com', '/complete/search', 'CGIC')[0]->getValue()
         );
         $this->assertEquals(
-            '19010135-2:' ,
+            '19010135-2:',
             $jar->get('.google.com', '/', 'OGPC')[0]->getValue()
         );
         $this->assertEquals(
-            'world' ,
+            'world',
             $jar->get('127.0.0.1', '/', 'hello')[0]->getValue()
         );
     }

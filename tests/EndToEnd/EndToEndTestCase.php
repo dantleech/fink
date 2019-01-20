@@ -4,7 +4,6 @@ namespace DTL\Extension\Fink\Tests\EndToEnd;
 
 use DTL\Extension\Fink\Command\CrawlCommand;
 use DTL\Extension\Fink\Tests\IntegrationTestCase;
-use Phpactor\TestUtils\Workspace;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 

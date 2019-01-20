@@ -4,7 +4,6 @@ namespace DTL\Extension\Fink\Adapter\Artax;
 
 use Amp\Artax\Cookie\ArrayCookieJar;
 use Amp\Artax\Cookie\Cookie;
-use Amp\Artax\Cookie\CookieJar;
 use DateTimeImmutable;
 use RuntimeException;
 
@@ -21,7 +20,8 @@ class NetscapeCookieFileJar extends ArrayCookieJar
 
         if (!$cookieFileHandle = fopen($filePath, 'r')) {
             throw new RuntimeException(sprintf(
-                'Failed to open file "%s" for reading', $filePath
+                'Failed to open file "%s" for reading',
+                $filePath
             ));
         }
 
@@ -64,9 +64,18 @@ class NetscapeCookieFileJar extends ArrayCookieJar
 
         $expiration = DateTimeImmutable::createFromFormat('U', $expiration);
 
+        // could not parse date
+        if (false === $expiration) {
+            return null;
+        }
+
         $string = sprintf(
             '%s=%s; expires=%s; domain=%s; path=%s',
-            $name, $value, $expiration->format('D, d M Y H:i:s T'), $domain, $path
+            $name,
+            $value,
+            $expiration->format('D, d M Y H:i:s T'),
+            $domain,
+            $path
         );
 
         if (strtolower($secure) === 'true') {
