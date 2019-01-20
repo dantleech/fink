@@ -19,3 +19,16 @@ $ ./vendor/bin/fink https://www.dantleech.com
 Concurrency: 2, URL queue size: 10, Failures: 0/60 (0.00%)
 https://www.dantleech.com/page/12
 ```
+
+Options
+-------
+
+- `--output=out.json`: Output JSON report for each URL to given file
+  (truncates existing content).
+- `--concurrency`: Number of simultaneous HTTP requests to use.
+- `--no-dedupe`: Do _not_ filter duplicate URLs (can result in a
+  non-terminating process).
+- `--descendants-only`: Only crawl direct descendnats of the given URL
+- `--insecure`: Do not verify SSL certificates.
+- `--max-distance`: Maximum allowed distance from base URL (if not specified
+  then there is no limitation).
