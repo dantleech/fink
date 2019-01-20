@@ -2,7 +2,7 @@
     "name": "dantleech/fink",
     "description": "Checks Links",
     "license": "MIT",
-    "type": "phpactor-extension",
+    "type": "lib",
     "authors": [
         {
             "name": "Daniel Leech",
@@ -12,9 +12,8 @@
     "minimum-stability": "dev",
     "require": {
         "phpactor/container": "^1.0",
-        "amphp/parallel": "^1.1",
-        "amphp/artax": "^3.0",
         "phpactor/console-extension": "~0.1",
+        "amphp/artax": "^3.0",
         "league/uri-schemes": "^1.0"
     },
     "require-dev": {
@@ -34,7 +33,6 @@
         }
     },
     "extra": {
-        "phpactor.extension_class": "Phpactor\\Extension\\Fink\\FinkExtension",
         "branch-alias": {
             "dev-master": "0.1.x-dev"
         }
