@@ -2,8 +2,6 @@
 
 namespace DTL\Extension\Fink\Model;
 
-use Amp\Artax\HttpException;
-use Amp\Dns\ResolutionException;
 use Exception;
 
 class Dispatcher

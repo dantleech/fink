@@ -1,7 +1,6 @@
 <?php
 namespace DTL\Extension\Fink\Tests\Unit\Model;
 
-
 use DTL\Extension\Fink\Model\CircularReportStore;
 use DTL\Extension\Fink\Model\HttpStatusCode;
 use DTL\Extension\Fink\Model\Report;
@@ -43,7 +42,6 @@ class CircularReportStoreTest extends TestCase
             'https://www.example2.com',
             'https://www.example3.com',
         ], $reports);
-
     }
 
     private function createReport(int $int)
