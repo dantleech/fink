@@ -7,12 +7,12 @@ use Countable;
 use Iterator;
 use IteratorAggregate;
 
-final class CircularUrlStore implements Countable, IteratorAggregate
+final class CircularReportStore implements Countable, IteratorAggregate
 {
     /**
-     * @var Url[]
+     * @var Report[]
      */
-    private $urls = [];
+    private $reports = [];
 
     /**
      * @var int
@@ -24,13 +24,13 @@ final class CircularUrlStore implements Countable, IteratorAggregate
         $this->size = $size;
     }
 
-    public function add(Url $url)
+    public function add(Report $report)
     {
-        if (count($this->urls) >= $this->size) {
-            array_shift($this->urls);
+        if (count($this->reports) >= $this->size) {
+            array_shift($this->reports);
         }
 
-        $this->urls[] = $url;
+        $this->reports[] = $report;
     }
 
     /**
@@ -38,7 +38,7 @@ final class CircularUrlStore implements Countable, IteratorAggregate
      */
     public function count()
     {
-        return count($this->urls);
+        return count($this->reports);
     }
 
     /**
@@ -46,6 +46,6 @@ final class CircularUrlStore implements Countable, IteratorAggregate
      */
     public function getIterator(): Iterator
     {
-        return new ArrayIterator($this->urls);
+        return new ArrayIterator($this->reports);
     }
 }

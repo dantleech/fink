@@ -165,7 +165,8 @@ class DispatcherBuilder
             $this->maxConcurrency,
             $publisher,
             new Crawler($this->buildClient()),
-            $queue
+            $queue,
+            new CircularReportStore(10),
         );
     }
 

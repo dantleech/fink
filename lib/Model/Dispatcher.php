@@ -34,17 +34,24 @@ class Dispatcher
      */
     private $maxDistance;
 
+    /**
+     * @var CircularReportStore
+     */
+    private $store;
+
     public function __construct(
         int $maxConcurrency,
         Publisher $publisher,
         Crawler $crawler,
-        UrlQueue $queue
+        UrlQueue $queue,
+        CircularReportStore $store
     ) {
         $this->crawler = $crawler;
         $this->publisher = $publisher;
         $this->status = new Status();
         $this->maxConcurrency = $maxConcurrency;
         $this->queue = $queue;
+        $this->store = $store;
     }
 
     public function dispatch()
@@ -78,5 +85,10 @@ class Dispatcher
     public function status(): Status
     {
         return $this->status;
+    }
+
+    public function store(): CircularReportStore
+    {
+        return $this->store;
     }
 }
