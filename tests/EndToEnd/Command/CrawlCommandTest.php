@@ -14,7 +14,7 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
-    public function testCrawlsUrlPublishesReport()
+    public function testPublishesReport()
     {
         $process = $this->execute([
             'crawl',
@@ -33,7 +33,7 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertStatus($rows, 404, '404.html');
     }
 
-    public function testCrawlsDescendantsOnly()
+    public function testCrawlDescendantsOnly()
     {
         $process = $this->execute([
             'crawl',
@@ -70,7 +70,7 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertUrlCount($rows, 1, 'posts/post1.html');
     }
 
-    public function testAllowsTheConcurrencyToBeSet()
+    public function testConcurrencyCanBeSet()
     {
         $process = $this->execute([
             'crawl',
@@ -87,7 +87,7 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertUrlCount($rows, 1, 'about.html');
     }
 
-    public function testInsecure()
+    public function testDisableSslVerfication()
     {
         $process = $this->execute([
             'crawl',
@@ -98,7 +98,7 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
-    public function testMaxDisatance()
+    public function testSpecifyMaxDistanceFromTheBaseDocument()
     {
         $process = $this->execute([
             'crawl',
@@ -117,7 +117,7 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertUrlCount($rows, 0, 'posts/post2.html');
     }
 
-    public function testCookieProtectedPageWithNoCookie()
+    public function testCannotAccessCookieProtectedPageWithoutCookie()
     {
         $process = $this->execute([
             'crawl',
@@ -131,7 +131,7 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertStatus($rows, 403, 'cookie.php');
     }
 
-    public function testCookieProtectedPageWithCorrectCookies()
+    public function testCanAccessProtectedPageWithCookieAppropriateNetscapeCookieFile()
     {
         $process = $this->execute([
             'crawl',
@@ -147,7 +147,19 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertStatus($rows, 200, 'cookie.php');
     }
 
-    public function testExitIfCookieFileNotFound()
+    public function testSpecifyRequestPollInterval()
+    {
+        $process = $this->execute([
+            'crawl',
+            self::EXAMPLE_URL . '/',
+            '--interval=10',
+            '--output='.$this->workspace()->path('/out.json'),
+        ], 'website');
+
+        $this->assertProcessSuccess($process);
+    }
+
+    public function testExitsWithErrorIfCookieFileNotFound()
     {
         $process = $this->execute([
             'crawl',
