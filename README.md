@@ -48,6 +48,7 @@ Options
 - `--no-dedupe`: Do _not_ filter duplicate URLs (can result in a
   non-terminating process).
 - `--descendants-only`: Only crawl direct descendnats of the given URL
+- `--first-external-only`: Like descendants-only but check the statuscode of the first External URL
 - `--insecure`: Do not verify SSL certificates.
 - `--max-distance`: Maximum allowed distance from base URL (if not specified
   then there is no limitation).

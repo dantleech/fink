@@ -14,6 +14,7 @@ use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
 use DTL\Extension\Fink\Model\Publisher\StreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
+use DTL\Extension\Fink\Model\Queue\FirstExternalOnlyQueue;
 use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use RuntimeException;
@@ -39,6 +40,11 @@ class DispatcherBuilder
      * @var bool
      */
     private $descendantsOnly;
+
+    /**
+     * @var bool
+     */
+    private $firstExternalOnly;
 
     /**
      * @var string
@@ -96,6 +102,13 @@ class DispatcherBuilder
     public function descendantsOnly(bool $value = true): self
     {
         $this->descendantsOnly = $value;
+
+        return $this;
+    }
+
+    public function firstExternalOnly(bool $value = true): self
+    {
+        $this->firstExternalOnly = $value;
 
         return $this;
     }
@@ -163,9 +176,13 @@ class DispatcherBuilder
         if (!$this->noDedupe) {
             $queue = new DedupeQueue($queue);
         }
-        
+
         if ($this->descendantsOnly) {
             $queue = new OnlyDescendantOrSelfQueue($queue, $this->baseUrl);
+        }
+
+        if ($this->firstExternalOnly) {
+            $queue = new FirstExternalOnlyQueue($queue, $this->baseUrl);
         }
 
         if (null !== $this->maxDistance) {

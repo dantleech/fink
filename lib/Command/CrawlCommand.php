@@ -20,6 +20,7 @@ class CrawlCommand extends Command
 
     public const OPT_CONCURRENCY = 'concurrency';
     public const OPT_DESCENDANTS_ONLY = 'descendants-only';
+    public const OPT_FIRST_EXTERNAL_ONLY = 'first-external-only';
     public const OPT_MAX_DISTANCE = 'max-distance';
     public const OPT_NO_DEDUPE = 'no-dedupe';
 
@@ -55,6 +56,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_OUTPUT, 'o', InputOption::VALUE_REQUIRED, 'Output file');
         $this->addOption(self::OPT_NO_DEDUPE, 'D', InputOption::VALUE_NONE, 'Do not de-duplicate URLs');
         $this->addOption(self::OPT_DESCENDANTS_ONLY, 'l', InputOption::VALUE_NONE, 'Only crawl descendants of the given path');
+        $this->addOption(self::OPT_FIRST_EXTERNAL_ONLY, 'x', InputOption::VALUE_NONE, 'Only crawl the first external not its child');
         $this->addOption(self::OPT_INSECURE, 'k', InputOption::VALUE_NONE, 'Allow insecure server connections with SSL');
         $this->addOption(self::OPT_MAX_DISTANCE, 'm', InputOption::VALUE_REQUIRED, 'Maximum link distance from base URL');
         $this->addOption(self::OPT_LOAD_COOKIES, null, InputOption::VALUE_REQUIRED, 'Load cookies from file');
@@ -113,6 +115,7 @@ class CrawlCommand extends Command
         $outfile = $input->getOption(self::OPT_OUTPUT);
         $noDedupe = $this->castToBool($input->getOption(self::OPT_NO_DEDUPE));
         $descendantsOnly = $this->castToBool($input->getOption(self::OPT_DESCENDANTS_ONLY));
+        $firstExternalOnly = $this->castToBool($input->getOption(self::OPT_FIRST_EXTERNAL_ONLY));
         $insecure = $this->castToBool($input->getOption(self::OPT_INSECURE));
         $maxDistance = $input->getOption(self::OPT_MAX_DISTANCE);
         $cookieFile = $input->getOption(self::OPT_LOAD_COOKIES);
@@ -121,6 +124,7 @@ class CrawlCommand extends Command
         $builder->maxConcurrency($maxConcurrency);
         $builder->noDeduplication($noDedupe);
         $builder->descendantsOnly($descendantsOnly);
+        $builder->firstExternalOnly($firstExternalOnly);
         $builder->noPeerVerification($insecure);
         if ($outfile) {
             $builder->publishTo($this->castToString($outfile));

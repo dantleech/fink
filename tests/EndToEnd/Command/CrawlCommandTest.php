@@ -26,6 +26,7 @@ class CrawlCommandTest extends EndToEndTestCase
 
         $rows = $this->parseResults($this->workspace()->path('/out.json'));
 
+        $this->assertCount(6, $rows);
         $this->assertStatus($rows, 200, 'blog.html');
         $this->assertStatus($rows, 200, 'about.html');
         $this->assertStatus($rows, 200, 'posts/post1.html');
@@ -46,10 +47,29 @@ class CrawlCommandTest extends EndToEndTestCase
 
         $rows = $this->parseResults($this->workspace()->path('/out.json'));
 
+        $this->assertCount(3, $rows);
         $this->assertUrlCount($rows, 0, 'blog.html');
         $this->assertUrlCount($rows, 0, 'about.html');
         $this->assertStatus($rows, 200, 'posts/post1.html');
         $this->assertStatus($rows, 200, 'posts/post2.html');
+    }
+
+    public function testCrawlsFirstExternalOnly()
+    {
+        $process = $this->execute([
+            'crawl',
+            self::EXAMPLE_URL . '/posts/external',
+            '--output='.$this->workspace()->path('/out.json'),
+            '--first-external-only'
+        ]);
+
+        $this->assertProcessSuccess($process);
+
+        $rows = $this->parseResults($this->workspace()->path('/out.json'));
+
+        $this->assertCount(2, $rows);
+        $this->assertStatus($rows, 200, 'posts');
+        $this->assertStatus($rows, 200, 'posts/external');
     }
 
     public function testAllowsUrlDuplication()
