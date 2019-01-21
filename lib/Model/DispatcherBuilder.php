@@ -108,7 +108,7 @@ class DispatcherBuilder
 
     public function firstExternalOnly(bool $value = true): self
     {
-        $this->firstExternalONly = $value;
+        $this->firstExternalOnly = $value;
 
         return $this;
     }
@@ -181,7 +181,7 @@ class DispatcherBuilder
             $queue = new OnlyDescendantOrSelfQueue($queue, $this->baseUrl);
         }
 
-        if ($this->firstExternalONly) {
+        if ($this->firstExternalOnly) {
             $queue = new FirstExternalOnlyQueue($queue, $this->baseUrl);
         }
 
