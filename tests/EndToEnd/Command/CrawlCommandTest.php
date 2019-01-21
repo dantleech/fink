@@ -6,7 +6,7 @@ use DTL\Extension\Fink\Tests\EndToEnd\EndToEndTestCase;
 
 class CrawlCommandTest extends EndToEndTestCase
 {
-    const EXAMPLE_URL = 'http://127.0.0.1:8124';
+    public const EXAMPLE_URL = 'http://127.0.0.1:8124';
 
     public function testCrawlsUrl()
     {

@@ -11,10 +11,10 @@ use Prophecy\Prophecy\ObjectProphecy;
 
 class ImmutableCookieJarTest extends TestCase
 {
-    const EXAMPLE_DOMAIN = 'domain';
-    const EXAMPLE_PATH = self::EXAMPLE_VALUE;
-    const EXAMPLE_NAME = 'bar';
-    const EXAMPLE_VALUE = 'foo';
+    public const EXAMPLE_DOMAIN = 'domain';
+    public const EXAMPLE_PATH = self::EXAMPLE_VALUE;
+    public const EXAMPLE_NAME = 'bar';
+    public const EXAMPLE_VALUE = 'foo';
 
 
     /**

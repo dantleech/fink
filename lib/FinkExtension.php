@@ -12,7 +12,7 @@ use Phpactor\MapResolver\Resolver;
 
 class FinkExtension implements Extension
 {
-    const SERVICE_DISPATCHER_BUILDER_FACTORY = 'fink.dispatcher_builder_factory';
+    public const SERVICE_DISPATCHER_BUILDER_FACTORY = 'fink.dispatcher_builder_factory';
 
     /**
      * {@inheritDoc}

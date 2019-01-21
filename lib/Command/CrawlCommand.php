@@ -16,22 +16,22 @@ use DTL\Extension\Fink\Command\Exception\AtLeastOneFailure;
 
 class CrawlCommand extends Command
 {
-    const ARG_URL = 'url';
+    public const ARG_URL = 'url';
 
-    const OPT_CONCURRENCY = 'concurrency';
-    const OPT_DESCENDANTS_ONLY = 'descendants-only';
-    const OPT_MAX_DISTANCE = 'max-distance';
-    const OPT_NO_DEDUPE = 'no-dedupe';
+    public const OPT_CONCURRENCY = 'concurrency';
+    public const OPT_DESCENDANTS_ONLY = 'descendants-only';
+    public const OPT_MAX_DISTANCE = 'max-distance';
+    public const OPT_NO_DEDUPE = 'no-dedupe';
 
-    const DISPLAY_POLL_TIME = 100;
-    const RUNNER_POLL_TIME = 10;
+    public const DISPLAY_POLL_TIME = 100;
+    public const RUNNER_POLL_TIME = 10;
 
-    const EXIT_STATUS_FAILURE = 2;
-    const EXIT_STATUS_SUCCESS = 0;
+    public const EXIT_STATUS_FAILURE = 2;
+    public const EXIT_STATUS_SUCCESS = 0;
 
-    const OPT_OUTPUT = 'output';
-    const OPT_INSECURE = 'insecure';
-    const OPT_LOAD_COOKIES = 'load-cookies';
+    public const OPT_OUTPUT = 'output';
+    public const OPT_INSECURE = 'insecure';
+    public const OPT_LOAD_COOKIES = 'load-cookies';
 
     /**
      * @var DispatcherBuilderFactory
