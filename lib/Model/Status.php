@@ -29,16 +29,6 @@ class Status
      */
     public $queueSize = 0;
 
-    /**
-     * @var CircularUrlStore
-     */
-    public $urlStore;
-
-    public function __construct(CircularUrlStore $urlStore)
-    {
-        $this->urlStore = $urlStore;
-    }
-
     public function failurePercentage(): float
     {
         if ($this->nbFailures === 0) {

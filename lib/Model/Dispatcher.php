@@ -42,7 +42,7 @@ class Dispatcher
     ) {
         $this->crawler = $crawler;
         $this->publisher = $publisher;
-        $this->status = new Status(new CircularUrlStore(10));
+        $this->status = new Status();
         $this->maxConcurrency = $maxConcurrency;
         $this->queue = $queue;
     }
@@ -67,7 +67,6 @@ class Dispatcher
             $report = $reportBuilder->build();
             $this->publisher->publish($report);
 
-            $this->status->urlStore->add($url);
             $this->status->queueSize = count($this->queue);
             $this->status->nbFailures += $report->isSuccess() ? 0 : 1;
             $this->status->lastUrl = $url->__toString();
