@@ -10,6 +10,13 @@ return PhpCsFixer\Config::create()
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
         'no_unused_imports' => true,
+        'visibility_required' => [
+            'elements' => [
+                'const',
+                'method',
+                'property',
+            ],
+        ],
     ])
     ->setFinder($finder)
 ;
