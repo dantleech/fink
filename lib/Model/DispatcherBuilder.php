@@ -44,7 +44,7 @@ class DispatcherBuilder
     /**
      * @var bool
      */
-    private $firstExternalONly;
+    private $firstExternalOnly;
 
     /**
      * @var string
