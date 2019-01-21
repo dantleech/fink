@@ -32,6 +32,7 @@ class CrawlCommand extends Command
     public const OPT_OUTPUT = 'output';
     public const OPT_INSECURE = 'insecure';
     public const OPT_LOAD_COOKIES = 'load-cookies';
+    public const OPT_REQUEST_INTERVAL = 'interval';
 
     /**
      * @var DispatcherBuilderFactory
@@ -57,6 +58,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_INSECURE, 'k', InputOption::VALUE_NONE, 'Allow insecure server connections with SSL');
         $this->addOption(self::OPT_MAX_DISTANCE, 'm', InputOption::VALUE_REQUIRED, 'Maximum link distance from base URL');
         $this->addOption(self::OPT_LOAD_COOKIES, null, InputOption::VALUE_REQUIRED, 'Load cookies from file');
+        $this->addOption(self::OPT_REQUEST_INTERVAL, null, InputOption::VALUE_REQUIRED, 'Dispatch request every n milliseconds', 10);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -64,8 +66,9 @@ class CrawlCommand extends Command
         assert($output instanceof ConsoleOutput);
 
         $dispatcher = $this->buildDispatcher($input);
+        $dispatcher->dispatch();
 
-        Loop::repeat(self::RUNNER_POLL_TIME, function () use ($dispatcher) {
+        Loop::repeat($this->castToInt($input->getOption(self::OPT_REQUEST_INTERVAL)), function () use ($dispatcher) {
             $dispatcher->dispatch();
         });
 
