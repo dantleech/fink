@@ -5,6 +5,7 @@ namespace DTL\Extension\Fink\Command;
 use Amp\Loop;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use DTL\Extension\Fink\Model\Dispatcher;
+use DTL\Extension\Fink\Model\Report;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -74,20 +75,28 @@ class CrawlCommand extends Command
             $dispatcher->dispatch();
         });
 
-        $section = $output->section();
+        $section2 = $output->section();
+        $section1 = $output->section();
 
-        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section, $dispatcher) {
+        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section1, $section2, $dispatcher) {
             $status = $dispatcher->status();
-            $section->overwrite(sprintf(
-                '<comment>Concurrency</>: %s, <comment>URL queue size</>: %s, <comment>Failures</>: %s/%s (%s%%)' . PHP_EOL .
-                '%s',
+            $section1->overwrite(sprintf(
+                '<comment>Concurrency</>: %s, <comment>URL queue size</>: %s, <comment>Failures</>: %s/%s (%s%%)',
                 $status->nbConcurrentRequests,
                 $status->queueSize,
                 $status->nbFailures,
                 $status->requestCount,
-                number_format($dispatcher->status()->failurePercentage(), 2),
-                $status->lastUrl
+                number_format($dispatcher->status()->failurePercentage(), 2)
             ));
+
+            $statuses = [];
+            foreach ($dispatcher->store() as $index => $report) {
+                $statuses[] = sprintf(
+                    $this->resolveFormat($index + 1 === count($dispatcher->store()), $report),
+                    $report->url()->__toString()
+                );
+            }
+            $section2->overwrite(implode(PHP_EOL, $statuses));
 
             if ($status->nbConcurrentRequests === 0 && $status->queueSize === 0) {
                 Loop::stop();
@@ -172,5 +181,23 @@ class CrawlCommand extends Command
         }
 
         return $value;
+    }
+
+    private function resolveFormat(bool $last, Report $report)
+    {
+        $style = [];
+        if ($last) {
+            $style[] = 'options=bold';
+        }
+
+        if (!$report->isSuccess()) {
+            $style[] = 'bg=red;fg=white';
+        }
+
+        if (!$style) {
+            return '%s';
+        }
+
+        return sprintf('<%s>%%s</>', implode(';', $style));
     }
 }

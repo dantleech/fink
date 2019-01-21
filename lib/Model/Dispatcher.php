@@ -73,6 +73,7 @@ class Dispatcher
             yield from $this->crawler->crawl($url, $this->queue, $reportBuilder);
             $report = $reportBuilder->build();
             $this->publisher->publish($report);
+            $this->store->add($report);
 
             $this->status->queueSize = count($this->queue);
             $this->status->nbFailures += $report->isSuccess() ? 0 : 1;
@@ -87,6 +88,9 @@ class Dispatcher
         return $this->status;
     }
 
+    /**
+     * @return CircularReportStore<Report>
+     */
     public function store(): CircularReportStore
     {
         return $this->store;

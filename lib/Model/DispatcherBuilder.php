@@ -166,7 +166,7 @@ class DispatcherBuilder
             $publisher,
             new Crawler($this->buildClient()),
             $queue,
-            new CircularReportStore(10),
+            new CircularReportStore(5),
         );
     }
 
