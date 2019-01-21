@@ -7,7 +7,7 @@ use DTL\Extension\Fink\Tests\IntegrationTestCase;
 use RuntimeException;
 use Symfony\Component\Process\Process;
 
-class EndToEndTestCase extends IntegrationTestCase
+abstract class EndToEndTestCase extends IntegrationTestCase
 {
     protected function execute(array $args, string $project = 'website'): Process
     {
