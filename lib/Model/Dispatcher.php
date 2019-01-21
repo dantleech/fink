@@ -4,6 +4,7 @@ namespace DTL\Extension\Fink\Model;
 
 use Amp\Artax\HttpException;
 use Amp\Dns\ResolutionException;
+use Exception;
 
 class Dispatcher
 {
@@ -75,7 +76,7 @@ class Dispatcher
             try {
                 $reportBuilder = ReportBuilder::forUrl($url);
                 yield from $this->crawler->crawl($url, $this->queue, $reportBuilder);
-            } catch (HttpException | ResolutionException $exception) {
+            } catch (Exception $exception) {
                 $reportBuilder->withException($exception);
             }
 
