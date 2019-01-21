@@ -2,6 +2,9 @@
 
 namespace DTL\Extension\Fink\Model;
 
+use Amp\Artax\HttpException;
+use Amp\Dns\ResolutionException;
+
 class Dispatcher
 {
     /**
@@ -66,11 +69,16 @@ class Dispatcher
             return;
         }
 
-        \Amp\asyncCall(function (Url $url) {
+        $promise = \Amp\asyncCall(function (Url $url) {
             $this->status->nbConcurrentRequests++;
 
-            $reportBuilder = ReportBuilder::forUrl($url);
-            yield from $this->crawler->crawl($url, $this->queue, $reportBuilder);
+            try {
+                $reportBuilder = ReportBuilder::forUrl($url);
+                yield from $this->crawler->crawl($url, $this->queue, $reportBuilder);
+            } catch (HttpException | ResolutionException $exception) {
+                $reportBuilder->withException($exception);
+            }
+
             $report = $reportBuilder->build();
             $this->publisher->publish($report);
             $this->store->add($report);

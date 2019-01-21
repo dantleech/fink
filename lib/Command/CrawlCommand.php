@@ -8,6 +8,7 @@ use DTL\Extension\Fink\Model\Dispatcher;
 use DTL\Extension\Fink\Model\Report;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -75,28 +76,33 @@ class CrawlCommand extends Command
             $dispatcher->dispatch();
         });
 
-        $section2 = $output->section();
         $section1 = $output->section();
 
-        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section1, $section2, $dispatcher) {
+        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section1, $dispatcher) {
             $status = $dispatcher->status();
-            $section1->overwrite(sprintf(
-                '<comment>Concurrency</>: %s, <comment>URL queue size</>: %s, <comment>Failures</>: %s/%s (%s%%)',
+            $statusText = sprintf(
+                '<comment>CON</>: %s <comment>QUE</>: %s <comment>NOK</>: %s/%s (%s%%)',
                 $status->nbConcurrentRequests,
                 $status->queueSize,
                 $status->nbFailures,
                 $status->requestCount,
                 number_format($dispatcher->status()->failurePercentage(), 2)
-            ));
+            );
 
             $statuses = [];
             foreach ($dispatcher->store() as $index => $report) {
                 $statuses[] = sprintf(
                     $this->resolveFormat($index + 1 === count($dispatcher->store()), $report),
-                    $report->url()->__toString()
+                    sprintf(
+                        '[%3s] %s',
+                        $report->statusCode() ? $report->statusCode()->toInt() : '---',
+                        $report->url()->__toString()
+                    )
                 );
             }
-            $section2->overwrite(implode(PHP_EOL, $statuses));
+            $statuses[] = str_repeat('-', FormatterHelper::strlenWithoutDecoration($section1->getFormatter(), $statusText));
+            $statuses[] = $statusText;
+            $section1->overwrite(implode(PHP_EOL, $statuses));
 
             if ($status->nbConcurrentRequests === 0 && $status->queueSize === 0) {
                 Loop::stop();
