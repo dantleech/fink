@@ -11,6 +11,7 @@
     ],
     "minimum-stability": "dev",
     "require": {
+        "php": "^7.1",
         "phpactor/container": "^1.0",
         "phpactor/console-extension": "~0.1",
         "amphp/artax": "^3.0",
