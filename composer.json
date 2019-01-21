@@ -2,7 +2,7 @@
     "name": "dantleech/fink",
     "description": "Checks Links",
     "license": "MIT",
-    "type": "lib",
+    "type": "library",
     "authors": [
         {
             "name": "Daniel Leech",
