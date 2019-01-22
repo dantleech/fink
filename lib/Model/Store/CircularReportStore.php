@@ -1,13 +1,13 @@
 <?php
 
-namespace DTL\Extension\Fink\Model;
+namespace DTL\Extension\Fink\Model\Store;
 
 use ArrayIterator;
-use Countable;
+use DTL\Extension\Fink\Model\Report;
+use DTL\Extension\Fink\Model\ReportStore;
 use Iterator;
-use IteratorAggregate;
 
-final class CircularReportStore implements Countable, IteratorAggregate
+final class CircularReportStore implements ReportStore
 {
     /**
      * @var Report[]
@@ -24,7 +24,7 @@ final class CircularReportStore implements Countable, IteratorAggregate
         $this->size = $size;
     }
 
-    public function add(Report $report)
+    public function add(Report $report): void
     {
         if (count($this->reports) >= $this->size) {
             array_shift($this->reports);

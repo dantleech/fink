@@ -3,6 +3,7 @@
 namespace DTL\Extension\Fink\Model;
 
 use Exception;
+use DTL\Extension\Fink\Model\Store\CircularReportStore;
 
 class Dispatcher
 {
@@ -46,7 +47,7 @@ class Dispatcher
         Publisher $publisher,
         Crawler $crawler,
         UrlQueue $queue,
-        CircularReportStore $store
+        ReportStore $store
     ) {
         $this->crawler = $crawler;
         $this->publisher = $publisher;
@@ -96,9 +97,9 @@ class Dispatcher
     }
 
     /**
-     * @return CircularReportStore<Report>
+     * @return ReportStore<Report>
      */
-    public function store(): CircularReportStore
+    public function store(): ReportStore
     {
         return $this->store;
     }

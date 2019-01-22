@@ -18,6 +18,7 @@ use DTL\Extension\Fink\Model\Queue\FirstExternalOnlyQueue;
 use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use RuntimeException;
+use DTL\Extension\Fink\Model\Store\CircularReportStore;
 
 class DispatcherBuilder
 {
