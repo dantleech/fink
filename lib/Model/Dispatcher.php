@@ -2,8 +2,9 @@
 
 namespace DTL\Extension\Fink\Model;
 
+use DTL\Extension\Fink\Model\Store\ImmutableReportStore;
+use DTL\Extension\Fink\Model\ImmutableReportStore as ImmutableReportStoreInterface;
 use Exception;
-use DTL\Extension\Fink\Model\Store\CircularReportStore;
 
 class Dispatcher
 {
@@ -38,7 +39,7 @@ class Dispatcher
     private $maxDistance;
 
     /**
-     * @var CircularReportStore
+     * @var ReportStore
      */
     private $store;
 
@@ -71,9 +72,9 @@ class Dispatcher
 
         $promise = \Amp\asyncCall(function (Url $url) {
             $this->status->nbConcurrentRequests++;
+            $reportBuilder = ReportBuilder::forUrl($url);
 
             try {
-                $reportBuilder = ReportBuilder::forUrl($url);
                 yield from $this->crawler->crawl($url, $this->queue, $reportBuilder);
             } catch (Exception $exception) {
                 $reportBuilder->withException($exception);
@@ -97,10 +98,10 @@ class Dispatcher
     }
 
     /**
-     * @return ReportStore<Report>
+     * @return ImmutableReportStoreInterface<Report>
      */
-    public function store(): ReportStore
+    public function store(): ImmutableReportStoreInterface
     {
-        return $this->store;
+        return new ImmutableReportStore($this->store);
     }
 }

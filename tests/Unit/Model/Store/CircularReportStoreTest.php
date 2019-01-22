@@ -1,5 +1,5 @@
 <?php
-namespace DTL\Extension\Fink\Tests\Unit\Model;
+namespace DTL\Extension\Fink\Tests\Unit\Model\Store;
 
 use DTL\Extension\Fink\Model\Store\CircularReportStore;
 use DTL\Extension\Fink\Model\HttpStatusCode;

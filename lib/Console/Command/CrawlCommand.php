@@ -91,11 +91,12 @@ class CrawlCommand extends Command
 
             $statuses = [];
             foreach ($dispatcher->store() as $index => $report) {
+                $statusCode = $report->statusCode();
                 $statuses[] = sprintf(
                     $this->resolveFormat($index + 1 === count($dispatcher->store()), $report),
                     sprintf(
                         '[%3s] %s',
-                        $report->statusCode() ? $report->statusCode()->toInt() : '---',
+                        $statusCode ? $statusCode->toInt() : '---',
                         $report->url()->__toString()
                     )
                 );
