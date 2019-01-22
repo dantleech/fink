@@ -2,7 +2,7 @@
 
 namespace DTL\Extension\Fink;
 
-use DTL\Extension\Fink\Command\CrawlCommand;
+use DTL\Extension\Fink\Console\Command\CrawlCommand;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;

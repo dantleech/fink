@@ -1,6 +1,6 @@
 <?php
 
-namespace DTL\Extension\Fink\Command;
+namespace DTL\Extension\Fink\Console\Command;
 
 use Amp\Loop;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use DTL\Extension\Fink\Command\Exception\AtLeastOneFailure;
+use DTL\Extension\Fink\Console\Command\Exception\AtLeastOneFailure;
 
 class CrawlCommand extends Command
 {
