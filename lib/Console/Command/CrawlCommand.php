@@ -3,6 +3,7 @@
 namespace DTL\Extension\Fink\Console\Command;
 
 use Amp\Loop;
+use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use DTL\Extension\Fink\Model\Dispatcher;
 use DTL\Extension\Fink\Model\Report;
@@ -42,10 +43,16 @@ class CrawlCommand extends Command
      */
     private $factory;
 
-    public function __construct(DispatcherBuilderFactory $factory)
+    /**
+     * @var Display
+     */
+    private $display;
+
+    public function __construct(DispatcherBuilderFactory $factory, Display $display)
     {
         parent::__construct();
         $this->factory = $factory;
+        $this->display = $display;
     }
 
     protected function configure()
@@ -79,32 +86,10 @@ class CrawlCommand extends Command
         $section1 = $output->section();
 
         Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section1, $dispatcher) {
+
+            $section1->overwrite($this->display->render($section1->getFormatter(), $dispatcher));
+
             $status = $dispatcher->status();
-            $statusText = sprintf(
-                '<comment>CON</>: %s <comment>QUE</>: %s <comment>NOK</>: %s/%s (%s%%)',
-                $status->nbConcurrentRequests,
-                $status->queueSize,
-                $status->nbFailures,
-                $status->requestCount,
-                number_format($dispatcher->status()->failurePercentage(), 2)
-            );
-
-            $statuses = [];
-            foreach ($dispatcher->store() as $index => $report) {
-                $statusCode = $report->statusCode();
-                $statuses[] = sprintf(
-                    $this->resolveFormat($index + 1 === count($dispatcher->store()), $report),
-                    sprintf(
-                        '[%3s] %s',
-                        $statusCode ? $statusCode->toInt() : '---',
-                        $report->url()->__toString()
-                    )
-                );
-            }
-            $statuses[] = str_repeat('-', FormatterHelper::strlenWithoutDecoration($section1->getFormatter(), $statusText));
-            $statuses[] = $statusText;
-            $section1->overwrite(implode(PHP_EOL, $statuses));
-
             if ($status->nbConcurrentRequests === 0 && $status->queueSize === 0) {
                 Loop::stop();
 
@@ -188,23 +173,5 @@ class CrawlCommand extends Command
         }
 
         return $value;
-    }
-
-    private function resolveFormat(bool $last, Report $report)
-    {
-        $style = [];
-        if ($last) {
-            $style[] = 'options=bold';
-        }
-
-        if (!$report->isSuccess()) {
-            $style[] = 'bg=red;fg=white';
-        }
-
-        if (!$style) {
-            return '%s';
-        }
-
-        return sprintf('<%s>%%s</>', implode(';', $style));
     }
 }

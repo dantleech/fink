@@ -3,6 +3,9 @@
 namespace DTL\Extension\Fink;
 
 use DTL\Extension\Fink\Console\Command\CrawlCommand;
+use DTL\Extension\Fink\Console\Display\ConcatenatingDisplay;
+use DTL\Extension\Fink\Console\Display\StatusLineDisplay;
+use DTL\Extension\Fink\Console\Display\UrlListDisplay;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
@@ -19,9 +22,19 @@ class FinkExtension implements Extension
      */
     public function load(ContainerBuilder $container)
     {
-        $container->register('fink.command.crawl', function (Container $container) {
-            return new CrawlCommand($container->get(self::SERVICE_DISPATCHER_BUILDER_FACTORY));
+        $container->register('fink.console.command.crawl', function (Container $container) {
+            return new CrawlCommand(
+                $container->get(self::SERVICE_DISPATCHER_BUILDER_FACTORY),
+                $container->get('fink.console.display')
+            );
         }, [ ConsoleExtension::TAG_COMMAND => [ 'name' => 'crawl' ]]);
+
+        $container->register('fink.console.display', function (Container $container) {
+            return new ConcatenatingDisplay([
+                new UrlListDisplay(),
+                new StatusLineDisplay()
+            ]);
+        });
 
         $container->register(self::SERVICE_DISPATCHER_BUILDER_FACTORY, function (Container $container) {
             return new DispatcherBuilderFactory();
