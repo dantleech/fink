@@ -5,8 +5,6 @@ namespace DTL\Extension\Fink\Tests\Unit\Console\Display;
 use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Console\Display\StatusLineDisplay;
 use DTL\Extension\Fink\Model\Status;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Helper\FormatterHelper;
 
 class StatusLineDisplayTest extends DisplayTestCase

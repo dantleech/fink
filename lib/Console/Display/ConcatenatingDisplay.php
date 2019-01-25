@@ -15,7 +15,7 @@ class ConcatenatingDisplay implements Display
 
     public function __construct(array $displays)
     {
-        $this->displays = array_map(function(Display $display) {
+        $this->displays = array_map(function (Display $display) {
             return $display;
         }, $displays);
     }

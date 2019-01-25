@@ -4,9 +4,6 @@ namespace DTL\Extension\Fink\Tests\Unit\Console\Display;
 
 use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Console\Display\ConcatenatingDisplay;
-use DTL\Extension\Fink\Model\Dispatcher;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Console\Formatter\OutputFormatter;
 
 class ConcatenatingDisplayTest extends DisplayTestCase
 {

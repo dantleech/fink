@@ -6,10 +6,8 @@ use Amp\Loop;
 use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use DTL\Extension\Fink\Model\Dispatcher;
-use DTL\Extension\Fink\Model\Report;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\FormatterHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -86,7 +84,6 @@ class CrawlCommand extends Command
         $section1 = $output->section();
 
         Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section1, $dispatcher) {
-
             $section1->overwrite($this->display->render($section1->getFormatter(), $dispatcher));
 
             $status = $dispatcher->status();

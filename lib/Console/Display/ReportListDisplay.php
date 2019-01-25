@@ -6,7 +6,6 @@ use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Model\Dispatcher;
 use DTL\Extension\Fink\Model\Report;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
-use Symfony\Component\Console\Helper\FormatterHelper;
 
 class ReportListDisplay implements Display
 {

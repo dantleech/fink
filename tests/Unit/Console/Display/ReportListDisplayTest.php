@@ -6,10 +6,8 @@ use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Console\Display\ReportListDisplay;
 use DTL\Extension\Fink\Model\HttpStatusCode;
 use DTL\Extension\Fink\Model\Report;
-use DTL\Extension\Fink\Model\ReportStore;
 use DTL\Extension\Fink\Model\Store\CircularReportStore;
 use DTL\Extension\Fink\Model\Url;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Helper\FormatterHelper;
 
 class ReportListDisplayTest extends DisplayTestCase
