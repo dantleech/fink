@@ -1,8 +1,9 @@
 <?php
 
-namespace DTL\Extension\Fink\Command;
+namespace DTL\Extension\Fink\Console\Command;
 
 use Amp\Loop;
+use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use DTL\Extension\Fink\Model\Dispatcher;
 use RuntimeException;
@@ -12,38 +13,42 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use DTL\Extension\Fink\Command\Exception\AtLeastOneFailure;
+use DTL\Extension\Fink\Console\Command\Exception\AtLeastOneFailure;
 
 class CrawlCommand extends Command
 {
-    public const ARG_URL = 'url';
-
-    public const OPT_CONCURRENCY = 'concurrency';
-    public const OPT_DESCENDANTS_ONLY = 'descendants-only';
-    public const OPT_FIRST_EXTERNAL_ONLY = 'first-external-only';
-    public const OPT_MAX_DISTANCE = 'max-distance';
-    public const OPT_NO_DEDUPE = 'no-dedupe';
-
-    public const DISPLAY_POLL_TIME = 100;
-    public const RUNNER_POLL_TIME = 10;
-
     public const EXIT_STATUS_FAILURE = 2;
     public const EXIT_STATUS_SUCCESS = 0;
 
-    public const OPT_OUTPUT = 'output';
-    public const OPT_INSECURE = 'insecure';
-    public const OPT_LOAD_COOKIES = 'load-cookies';
-    public const OPT_REQUEST_INTERVAL = 'interval';
+    private const DISPLAY_POLL_TIME = 100;
+
+    private const ARG_URL = 'url';
+
+    private const OPT_CONCURRENCY = 'concurrency';
+    private const OPT_DESCENDANTS_ONLY = 'descendants-only';
+    private const OPT_FIRST_EXTERNAL_ONLY = 'first-external-only';
+    private const OPT_MAX_DISTANCE = 'max-distance';
+    private const OPT_NO_DEDUPE = 'no-dedupe';
+    private const OPT_OUTPUT = 'output';
+    private const OPT_INSECURE = 'insecure';
+    private const OPT_LOAD_COOKIES = 'load-cookies';
+    private const OPT_REQUEST_INTERVAL = 'interval';
 
     /**
      * @var DispatcherBuilderFactory
      */
     private $factory;
 
-    public function __construct(DispatcherBuilderFactory $factory)
+    /**
+     * @var Display
+     */
+    private $display;
+
+    public function __construct(DispatcherBuilderFactory $factory, Display $display)
     {
         parent::__construct();
         $this->factory = $factory;
+        $this->display = $display;
     }
 
     protected function configure()
@@ -74,21 +79,12 @@ class CrawlCommand extends Command
             $dispatcher->dispatch();
         });
 
-        $section = $output->section();
+        $section1 = $output->section();
 
-        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section, $dispatcher) {
+        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section1, $dispatcher) {
+            $section1->overwrite($this->display->render($section1->getFormatter(), $dispatcher));
+
             $status = $dispatcher->status();
-            $section->overwrite(sprintf(
-                '<comment>Concurrency</>: %s, <comment>URL queue size</>: %s, <comment>Failures</>: %s/%s (%s%%)' . PHP_EOL .
-                '%s',
-                $status->nbConcurrentRequests,
-                $status->queueSize,
-                $status->nbFailures,
-                $status->requestCount,
-                number_format($dispatcher->status()->failurePercentage(), 2),
-                $status->lastUrl
-            ));
-
             if ($status->nbConcurrentRequests === 0 && $status->queueSize === 0) {
                 Loop::stop();
 

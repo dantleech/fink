@@ -18,6 +18,7 @@ use DTL\Extension\Fink\Model\Queue\FirstExternalOnlyQueue;
 use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use RuntimeException;
+use DTL\Extension\Fink\Model\Store\CircularReportStore;
 
 class DispatcherBuilder
 {
@@ -65,6 +66,11 @@ class DispatcherBuilder
      * @var string
      */
     private $loadCookies;
+
+    /**
+     * @var int
+     */
+    private $urlReportSize = 5;
 
     public function __construct(Url $baseUrl)
     {
@@ -134,6 +140,13 @@ class DispatcherBuilder
         return $this;
     }
 
+    public function urlReportSize(int $size): self
+    {
+        $this->urlReportSize = $size;
+
+        return $this;
+    }
+
     public function build(): Dispatcher
     {
         $queue = $this->buildQueue();
@@ -165,7 +178,8 @@ class DispatcherBuilder
             $this->maxConcurrency,
             $publisher,
             new Crawler($this->buildClient()),
-            $queue
+            $queue,
+            new CircularReportStore($this->urlReportSize)
         );
     }
 

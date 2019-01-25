@@ -1,6 +1,6 @@
 <?php
 
-namespace DTL\Extension\Fink\Command\Exception;
+namespace DTL\Extension\Fink\Console\Command\Exception;
 
 use Exception;
 

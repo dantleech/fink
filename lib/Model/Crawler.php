@@ -3,7 +3,6 @@
 namespace DTL\Extension\Fink\Model;
 
 use Amp\Artax\Client;
-use Amp\Artax\HttpException;
 use Amp\Artax\Response;
 use DOMDocument;
 use DOMXPath;
@@ -24,15 +23,10 @@ class Crawler
 
     public function crawl(Url $documentUrl, UrlQueue $queue, ReportBuilder $report): Generator
     {
-        try {
-            $start = microtime(true);
-            $response = yield $this->client->request($documentUrl->__toString());
-            $time = (microtime(true) - $start) * 1E6;
-            $report->withRequestTime((int) $time);
-        } catch (HttpException $e) {
-            $report->withException($e);
-            return;
-        }
+        $start = microtime(true);
+        $response = yield $this->client->request($documentUrl->__toString());
+        $time = (microtime(true) - $start) * 1E6;
+        $report->withRequestTime((int) $time);
 
         assert($response instanceof Response);
         $report->withStatus($response->getStatus());
