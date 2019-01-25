@@ -67,6 +67,11 @@ class DispatcherBuilder
      */
     private $loadCookies;
 
+    /**
+     * @var int
+     */
+    private $urlReportSize = 5;
+
     public function __construct(Url $baseUrl)
     {
         $this->baseUrl = $baseUrl;
@@ -135,6 +140,13 @@ class DispatcherBuilder
         return $this;
     }
 
+    public function urlReportSize(int $size): self
+    {
+        $this->urlReportSize = $size;
+
+        return $this;
+    }
+
     public function build(): Dispatcher
     {
         $queue = $this->buildQueue();
@@ -167,7 +179,7 @@ class DispatcherBuilder
             $publisher,
             new Crawler($this->buildClient()),
             $queue,
-            new CircularReportStore(5)
+            new CircularReportStore($this->urlReportSize)
         );
     }
 

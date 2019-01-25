@@ -70,7 +70,7 @@ class Dispatcher
             return;
         }
 
-        $promise = \Amp\asyncCall(function (Url $url) {
+        \Amp\asyncCall(function (Url $url) {
             $this->status->nbConcurrentRequests++;
             $reportBuilder = ReportBuilder::forUrl($url);
 

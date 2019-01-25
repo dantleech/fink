@@ -17,24 +17,22 @@ use DTL\Extension\Fink\Console\Command\Exception\AtLeastOneFailure;
 
 class CrawlCommand extends Command
 {
-    public const ARG_URL = 'url';
-
-    public const OPT_CONCURRENCY = 'concurrency';
-    public const OPT_DESCENDANTS_ONLY = 'descendants-only';
-    public const OPT_FIRST_EXTERNAL_ONLY = 'first-external-only';
-    public const OPT_MAX_DISTANCE = 'max-distance';
-    public const OPT_NO_DEDUPE = 'no-dedupe';
-
-    public const DISPLAY_POLL_TIME = 100;
-    public const RUNNER_POLL_TIME = 10;
-
     public const EXIT_STATUS_FAILURE = 2;
     public const EXIT_STATUS_SUCCESS = 0;
 
-    public const OPT_OUTPUT = 'output';
-    public const OPT_INSECURE = 'insecure';
-    public const OPT_LOAD_COOKIES = 'load-cookies';
-    public const OPT_REQUEST_INTERVAL = 'interval';
+    private const DISPLAY_POLL_TIME = 100;
+
+    private const ARG_URL = 'url';
+
+    private const OPT_CONCURRENCY = 'concurrency';
+    private const OPT_DESCENDANTS_ONLY = 'descendants-only';
+    private const OPT_FIRST_EXTERNAL_ONLY = 'first-external-only';
+    private const OPT_MAX_DISTANCE = 'max-distance';
+    private const OPT_NO_DEDUPE = 'no-dedupe';
+    private const OPT_OUTPUT = 'output';
+    private const OPT_INSECURE = 'insecure';
+    private const OPT_LOAD_COOKIES = 'load-cookies';
+    private const OPT_REQUEST_INTERVAL = 'interval';
 
     /**
      * @var DispatcherBuilderFactory
