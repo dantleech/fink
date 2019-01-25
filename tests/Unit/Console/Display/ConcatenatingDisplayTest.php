@@ -8,22 +8,21 @@ use DTL\Extension\Fink\Model\Dispatcher;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 
-class ConcatenatingDisplayTest extends TestCase
+class ConcatenatingDisplayTest extends DisplayTestCase
 {
-    /**
-     * @var OutputFormatter
-     */
-    private $formatter;
-
     /**
      * @var ObjectProphecy|Display
      */
     private $display1;
 
+    /**
+     * @var ObjectProphecy|Display
+     */
+    private $display2;
+
     public function setUp()
     {
-        $this->formatter = new OutputFormatter();
-        $this->dispatcher = $this->prophesize(Dispatcher::class);
+        parent::setUp();
 
         $this->display1 = $this->prophesize(Display::class);
         $this->display2 = $this->prophesize(Display::class);

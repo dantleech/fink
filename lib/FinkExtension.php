@@ -5,7 +5,7 @@ namespace DTL\Extension\Fink;
 use DTL\Extension\Fink\Console\Command\CrawlCommand;
 use DTL\Extension\Fink\Console\Display\ConcatenatingDisplay;
 use DTL\Extension\Fink\Console\Display\StatusLineDisplay;
-use DTL\Extension\Fink\Console\Display\UrlListDisplay;
+use DTL\Extension\Fink\Console\Display\ReportListDisplay;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
@@ -31,7 +31,7 @@ class FinkExtension implements Extension
 
         $container->register('fink.console.display', function (Container $container) {
             return new ConcatenatingDisplay([
-                new UrlListDisplay(),
+                new ReportListDisplay(),
                 new StatusLineDisplay()
             ]);
         });

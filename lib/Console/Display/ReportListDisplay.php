@@ -8,7 +8,7 @@ use DTL\Extension\Fink\Model\Report;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 use Symfony\Component\Console\Helper\FormatterHelper;
 
-class UrlListDisplay implements Display
+class ReportListDisplay implements Display
 {
     public function render(OutputFormatterInterface $formatter, Dispatcher $dispatcher): string
     {
