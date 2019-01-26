@@ -9,14 +9,13 @@ use DTL\Extension\Fink\Model\Publisher;
 use DTL\Extension\Fink\Model\Publisher\JsonStreamPublisher;
 use DTL\Extension\Fink\Model\Report;
 use DTL\Extension\Fink\Model\ReportBuilder;
-use DTL\Extension\Fink\Model\Serializer;
 use DTL\Extension\Fink\Model\Url;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
 
 class JsonStreamPublisherTest extends TestCase
 {
-    const EXAMPLE_SERIALIZED_REPORT = 'serialized report';
+    public const EXAMPLE_SERIALIZED_REPORT = 'serialized report';
 
     /**
      * @var ObjectProphecy|OutputStream
