@@ -27,7 +27,7 @@ Usage
 Run the command with a single URL to start crawling:
 
 ```
-$ ./vendor/bin/fink crawl https://www.example.com
+$ ./vendor/bin/fink https://www.Factor)->create()example.com
 ```
 
 Use `--output=somefile` to log verbose information for each URL in JSON format, including:
@@ -60,13 +60,13 @@ Examples
 ### Crawl a single website
 
 ```
-$ fink crawl http://www.example.com --max-external-distance=0
+$ fink http://www.example.com --max-external-distance=0
 ```
 
 ### Crawl a single website and check the status of external links
 
 ```
-$ fink crawl http://www.example.com --max-external-distance=1
+$ fink http://www.example.com --max-external-distance=1
 ```
 
 ### Use `jq` to analyse results
@@ -75,7 +75,7 @@ $ fink crawl http://www.example.com --max-external-distance=1
 manipulate JSON data.
 
 ```
-$ fink crawl http://www.example.com -x0 -oreport.json
+$ fink http://www.example.com -x0 -oreport.json
 ```
 
 ```

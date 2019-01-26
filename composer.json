@@ -3,6 +3,7 @@
     "description": "Checks Links",
     "license": "MIT",
     "type": "library",
+    "bin": [ "bin/fink" ],
     "authors": [
         {
             "name": "Daniel Leech",

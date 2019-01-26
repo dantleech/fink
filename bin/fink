@@ -17,4 +17,5 @@ $application = new Application();
 $application->setCommandLoader(
     $container->get(ConsoleExtension::SERVICE_COMMAND_LOADER)
 );
+$application->setDefaultCommand('crawl', true);
 $application->run();
