@@ -16,6 +16,7 @@ use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
 use DTL\Extension\Fink\Model\Queue\ExternalDistanceLimitingQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
+use DTL\Extension\Fink\Model\Serializer\JsonSerializer;
 use RuntimeException;
 use DTL\Extension\Fink\Model\Store\CircularReportStore;
 
@@ -157,7 +158,8 @@ class DispatcherBuilder
             }
 
             $stream = new ResourceOutputStream($resource);
-            $publisher = new StreamPublisher($stream);
+            $serializer = new JsonSerializer();
+            $publisher = new StreamPublisher($stream, $serializer);
         }
 
 
