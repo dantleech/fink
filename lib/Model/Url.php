@@ -3,6 +3,7 @@
 namespace DTL\Extension\Fink\Model;
 
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
+use DTL\Extension\Fink\Model\Exception\InvalidUrlComparison;
 use DTL\Extension\Fink\Model\Url;
 use League\Uri\Exception;
 use League\Uri\Uri;
@@ -136,5 +137,10 @@ final class Url
 
             $url = $referrer;
         }
+
+        throw new InvalidUrlComparison(sprintf(
+            'URL "%s" was not a linked descendant of the base URL "%s"',
+            $url->__toString(), $this->__toString()
+        ));
     }
 }

@@ -3,6 +3,7 @@
 namespace DTL\Extension\Fink\Tests\Unit\Model;
 
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
+use DTL\Extension\Fink\Model\Exception\InvalidUrlComparison;
 use DTL\Extension\Fink\Model\Url;
 use PHPUnit\Framework\TestCase;
 
@@ -250,5 +251,13 @@ tids[n]+" ];
             ],
             1
         ];
+    }
+
+    public function testExceptionWhenTryingToDetermineExternalDistanceFromDisjointedUrls()
+    {
+        $this->expectException(InvalidUrlComparison::class);
+        $url1 = Url::fromUrl('https://www.example1.com');
+        $url2 = Url::fromUrl('https://www.example2.com');
+        $url1->externalDistanceFrom($url2);
     }
 }
