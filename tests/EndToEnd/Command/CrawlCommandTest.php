@@ -10,14 +10,15 @@ class CrawlCommandTest extends EndToEndTestCase
 
     public function testCrawlsUrl()
     {
-        $process = $this->execute(['crawl', self::EXAMPLE_URL]);
+        $process = $this->execute([
+            self::EXAMPLE_URL
+        ]);
         $this->assertProcessSuccess($process);
     }
 
     public function testPublishesReport()
     {
         $process = $this->execute([
-            'crawl',
             '--output='.$this->workspace()->path('/out.json'),
             self::EXAMPLE_URL,
         ]);
@@ -37,7 +38,6 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testLimitsExternalDistance()
     {
         $process = $this->execute([
-            'crawl',
             self::EXAMPLE_URL . '/posts/external',
             '--output='.$this->workspace()->path('/out.json'),
             '--max-external-distance=1'
@@ -55,7 +55,6 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testAllowsUrlDuplication()
     {
         $process = $this->execute([
-            'crawl',
             self::EXAMPLE_URL,
             '--output='.$this->workspace()->path('/out.json'),
             '--no-dedupe',
@@ -73,7 +72,6 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testConcurrencyCanBeSet()
     {
         $process = $this->execute([
-            'crawl',
             self::EXAMPLE_URL,
             '--output='.$this->workspace()->path('/out.json'),
             '--concurrency=20'
@@ -90,7 +88,6 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testDisableSslVerfication()
     {
         $process = $this->execute([
-            'crawl',
             self::EXAMPLE_URL,
             '--insecure',
         ]);
@@ -101,7 +98,6 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testSpecifyMaxDistanceFromTheBaseDocument()
     {
         $process = $this->execute([
-            'crawl',
             self::EXAMPLE_URL,
             '--max-distance=1',
             '--output='.$this->workspace()->path('/out.json'),
@@ -120,7 +116,6 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testCannotAccessCookieProtectedPageWithoutCookie()
     {
         $process = $this->execute([
-            'crawl',
             self::EXAMPLE_URL . '/cookie.php',
             '--output='.$this->workspace()->path('/out.json'),
         ], 'cookie-protected');
@@ -134,7 +129,6 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testCanAccessProtectedPageWithCookieAppropriateNetscapeCookieFile()
     {
         $process = $this->execute([
-            'crawl',
             self::EXAMPLE_URL . '/cookie.php',
             '--load-cookies=' . __DIR__ . '/../../Example/cookie-protected/cookies.txt'  ,
             '--output='.$this->workspace()->path('/out.json'),
@@ -150,7 +144,6 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testSpecifyRequestPollInterval()
     {
         $process = $this->execute([
-            'crawl',
             self::EXAMPLE_URL . '/',
             '--interval=10',
             '--output='.$this->workspace()->path('/out.json'),
@@ -162,7 +155,6 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testExitsWithErrorIfCookieFileNotFound()
     {
         $process = $this->execute([
-            'crawl',
             self::EXAMPLE_URL . '/cookie.php',
             '--load-cookies=' . __DIR__ . '/idontexist.txt'  ,
             '--output='.$this->workspace()->path('/out.json'),
