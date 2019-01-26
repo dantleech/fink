@@ -42,17 +42,19 @@ Use `--output=somefile` to log verbose information for each URL in JSON format, 
 Options
 -------
 
-- `--output=out.json`: Output JSON report for each URL to given file
-  (truncates existing content).
 - `--concurrency`: Number of simultaneous HTTP requests to use.
-- `--no-dedupe`: Do _not_ filter duplicate URLs (can result in a
-  non-terminating process).
-- `--max-external-distance`: Limit the external (disjoint) distance from the
-  base URL.
 - `--insecure`: Do not verify SSL certificates.
+- `--load-cookies`: Load from a [cookies.txt](http://www.cookiecentral.com/faq/#3.5).
 - `--max-distance`: Maximum allowed distance from base URL (if not specified
   then there is no limitation).
-- `--load-cookies`: Load from a [cookies.txt](http://www.cookiecentral.com/faq/#3.5).
+- `--max-external-distance`: Limit the external (disjoint) distance from the
+  base URL.
+- `--no-dedupe`: Do _not_ filter duplicate URLs (can result in a
+  non-terminating process).
+- `--output=out.json`: Output JSON report for each URL to given file
+  (truncates existing content).
+- `--publisher=csv` Set the publisher (defaults to `json`) can be either
+  `json` or `csv`.
 
 Examples
 --------
