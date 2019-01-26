@@ -1,6 +1,6 @@
 <?php
 
-namespace DTL\Extension\Fink\Model;
+namespace DTL\Extension\Fink;
 
 use Amp\Artax\Client;
 use Amp\Artax\Cookie\NullCookieJar;
@@ -10,17 +10,25 @@ use Amp\ByteStream\ResourceOutputStream;
 use Amp\Socket\ClientTlsContext;
 use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
 use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
+use DTL\Extension\Fink\Model\Crawler;
+use DTL\Extension\Fink\Model\Dispatcher;
 use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
-use DTL\Extension\Fink\Model\Publisher\StreamPublisher;
+use DTL\Extension\Fink\Model\Publisher\CsvStreamPublisher;
+use DTL\Extension\Fink\Model\Publisher\JsonStreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
 use DTL\Extension\Fink\Model\Queue\ExternalDistanceLimitingQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
+use DTL\Extension\Fink\Model\Url;
+use DTL\Extension\Fink\Model\UrlQueue;
 use RuntimeException;
 use DTL\Extension\Fink\Model\Store\CircularReportStore;
 
 class DispatcherBuilder
 {
+    public const PUBLISHER_CSV = 'csv';
+    public const PUBLISHER_JSON = 'json';
+
     /**
      * @var Url
      */
@@ -66,6 +74,11 @@ class DispatcherBuilder
      */
     private $urlReportSize = 5;
 
+    /**
+     * @var string
+     */
+    private $publisherType = self::PUBLISHER_JSON;
+
     public function __construct(Url $baseUrl)
     {
         $this->baseUrl = $baseUrl;
@@ -76,6 +89,12 @@ class DispatcherBuilder
         $url = Url::fromUrl($url);
 
         return new self($url);
+    }
+
+    public function publisher(string $type): self
+    {
+        $this->publisherType = $type;
+        return $this;
     }
 
     public function maxConcurrency(int $maxConcurrency): self
@@ -144,26 +163,9 @@ class DispatcherBuilder
 
     private function buildDispatcher(UrlQueue $queue): Dispatcher
     {
-        $publisher = new BlackholePublisher();
-
-        if ($this->publishTo) {
-            $resource = fopen($this->publishTo, 'w');
-
-            if (false === $resource) {
-                throw new RuntimeException(sprintf(
-                    'Could not open file "%s"',
-                    $this->publishTo
-                ));
-            }
-
-            $stream = new ResourceOutputStream($resource);
-            $publisher = new StreamPublisher($stream);
-        }
-
-
         return new Dispatcher(
             $this->maxConcurrency,
-            $publisher,
+            $this->buildPublisher(),
             new Crawler($this->buildClient()),
             $queue,
             new CircularReportStore($this->urlReportSize)
@@ -217,5 +219,40 @@ class DispatcherBuilder
             $socketPool,
             $tlsContext
         );
+    }
+
+    private function buildPublisher()
+    {
+        if ($this->publishTo) {
+            if ($this->publisherType === self::PUBLISHER_JSON) {
+                return $this->buildJsonPublisher();
+            }
+
+            if ($this->publisherType === self::PUBLISHER_CSV) {
+                return new CsvStreamPublisher($this->publishTo, true);
+            }
+
+            throw new RuntimeException(sprintf(
+                'Unknown publisher type "%s" must be one of "%s"',
+                $this->publisherType,
+                implode('", "', [ self::PUBLISHER_JSON, self::PUBLISHER_CSV ])
+            ));
+        }
+            
+        return new BlackholePublisher();
+    }
+
+    private function buildJsonPublisher()
+    {
+        $resource = fopen($this->publishTo, 'w');
+        
+        if (false === $resource) {
+            throw new RuntimeException(sprintf(
+                'Could not open file "%s"',
+                $this->publishTo
+            ));
+        }
+        
+        return new JsonStreamPublisher(new ResourceOutputStream($resource));
     }
 }

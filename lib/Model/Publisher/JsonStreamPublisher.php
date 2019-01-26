@@ -6,7 +6,7 @@ use Amp\ByteStream\OutputStream;
 use DTL\Extension\Fink\Model\Publisher;
 use DTL\Extension\Fink\Model\Report;
 
-class StreamPublisher implements Publisher
+class JsonStreamPublisher implements Publisher
 {
     /**
      * @var OutputStream
