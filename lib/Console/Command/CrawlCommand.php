@@ -66,7 +66,6 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_LOAD_COOKIES, null, InputOption::VALUE_REQUIRED, 'Load cookies from file');
         $this->addOption(self::OPT_REQUEST_INTERVAL, null, InputOption::VALUE_REQUIRED, 'Dispatch request every n milliseconds', 10);
         $this->addOption(self::OPT_PUBLISHER, 'p', InputOption::VALUE_REQUIRED, 'Publisher to use: `json` or `csv`', 'json');
-
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

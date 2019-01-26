@@ -19,7 +19,6 @@ use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
 use DTL\Extension\Fink\Model\Queue\ExternalDistanceLimitingQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
-use DTL\Extension\Fink\Model\Serializer\JsonSerializer;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlQueue;
 use RuntimeException;

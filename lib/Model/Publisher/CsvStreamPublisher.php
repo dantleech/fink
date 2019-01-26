@@ -19,7 +19,7 @@ class CsvStreamPublisher implements Publisher
     private $firstIteration = true;
 
     /**
-     * @var bool
+     * @var resource
      */
     private $stream;
 
