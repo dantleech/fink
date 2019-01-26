@@ -164,7 +164,7 @@ tids[n]+" ];
             $previous = $previous->resolveUrl($url);
         }
 
-        $this->assertEquals($expectedDistance, $baseUrl->externalDistanceFrom($previous));
+        $this->assertEquals($expectedDistance, $baseUrl->externalDistanceTo($previous));
     }
 
     public function provideExternalDistanceFromUrl()
@@ -258,6 +258,6 @@ tids[n]+" ];
         $this->expectException(InvalidUrlComparison::class);
         $url1 = Url::fromUrl('https://www.example1.com');
         $url2 = Url::fromUrl('https://www.example2.com');
-        $url1->externalDistanceFrom($url2);
+        $url1->externalDistanceTo($url2);
     }
 }

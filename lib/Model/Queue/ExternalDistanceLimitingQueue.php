@@ -39,7 +39,7 @@ class ExternalDistanceLimitingQueue implements UrlQueue
 
     public function enqueue(Url $url): void
     {
-        if ($url->externalDistanceFrom($this->baseUrl) > $this->maxDistance) {
+        if ($this->baseUrl->externalDistanceTo($url) > $this->maxDistance) {
             return;
         }
 

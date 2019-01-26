@@ -116,7 +116,7 @@ final class Url
         return $this->distance > $int;
     }
 
-    public function externalDistanceFrom(Url $url): int
+    public function externalDistanceTo(Url $url): int
     {
         $distance = 0;
 
