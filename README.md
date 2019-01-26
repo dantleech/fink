@@ -27,7 +27,7 @@ Usage
 Run the command with a single URL to start crawling:
 
 ```
-$ ./vendor/bin/fink https://www.Factor)->create()example.com
+$ ./vendor/bin/fink https://www.example.com
 ```
 
 Use `--output=somefile` to log verbose information for each URL in JSON format, including:
