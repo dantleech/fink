@@ -11,7 +11,7 @@ use Amp\Socket\ClientTlsContext;
 use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
 use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
 use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
-use DTL\Extension\Fink\Model\Publisher\StreamPublisher;
+use DTL\Extension\Fink\Model\Publisher\JsonStreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
 use DTL\Extension\Fink\Model\Queue\ExternalDistanceLimitingQueue;
@@ -158,8 +158,8 @@ class DispatcherBuilder
             }
 
             $stream = new ResourceOutputStream($resource);
-            $serializer = new JsonSerializer();
-            $publisher = new StreamPublisher($stream, $serializer);
+            
+            $publisher = new JsonStreamPublisher($stream, $this->buildSerializer());
         }
 
 
@@ -219,5 +219,11 @@ class DispatcherBuilder
             $socketPool,
             $tlsContext
         );
+    }
+
+    private function buildSerializer(): JsonSerializer
+    {
+        $serializer = new JsonSerializer();
+        return $serializer;
     }
 }
