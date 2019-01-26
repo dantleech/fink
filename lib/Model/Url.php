@@ -3,6 +3,7 @@
 namespace DTL\Extension\Fink\Model;
 
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
+use DTL\Extension\Fink\Model\Url;
 use League\Uri\Exception;
 use League\Uri\Uri;
 
@@ -112,5 +113,28 @@ final class Url
     public function distanceIsGreaterThan(int $int): bool
     {
         return $this->distance > $int;
+    }
+
+    public function externalDistanceFrom(Url $url): int
+    {
+        $distance = 0;
+
+        if ($url->equalsOrDescendantOf($this)) {
+            return $distance;
+        }
+
+        while ($referrer = $url->referrer()) {
+            if ($url->equalsOrDescendantOf($this)) {
+                return $distance;
+            }
+
+            $distance++;
+
+            if ($referrer === $this) {
+                return $distance;
+            }
+
+            $url = $referrer;
+        }
     }
 }

@@ -5,7 +5,7 @@ namespace DTL\Extension\Fink\Model\Queue;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlQueue;
 
-class FirstExternalOnlyQueue implements UrlQueue
+class ExternalDistanceLimitingQueue implements UrlQueue
 {
     /**
      * @var UrlQueue
@@ -17,10 +17,16 @@ class FirstExternalOnlyQueue implements UrlQueue
      */
     private $baseUrl;
 
-    public function __construct(UrlQueue $innerQueue, Url $baseUrl)
+    /**
+     * @var int
+     */
+    private $maxDistance;
+
+    public function __construct(UrlQueue $innerQueue, Url $baseUrl, int $maxDistance = 0)
     {
         $this->innerQueue = $innerQueue;
         $this->baseUrl = $baseUrl;
+        $this->maxDistance = $maxDistance;
     }
 
     /**
@@ -33,13 +39,7 @@ class FirstExternalOnlyQueue implements UrlQueue
 
     public function enqueue(Url $url): void
     {
-        if (!$referringUrl = $url->referrer()) {
-            // this is the "root" URL... nothing to do here
-            $this->innerQueue->enqueue($url);
-            return;
-        }
-
-        if (false === $referringUrl->equalsOrDescendantOf($this->baseUrl)) {
+        if ($url->externalDistanceFrom($this->baseUrl) > $this->maxDistance) {
             return;
         }
 

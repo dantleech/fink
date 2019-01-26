@@ -148,4 +148,107 @@ tids[n]+" ];
         $result = $result->resolveUrl('http://www.dantleech.com/1');
         $this->assertEquals(2, $result->distance());
     }
+
+    /**
+     * @dataProvider provideExternalDistanceFromUrl
+     */
+    public function testReturnsExternalDistanceFromUrl(array $urlChain, int $expectedDistance)
+    {
+        $baseUrl = array_shift($urlChain);
+        $baseUrl = Url::fromUrl($baseUrl);
+        assert($baseUrl instanceof Url);
+        $previous = $baseUrl;
+
+        foreach ($urlChain as $url) {
+            $previous = $previous->resolveUrl($url);
+        }
+
+        $this->assertEquals($expectedDistance, $baseUrl->externalDistanceFrom($previous));
+    }
+
+    public function provideExternalDistanceFromUrl()
+    {
+        yield 'base URL has zero distance' => [
+            [
+                'https://www.dantleech.com',
+            ],
+            0
+        ];
+
+        yield 'descendant of base url' => [
+            [
+                'https://www.dantleech.com',
+                'https://www.dantleech.com/foobar',
+            ],
+            0
+        ];
+
+        yield 'descendant of descendant of base URL' => [
+            [
+                'https://www.dantleech.com',
+                'https://www.dantleech.com/foobar',
+                'https://www.dantleech.com/foobar/barfoo',
+            ],
+            0
+        ];
+
+        yield 'external URL' => [
+            [
+                'https://www.dantleech.com',
+                'https://www.example.com',
+            ],
+            1
+        ];
+
+        yield 'external URL two steps removed' => [
+            [
+                'https://www.dantleech.com',
+                'https://www.example.com',
+                'https://www.example.com/foo',
+            ],
+            2
+        ];
+
+        yield 'two internal URLs then an external' => [
+            [
+                'https://www.dantleech.com',
+                'https://www.dantleech.com/foo',
+                'https://www.example.com',
+            ],
+            1
+        ];
+
+        yield 'three levels removed' => [
+            [
+                'https://www.dantleech.com',
+                'https://www.dantleech.com/foo',
+                'https://www.example.com',
+                'https://www.example.com/foobar',
+                'https://www.example.com/foobar/bar',
+            ],
+            3
+        ];
+
+        yield 'intermediate base URL' => [
+            [
+                'https://www.dantleech.com',
+                'https://www.dantleech.com/foo',
+                'https://www.example.com',
+                'https://www.dantleech.com',
+                'https://www.example.com',
+            ],
+            1
+        ];
+
+        yield 'intermediate descendant of base URL' => [
+            [
+                'https://www.dantleech.com',
+                'https://www.dantleech.com/foo',
+                'https://www.example.com',
+                'https://www.dantleech.com/bar/foo',
+                'https://www.example.com',
+            ],
+            1
+        ];
+    }
 }

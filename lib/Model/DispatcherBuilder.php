@@ -14,7 +14,7 @@ use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
 use DTL\Extension\Fink\Model\Publisher\StreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
-use DTL\Extension\Fink\Model\Queue\FirstExternalOnlyQueue;
+use DTL\Extension\Fink\Model\Queue\ExternalDistanceLimitingQueue;
 use DTL\Extension\Fink\Model\Queue\OnlyDescendantOrSelfQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use RuntimeException;
@@ -196,7 +196,7 @@ class DispatcherBuilder
         }
 
         if ($this->firstExternalOnly) {
-            $queue = new FirstExternalOnlyQueue($queue, $this->baseUrl);
+            $queue = new ExternalDistanceLimitingQueue($queue, $this->baseUrl);
         }
 
         if (null !== $this->maxDistance) {
