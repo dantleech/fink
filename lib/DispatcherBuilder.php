@@ -92,9 +92,10 @@ class DispatcherBuilder
         return new self($url);
     }
 
-    public function publisher(string $type)
+    public function publisher(string $type): self
     {
         $this->publisherType = $type;
+        return $this;
     }
 
     public function maxConcurrency(int $maxConcurrency): self

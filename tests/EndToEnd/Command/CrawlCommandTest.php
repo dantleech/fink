@@ -6,8 +6,8 @@ use DTL\Extension\Fink\Tests\EndToEnd\EndToEndTestCase;
 
 class CrawlCommandTest extends EndToEndTestCase
 {
-    public const EXAMPLE_URL = 'http://127.0.0.1:8124';
 
+    public const EXAMPLE_URL = 'http://127.0.0.1:8124';
     public function testCrawlsUrl()
     {
         $process = $this->execute([
@@ -162,6 +162,18 @@ class CrawlCommandTest extends EndToEndTestCase
 
         $this->assertEquals(1, $process->getExitCode());
     }
+
+    public function testPublishToCsv()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL . '/cookie.php',
+            '--publisher=csv',
+            '--output='.$this->workspace()->path('/out.json'),
+        ]);
+
+        $this->assertProcessSuccess($process);
+    }
+
 
     private function assertStatus(array $results, int $code, string $target): void
     {

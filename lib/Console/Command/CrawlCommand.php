@@ -32,6 +32,7 @@ class CrawlCommand extends Command
     private const OPT_INSECURE = 'insecure';
     private const OPT_LOAD_COOKIES = 'load-cookies';
     private const OPT_REQUEST_INTERVAL = 'interval';
+    private const OPT_PUBLISHER = 'publisher';
 
     /**
      * @var DispatcherBuilderFactory
@@ -64,6 +65,8 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_MAX_DISTANCE, 'm', InputOption::VALUE_REQUIRED, 'Maximum link distance from base URL');
         $this->addOption(self::OPT_LOAD_COOKIES, null, InputOption::VALUE_REQUIRED, 'Load cookies from file');
         $this->addOption(self::OPT_REQUEST_INTERVAL, null, InputOption::VALUE_REQUIRED, 'Dispatch request every n milliseconds', 10);
+        $this->addOption(self::OPT_PUBLISHER, 'p', InputOption::VALUE_REQUIRED, 'Publisher to use: `json` or `csv`', 'json');
+
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -108,9 +111,8 @@ class CrawlCommand extends Command
         $maxConcurrency = $this->castToInt($input->getOption(self::OPT_CONCURRENCY));
         $outfile = $input->getOption(self::OPT_OUTPUT);
         $noDedupe = $this->castToBool($input->getOption(self::OPT_NO_DEDUPE));
-
+        $publisher = $this->castToString($input->getOption(self::OPT_PUBLISHER));
         $externalDistance = $input->getOption(self::OPT_EXT_DISTANCE);
-
         $insecure = $this->castToBool($input->getOption(self::OPT_INSECURE));
         $maxDistance = $input->getOption(self::OPT_MAX_DISTANCE);
         $cookieFile = $input->getOption(self::OPT_LOAD_COOKIES);
@@ -118,6 +120,7 @@ class CrawlCommand extends Command
         $builder = $this->factory->createForUrl($url);
         $builder->maxConcurrency($maxConcurrency);
         $builder->noDeduplication($noDedupe);
+        $builder->publisher($publisher);
 
         if (null !== $externalDistance) {
             $builder->limitExternalDistance($this->castToInt($externalDistance));
