@@ -8,7 +8,7 @@ Fink (pronounced "Phpink") is a command line tool for checking HTTP links writte
 - Check websites for broken links or error pages.PHP
 - Fast concurrent HTTP requests.
 
-![recording](https://user-images.githubusercontent.com/530801/51439839-c28b1b00-1cb7-11e9-9538-cf7c7b8215b4.gif)
+![recording](https://user-images.githubusercontent.com/530801/51786346-de306e80-215a-11e9-8afe-106e9d801855.gif)
 
 Installation
 ------------
@@ -47,12 +47,40 @@ Options
 - `--concurrency`: Number of simultaneous HTTP requests to use.
 - `--no-dedupe`: Do _not_ filter duplicate URLs (can result in a
   non-terminating process).
-- `--descendants-only`: Only crawl direct descendnats of the given URL
-- `--first-external-only`: Like descendants-only but check the statuscode of the first External URL
+- `--max-external-distance`: Limit the external (disjoint) distance from the
+  base URL.
 - `--insecure`: Do not verify SSL certificates.
 - `--max-distance`: Maximum allowed distance from base URL (if not specified
   then there is no limitation).
 - `--load-cookies`: Load from a [cookies.txt](http://www.cookiecentral.com/faq/#3.5).
+
+Examples
+--------
+
+### Crawl a single website
+
+```
+$ fink crawl http://www.example.com --max-external-distance=0
+```
+
+### Crawl a single website and check the status of external links
+
+```
+$ fink crawl http://www.example.com --max-external-distance=1
+```
+
+### Use `jq` to analyse results
+
+[jq](https://stedolan.github.io/jq/) is a tool which can be used to query and
+manipulate JSON data.
+
+```
+$ fink crawl http://www.example.com -x0 -oreport.json
+```
+
+```
+$ cat report.json| jq -c '. | select(.status==404) | {url: .url, refferer: .referrer}'
+```
 
 Exit Codes
 ----------
