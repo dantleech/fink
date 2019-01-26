@@ -34,33 +34,13 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertStatus($rows, 404, '404.html');
     }
 
-    public function testCrawlDescendantsOnly()
-    {
-        $process = $this->execute([
-            'crawl',
-            self::EXAMPLE_URL . '/posts',
-            '--output='.$this->workspace()->path('/out.json'),
-            '--descendants-only'
-        ]);
-
-        $this->assertProcessSuccess($process);
-
-        $rows = $this->parseResults($this->workspace()->path('/out.json'));
-
-        $this->assertCount(3, $rows);
-        $this->assertUrlCount($rows, 0, 'blog.html');
-        $this->assertUrlCount($rows, 0, 'about.html');
-        $this->assertStatus($rows, 200, 'posts/post1.html');
-        $this->assertStatus($rows, 200, 'posts/post2.html');
-    }
-
-    public function testCrawlsFirstExternalOnly()
+    public function testLimitsExternalDistance()
     {
         $process = $this->execute([
             'crawl',
             self::EXAMPLE_URL . '/posts/external',
             '--output='.$this->workspace()->path('/out.json'),
-            '--first-external-only'
+            '--max-external-distance=1'
         ]);
 
         $this->assertProcessSuccess($process);
