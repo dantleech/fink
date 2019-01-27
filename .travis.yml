@@ -1,10 +1,6 @@
 language: php
 sudo: false
 
-php:
-  - 7.1
-  - 7.2
-
 cache:
   directories:
     - "$HOME/.composer/cache"
@@ -30,6 +26,8 @@ jobs:
 
     - stage: Deploy
       php: 7.1
+      script:
+          - "./vendor/bin/box compile"
       deploy:
         provider: releases
         skip_cleanup: true
@@ -39,4 +37,4 @@ jobs:
         file: bin/fink.phar
         on:
           repo: dantleech/fink
-          #tags: true
+          tags: true
