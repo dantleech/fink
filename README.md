@@ -21,6 +21,11 @@ Install as a stand-alone tool or as a project dependency:
 $ composer require dantleech/fink --dev
 ```
 
+### Installing from a PHAR
+
+Download the PHAR from the
+[Releases](https://github.com/dantleech/fink/releases) page.n
+
 Usage
 -----
 
