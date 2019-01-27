@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+
+- Unconditionally remove URL fragments.
+
 ## [0.2.1] - 2019-01-26
 
 - Use correct autoload path when included as a dependency
