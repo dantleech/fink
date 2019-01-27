@@ -98,6 +98,12 @@ tids[n]+" ];
             'templates.html',
             'https://example.com:1234/templates.html'
         ];
+
+        yield 'ignores fragments' => [
+            'https://example.com',
+            '#foobar',
+            'https://example.com'
+        ];
     }
 
     public function testIsHttp()

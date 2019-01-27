@@ -82,6 +82,11 @@ final class Url
             $link = $link->withPort($this->uri->getPort());
         }
 
+        if ($link->getFragment()) {
+            // unconditionally remove fragments
+            $link = $link->withFragment('');
+        }
+
         return new self($link, $this, $this->distance + 1);
     }
 
