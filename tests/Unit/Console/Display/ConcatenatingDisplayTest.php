@@ -4,6 +4,7 @@ namespace DTL\Extension\Fink\Tests\Unit\Console\Display;
 
 use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Console\Display\ConcatenatingDisplay;
+use DTL\Extension\Fink\Model\Status;
 
 class ConcatenatingDisplayTest extends DisplayTestCase
 {
@@ -28,20 +29,21 @@ class ConcatenatingDisplayTest extends DisplayTestCase
     public function testReturnsEmptyStringWithNoDisplays()
     {
         $display = $this->create([]);
-        $output = $display->render($this->formatter, $this->dispatcher->reveal());
+        $output = $display->render($this->formatter, new Status());
         $this->assertEquals('', $output);
     }
 
     public function testConcatenatesTheOutputOfOtherDisplays()
     {
-        $this->display1->render($this->formatter, $this->dispatcher->reveal())->willReturn('foo');
-        $this->display2->render($this->formatter, $this->dispatcher->reveal())->willReturn('bar');
+        $status = new Status();
+        $this->display1->render($this->formatter, $status)->willReturn('foo');
+        $this->display2->render($this->formatter, $status)->willReturn('bar');
 
         $display = $this->create([
             $this->display1->reveal(),
             $this->display2->reveal(),
         ]);
-        $output = $display->render($this->formatter, $this->dispatcher->reveal());
+        $output = $display->render($this->formatter, $status);
         $this->assertEquals(<<<'EOT'
 foo
 bar

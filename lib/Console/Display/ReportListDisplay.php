@@ -3,19 +3,19 @@
 namespace DTL\Extension\Fink\Console\Display;
 
 use DTL\Extension\Fink\Console\Display;
-use DTL\Extension\Fink\Model\Dispatcher;
 use DTL\Extension\Fink\Model\Report;
+use DTL\Extension\Fink\Model\Status;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
 class ReportListDisplay implements Display
 {
-    public function render(OutputFormatterInterface $formatter, Dispatcher $dispatcher): string
+    public function render(OutputFormatterInterface $formatter, Status $status): string
     {
         $statuses = [];
-        foreach ($dispatcher->store() as $index => $report) {
+        foreach ($status->reportStore() as $index => $report) {
             $statusCode = $report->statusCode();
             $statuses[] = sprintf(
-                $this->resolveFormat($index + 1 === count($dispatcher->store()), $report),
+                $this->resolveFormat($index + 1 === count($status->reportStore()), $report),
                 sprintf(
                     '[%3s] %s',
                     $statusCode ? $statusCode->toInt() : '---',

@@ -29,6 +29,11 @@ class Status
      */
     public $queueSize = 0;
 
+    /**
+     * @var ImmutableReportStore
+     */
+    public $reportStore;
+
     public function failurePercentage(): float
     {
         if ($this->nbFailures === 0) {
@@ -36,5 +41,10 @@ class Status
         }
 
         return $this->nbFailures / $this->requestCount * 100;
+    }
+
+    public function reportStore(): ImmutableReportStore
+    {
+        return $this->reportStore;
     }
 }

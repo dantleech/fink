@@ -2,10 +2,10 @@
 
 namespace DTL\Extension\Fink\Console;
 
-use DTL\Extension\Fink\Model\Dispatcher;
+use DTL\Extension\Fink\Model\Status;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
 interface Display
 {
-    public function render(OutputFormatterInterface $output, Dispatcher $dispatcher): string;
+    public function render(OutputFormatterInterface $output, Status $status): string;
 }

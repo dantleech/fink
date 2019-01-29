@@ -3,7 +3,6 @@
 namespace DTL\Extension\Fink\Model;
 
 use DTL\Extension\Fink\Model\Store\ImmutableReportStore;
-use DTL\Extension\Fink\Model\ImmutableReportStore as ImmutableReportStoreInterface;
 use Exception;
 
 class Dispatcher
@@ -52,10 +51,12 @@ class Dispatcher
     ) {
         $this->crawler = $crawler;
         $this->publisher = $publisher;
-        $this->status = new Status();
         $this->maxConcurrency = $maxConcurrency;
         $this->queue = $queue;
         $this->store = $store;
+
+        $this->status = new Status();
+        $this->status->reportStore = new ImmutableReportStore($this->store);
     }
 
     public function dispatch()
@@ -82,7 +83,6 @@ class Dispatcher
 
             $report = $reportBuilder->build();
             $this->publisher->publish($report);
-            $this->store->add($report);
 
             $this->status->queueSize = count($this->queue);
             $this->status->nbFailures += $report->isSuccess() ? 0 : 1;
@@ -95,13 +95,5 @@ class Dispatcher
     public function status(): Status
     {
         return $this->status;
-    }
-
-    /**
-     * @return ImmutableReportStoreInterface<Report>
-     */
-    public function store(): ImmutableReportStoreInterface
-    {
-        return new ImmutableReportStore($this->store);
     }
 }

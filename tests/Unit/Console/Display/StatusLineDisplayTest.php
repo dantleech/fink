@@ -11,10 +11,8 @@ class StatusLineDisplayTest extends DisplayTestCase
 {
     public function testRendersStatusLine()
     {
-        $this->dispatcher->status()->willReturn(new Status());
-
         $display = $this->create();
-        $output = $display->render($this->formatter, $this->dispatcher->reveal());
+        $output = $display->render($this->formatter, new Status());
 
         $this->assertEquals(<<<'EOT'
 ------------------------------

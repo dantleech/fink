@@ -82,7 +82,7 @@ class CrawlCommand extends Command
         $section1 = $output->section();
 
         Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section1, $dispatcher) {
-            $section1->overwrite($this->display->render($section1->getFormatter(), $dispatcher));
+            $section1->overwrite($this->display->render($section1->getFormatter(), $dispatcher->status()));
 
             $status = $dispatcher->status();
             if ($status->nbConcurrentRequests === 0 && $status->queueSize === 0) {

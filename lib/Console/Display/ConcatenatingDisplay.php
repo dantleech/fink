@@ -3,7 +3,7 @@
 namespace DTL\Extension\Fink\Console\Display;
 
 use DTL\Extension\Fink\Console\Display;
-use DTL\Extension\Fink\Model\Dispatcher;
+use DTL\Extension\Fink\Model\Status;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
 class ConcatenatingDisplay implements Display
@@ -20,10 +20,10 @@ class ConcatenatingDisplay implements Display
         }, $displays);
     }
 
-    public function render(OutputFormatterInterface $formatter, Dispatcher $dispatcher): string
+    public function render(OutputFormatterInterface $formatter, Status $status): string
     {
-        return implode(PHP_EOL, array_map(function (Display $display) use ($formatter, $dispatcher) {
-            return $display->render($formatter, $dispatcher);
+        return implode(PHP_EOL, array_map(function (Display $display) use ($formatter, $status) {
+            return $display->render($formatter, $status);
         }, $this->displays));
     }
 }
