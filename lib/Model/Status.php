@@ -2,6 +2,9 @@
 
 namespace DTL\Extension\Fink\Model;
 
+use DTL\Extension\Fink\Model\Store\ImmutableReportStore;
+use DTL\Extension\Fink\Model\Store\NullReportStore;
+
 class Status
 {
     /**
@@ -33,6 +36,11 @@ class Status
      * @var ImmutableReportStore
      */
     public $reportStore;
+
+    public function __construct()
+    {
+        $this->reportStore = new ImmutableReportStore(new NullReportStore());
+    }
 
     public function failurePercentage(): float
     {
