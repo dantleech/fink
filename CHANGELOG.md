@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 - Unconditionally remove URL fragments.
+- Do not inherit path from owner doucument's URL if path is missing.
+- Show request rate
 
 ## [0.2.1] - 2019-01-26
 

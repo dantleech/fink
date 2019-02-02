@@ -4,9 +4,7 @@ namespace DTL\Extension\Fink\Console\Display;
 
 use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Model\Status;
-use DateTimeImmutable;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
-use Symfony\Component\Console\Helper\FormatterHelper;
 
 class RateDisplay implements Display
 {

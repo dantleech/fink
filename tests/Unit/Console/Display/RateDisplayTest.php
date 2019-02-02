@@ -5,7 +5,6 @@ namespace DTL\Extension\Fink\Tests\Unit\Console\Display;
 use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Console\Display\RateDisplay;
 use DTL\Extension\Fink\Model\Status;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Helper\FormatterHelper;
 
 class RateDisplayTest extends DisplayTestCase
