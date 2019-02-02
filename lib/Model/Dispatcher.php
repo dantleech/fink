@@ -60,30 +60,37 @@ class Dispatcher
 
     public function dispatch()
     {
-        if ($this->status->nbConcurrentRequests >= $this->maxConcurrency) {
-            return;
+        while (true) {
+            if ($this->status->nbConcurrentRequests >= $this->maxConcurrency) {
+                return;
+            }
+            
+            $url = $this->queue->dequeue();
+            
+            if (null === $url) {
+                return;
+            }
+
+            $this->doDispatch($url);
         }
+    }
 
-        $url = $this->queue->dequeue();
-
-        if (null === $url) {
-            return;
-        }
-
+    private function doDispatch(Url $url): void
+    {
         \Amp\asyncCall(function (Url $url) {
             $this->status->nbConcurrentRequests++;
             $reportBuilder = ReportBuilder::forUrl($url);
-
+        
             try {
                 yield from $this->crawler->crawl($url, $this->queue, $reportBuilder);
             } catch (Exception $exception) {
                 $reportBuilder->withException($exception);
             }
-
+        
             $report = $reportBuilder->build();
             $this->publisher->publish($report);
             $this->store->add($report);
-
+        
             $this->status->queueSize = count($this->queue);
             $this->status->nbFailures += $report->isSuccess() ? 0 : 1;
             $this->status->lastUrl = $url->__toString();
