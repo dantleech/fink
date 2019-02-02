@@ -12,7 +12,7 @@ class StatusLineDisplay implements Display
     public function render(OutputFormatterInterface $formatter, Status $status): string
     {
         $line = sprintf(
-            '<comment>CON</>: %s <comment>QUE</>: %s <comment>NOK</>: %s/%s (%s%%)',
+            '<info>Concurrency</>: %s, <info>Queue size</>: %s, <info>Failures</>: %s/%s (%s%%)',
             $status->nbConcurrentRequests,
             $status->queueSize,
             $status->nbFailures,
@@ -22,7 +22,7 @@ class StatusLineDisplay implements Display
 
         return implode(PHP_EOL, [
             str_repeat('-', FormatterHelper::strlenWithoutDecoration($formatter, $line)),
-            $line
+            $line,
         ]);
     }
 }
