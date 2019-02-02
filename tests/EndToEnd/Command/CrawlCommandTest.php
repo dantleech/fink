@@ -173,6 +173,37 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
+    public function testSpecifyDisplayBufSize()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--display-bufsize=2',
+        ]);
+
+        $out = $process->getOutput();
+        $this->assertEquals(2, substr_count($out, self::EXAMPLE_URL));
+        $this->assertProcessSuccess($process);
+    }
+
+    public function testSpecifyMaxTimeout()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--client-timeout=1000',
+        ]);
+
+        $this->assertProcessSuccess($process);
+    }
+
+    public function testMaxRedirects()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--client-redirects=0',
+        ]);
+
+        $this->assertProcessSuccess($process);
+    }
 
     private function assertStatus(array $results, int $code, string $target): void
     {

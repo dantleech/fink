@@ -33,7 +33,7 @@ class Status
     public $queueSize = 0;
 
     /**
-     * @var ImmutableReportStore
+     * @var ImmutableReportStore<Report>
      */
     private $reportStore;
 

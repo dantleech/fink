@@ -79,6 +79,16 @@ class DispatcherBuilder
      */
     private $publisherType = self::PUBLISHER_JSON;
 
+    /**
+     * @var int
+     */
+    private $clientTransferTimeout = 15000;
+
+    /**
+     * @var int
+     */
+    private $clientMaxRedirects = 5;
+
     public function __construct(Url $baseUrl)
     {
         $this->baseUrl = $baseUrl;
@@ -142,6 +152,20 @@ class DispatcherBuilder
     public function loadCookies(string $file): self
     {
         $this->loadCookies = $file;
+
+        return $this;
+    }
+
+    public function clientTransferTimeout(int $milliseconds)
+    {
+        $this->clientTransferTimeout = $milliseconds;
+
+        return $this;
+    }
+
+    public function clientMaxRedirects(int $maxRedirects)
+    {
+        $this->clientMaxRedirects = $maxRedirects;
 
         return $this;
     }
@@ -214,11 +238,18 @@ class DispatcherBuilder
             $tlsContext = $tlsContext->withoutPeerVerification();
         }
 
-        return new DefaultClient(
+        $client = new DefaultClient(
             $cookieJar,
             $socketPool,
             $tlsContext
         );
+
+        $client->setOptions([
+            Client::OP_TRANSFER_TIMEOUT => $this->clientTransferTimeout,
+            Client::OP_MAX_REDIRECTS => $this->clientMaxRedirects,
+        ]);
+
+        return $client;
     }
 
     private function buildPublisher()

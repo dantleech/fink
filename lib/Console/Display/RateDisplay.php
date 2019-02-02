@@ -3,7 +3,9 @@
 namespace DTL\Extension\Fink\Console\Display;
 
 use DTL\Extension\Fink\Console\Display;
+use DTL\Extension\Fink\Model\Report;
 use DTL\Extension\Fink\Model\Status;
+use DTL\Extension\Fink\Model\Store\ImmutableReportStore;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
 class RateDisplay implements Display
@@ -32,19 +34,14 @@ class RateDisplay implements Display
             $this->requestCounts[$this->microseconds()] = $nbNewRequests;
         }
 
-        $dropThreshold = $this->microseconds() - $this->windowSize();
-        $requests = $this->requestCountInWindow($dropThreshold);
-        $elapsed = $this->microseconds() - $dropThreshold;
-
-        if ($this->microseconds() - ($this->initialTime * 1E6) < $this->windowSize()) {
-            $elapsed = $this->microseconds() - ($this->initialTime * 1E6);
-        }
-        $perSecond = ($requests / $elapsed) * 1E6;
+        $ratePerSecond = $this->ratePerSecond();
+        $averageRequestTime = $this->averageRequestTime($status->reportStore());
 
         return sprintf(
-            '<info>Running for </>%s <info>seconds, </>%s <info>requests per second</>',
+            '<info>Up</> %s <info>sec</>, %s <info>r/sec</>, %s<info> ms/r</>',
             number_format(microtime(true) - $this->initialTime, 1),
-            number_format($perSecond, 2)
+            number_format($ratePerSecond, 2),
+            number_format($averageRequestTime * 0.001, 2)
         );
     }
 
@@ -70,5 +67,34 @@ class RateDisplay implements Display
         }
 
         return (int) $requests;
+    }
+
+    private function ratePerSecond(): float
+    {
+        $dropThreshold = $this->microseconds() - $this->windowSize();
+        $requests = $this->requestCountInWindow($dropThreshold);
+        $elapsed = $this->microseconds() - $dropThreshold;
+        
+        if ($this->microseconds() - ($this->initialTime * 1E6) < $this->windowSize()) {
+            $elapsed = $this->microseconds() - ($this->initialTime * 1E6);
+        }
+
+        return ($requests / $elapsed) * 1E6;
+    }
+
+    private function averageRequestTime(ImmutableReportStore $reportStore)
+    {
+        if (count($reportStore) === 0) {
+            return 0;
+        }
+        $totalRequestTime = array_reduce(
+            iterator_to_array($reportStore),
+            function (int $total, Report $report) {
+                return $total += $report->requestTime();
+            },
+            0
+        );
+
+        return $totalRequestTime / count($reportStore);
     }
 }

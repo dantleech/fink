@@ -8,7 +8,7 @@ Fink (pronounced "Phpink") is a command line tool for checking HTTP links writte
 - Check websites for broken links or error pages.PHP
 - Fast concurrent HTTP requests.
 
-![recording](https://user-images.githubusercontent.com/530801/51786346-de306e80-215a-11e9-8afe-106e9d801855.gif)
+![recording](https://user-images.githubusercontent.com/530801/52165571-7d74d900-26fa-11e9-9086-318c479616a9.gif)
 
 Installation
 ------------
@@ -60,6 +60,11 @@ Options
   (truncates existing content).
 - `--publisher=csv` Set the publisher (defaults to `json`) can be either
   `json` or `csv`.
+- `--display-bufsize=10` Set the number of URLs shown during execution.
+- `--client-redirects=5` Set the maximum number of times the client should
+  redirect (`0` to never redirect).
+- `--client-timeout=15000` Set the maximum amount of time (in milliseconds)
+  the client should wait for a response, defailt 15,000 (15 seconds).
 
 Examples
 --------

@@ -14,18 +14,33 @@ class HttpStatusCode
         $this->statusCode = $statusCode;
     }
 
-    public static function fromInt(int $statusCode)
+    public static function fromInt(int $statusCode): self
     {
         return new self($statusCode);
     }
 
     public function isSuccess(): bool
     {
-        return in_array($this->statusCode, [200]);
+        return $this->statusCode >= 200 && $this->statusCode < 300;
+    }
+
+    public function isRedirect(): bool
+    {
+        return $this->statusCode >= 300 && $this->statusCode < 400;
+    }
+
+    public function isError(): bool
+    {
+        return $this->statusCode >= 400;
     }
 
     public function toInt(): int
     {
         return $this->statusCode;
+    }
+
+    public function toString(): string
+    {
+        return (string) $this->statusCode;
     }
 }
