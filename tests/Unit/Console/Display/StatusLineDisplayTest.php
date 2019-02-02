@@ -15,8 +15,8 @@ class StatusLineDisplayTest extends DisplayTestCase
         $output = $display->render($this->formatter, new Status());
 
         $this->assertEquals(<<<'EOT'
-------------------------------
-CON: 0 QUE: 0 NOK: 0/0 (0.00%)
+----------------------------------------------------
+Concurrency: 0, Queue size: 0, Failures: 0/0 (0.00%)
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
     }
