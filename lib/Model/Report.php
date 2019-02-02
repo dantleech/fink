@@ -70,4 +70,9 @@ class Report
             'exception' => $this->exception ? $this->exception->getMessage() : null,
         ];
     }
+
+    public function requestTime(): int
+    {
+        return $this->requestTime;
+    }
 }

@@ -14,8 +14,8 @@ class RateDisplayTest extends DisplayTestCase
         $display = $this->create();
         $output = $display->render($this->formatter, new Status());
 
-        $this->assertEquals(<<<'EOT'
-Running for 0.0 seconds, 0.00 requests per second
+        $this->assertContains(<<<'EOT'
+Up 0.0 sec, 0.00 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
     }
@@ -25,8 +25,8 @@ EOT
         $display = $this->create(2, microtime(true) - 1);
         $output = $display->render($this->formatter, new Status());
 
-        $this->assertEquals(<<<'EOT'
-Running for 1.0 seconds, 0.00 requests per second
+        $this->assertContains(<<<'EOT'
+Up 1.0 sec, 0.00 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
     }
@@ -40,8 +40,8 @@ EOT
         $display->render($this->formatter, $status);
         $output = $display->render($this->formatter, new Status());
 
-        $this->assertEquals(<<<'EOT'
-Running for 1.0 seconds, 1.00 requests per second
+        $this->assertContains(<<<'EOT'
+Up 1.0 sec, 1.00 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
     }
@@ -56,8 +56,8 @@ EOT
         $display->render($this->formatter, $status);
         $output = $display->render($this->formatter, new Status());
 
-        $this->assertEquals(<<<'EOT'
-Running for 5.0 seconds, 0.25 requests per second
+        $this->assertContains(<<<'EOT'
+Up 5.0 sec, 0.25 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
     }
