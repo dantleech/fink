@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.3.0] - 2019-02-02
 
 - Unconditionally remove URL fragments.
 - Do not inherit path from owner doucument's URL if path is missing..
