@@ -16,11 +16,10 @@ class ReportListDisplayTest extends DisplayTestCase
 {
     public function testRendersListOfReports()
     {
-        $status = new Status();
         $store = new CircularReportStore(5);
+        $status = new Status(new ImmutableReportStore($store));
         $store->add($this->createReport(1));
         $store->add($this->createReport(2));
-        $status->reportStore = new ImmutableReportStore($store);
 
         $output = $this->create()->render($this->formatter, $status);
         $this->assertEquals(<<<'EOT'

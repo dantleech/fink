@@ -47,7 +47,7 @@ final class Url
         return rtrim($this->uri->__toString(), '/');
     }
 
-    public function resolveUrl($link): self
+    public function resolveUrl(string $link): self
     {
         try {
             $link = Uri::createFromString($link);
