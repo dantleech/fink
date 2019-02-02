@@ -5,6 +5,7 @@
 - Unconditionally remove URL fragments.
 - Do not inherit path from owner doucument's URL if path is missing.
 - Show request rate
+- Allow specification of display buffer size (`--display-bufsize`)
 
 ## [0.2.1] - 2019-01-26
 

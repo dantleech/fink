@@ -60,6 +60,7 @@ Options
   (truncates existing content).
 - `--publisher=csv` Set the publisher (defaults to `json`) can be either
   `json` or `csv`.
+- `--display-bufsize=10` Set the number of URLs shown during execution.
 
 Examples
 --------
