@@ -105,7 +105,7 @@ tids[n]+" ];
             'https://example.com'
         ];
 
-        yield [
+        yield 'link to host only from path' => [
             'https://github.com/phpactor/behat-extension',
             'https://training.github.com',
             'https://training.github.com'

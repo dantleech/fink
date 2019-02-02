@@ -62,10 +62,6 @@ final class Url
             $link = $link->withPath('/'.ltrim($link->getPath(), '/'));
         }
 
-        if (!$link->getPath()) {
-            $link = $link->withPath($this->uri->getPath());
-        }
-
         if (!$link->getScheme()) {
             $link = $link->withScheme($this->uri->getScheme());
         }
