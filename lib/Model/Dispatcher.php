@@ -52,10 +52,10 @@ class Dispatcher
     ) {
         $this->crawler = $crawler;
         $this->publisher = $publisher;
-        $this->status = new Status();
         $this->maxConcurrency = $maxConcurrency;
         $this->queue = $queue;
         $this->store = $store;
+        $this->status = new Status(new ImmutableReportStore($store));
     }
 
     public function dispatch()

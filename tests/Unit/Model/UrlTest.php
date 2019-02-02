@@ -104,6 +104,12 @@ tids[n]+" ];
             '#foobar',
             'https://example.com'
         ];
+
+        yield 'link to host only from path' => [
+            'https://github.com/phpactor/behat-extension',
+            'https://training.github.com',
+            'https://training.github.com'
+        ];
     }
 
     public function testIsHttp()

@@ -47,7 +47,7 @@ final class Url
         return rtrim($this->uri->__toString(), '/');
     }
 
-    public function resolveUrl($link): self
+    public function resolveUrl(string $link): self
     {
         try {
             $link = Uri::createFromString($link);
@@ -60,10 +60,6 @@ final class Url
             // concatenated with the host, for example:
             // https://www.example.comtemplate.html
             $link = $link->withPath('/'.ltrim($link->getPath(), '/'));
-        }
-
-        if (!$link->getPath()) {
-            $link = $link->withPath($this->uri->getPath());
         }
 
         if (!$link->getScheme()) {
