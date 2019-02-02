@@ -61,6 +61,10 @@ Options
 - `--publisher=csv` Set the publisher (defaults to `json`) can be either
   `json` or `csv`.
 - `--display-bufsize=10` Set the number of URLs shown during execution.
+- `--client-redirects=5` Set the maximum number of times the client should
+  redirect (`0` to never redirect).
+- `--client-timeout=15000` Set the maximum amount of time (in milliseconds)
+  the client should wait for a response, defailt 15,000 (15 seconds).
 
 Examples
 --------

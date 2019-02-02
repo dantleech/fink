@@ -3,9 +3,12 @@
 ## [Unreleased]
 
 - Unconditionally remove URL fragments.
-- Do not inherit path from owner doucument's URL if path is missing.
-- Show request rate
-- Allow specification of display buffer size (`--display-bufsize`)
+- Do not inherit path from owner doucument's URL if path is missing..
+- Show request rate.
+- Allow specification of display buffer size (`--display-bufsize`).
+- Support specification of client timeout #25.
+- Support specification of client max redirects #26.
+- Dispatch up to concurrency limit on each tick.
 
 ## [0.2.1] - 2019-01-26
 

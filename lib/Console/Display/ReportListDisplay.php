@@ -3,6 +3,7 @@
 namespace DTL\Extension\Fink\Console\Display;
 
 use DTL\Extension\Fink\Console\Display;
+use DTL\Extension\Fink\Model\HttpStatusCode;
 use DTL\Extension\Fink\Model\Report;
 use DTL\Extension\Fink\Model\Status;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
@@ -18,7 +19,7 @@ class ReportListDisplay implements Display
                 $this->resolveFormat($index + 1 === count($status->reportStore()), $report),
                 sprintf(
                     '[%3s] %s',
-                    $statusCode ? $statusCode->toInt() : '---',
+                    $statusCode ? $this->formatStatusCode($statusCode) : '---',
                     $report->url()->__toString()
                 )
             );
@@ -34,7 +35,7 @@ class ReportListDisplay implements Display
             $style[] = 'options=bold';
         }
 
-        if (!$report->isSuccess()) {
+        if (null === $report->statusCode() || $report->statusCode()->isError()) {
             $style[] = 'bg=red;fg=white';
         }
 
@@ -43,5 +44,22 @@ class ReportListDisplay implements Display
         }
 
         return sprintf('<%s>%%s</>', implode(';', $style));
+    }
+
+    private function formatStatusCode(HttpStatusCode $statusCode): string
+    {
+        if ($statusCode->isError()) {
+            return $statusCode->toString();
+        }
+
+        if ($statusCode->isRedirect()) {
+            return '<comment>' . $statusCode->toString() . '</>';
+        }
+
+        if ($statusCode->isSuccess()) {
+            return '<info>' . $statusCode->toString() . '</>';
+        }
+
+        return $statusCode->toString();
     }
 }
