@@ -38,7 +38,7 @@ class DispatcherBuilder
     /**
      * @var int
      */
-    private $maxConcurrency;
+    private $maxConcurrency = 10;
 
     /**
      * @var bool
@@ -46,7 +46,7 @@ class DispatcherBuilder
     private $noDedupe = false;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $limitExternalDistance = null;
 
@@ -61,7 +61,7 @@ class DispatcherBuilder
     private $noPeerVerification = false;
 
     /**
-     * @var int
+     * @var int|null
      */
     private $maxDistance = null;
 
@@ -91,7 +91,7 @@ class DispatcherBuilder
     private $clientMaxRedirects = 5;
 
     /**
-     * @var array
+     * @var array|null
      */
     private $excludeUrlPatterns;
 

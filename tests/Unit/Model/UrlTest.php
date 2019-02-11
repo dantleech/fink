@@ -110,6 +110,12 @@ tids[n]+" ];
             'https://training.github.com',
             'https://training.github.com'
         ];
+
+        yield 'does not include document parameters' => [
+            'https://github.com/phpactor/behat-extension?foo=bar',
+            'https://training.github.com',
+            'https://training.github.com'
+        ];
     }
 
     public function testIsHttp()

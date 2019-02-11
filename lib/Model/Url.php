@@ -70,10 +70,6 @@ final class Url
             $link = $link->withHost($this->uri->getHost());
         }
 
-        if (!$link->getQuery()) {
-            $link = $link->withQuery($this->uri->getQuery());
-        }
-
         if (!$link->getPort()) {
             $link = $link->withPort($this->uri->getPort());
         }

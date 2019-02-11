@@ -36,7 +36,7 @@ class CrawlCommand extends Command
     private const OPT_DISPLAY_BUFSIZE = 'display-bufsize';
     private const OPT_CLIENT_MAX_TIMEOUT = 'client-timeout';
     private const OPT_CLIENT_MAX_REDIRECTS = 'client-redirects';
-    public const OPT_EXCLUDE_URL = 'exclude-url';
+    private const OPT_EXCLUDE_URL = 'exclude-url';
 
     /**
      * @var DispatcherBuilderFactory
@@ -192,7 +192,7 @@ class CrawlCommand extends Command
         return $value;
     }
 
-    private function castToArray($value)
+    private function castToArray($value): array
     {
         return (array) $value;
     }

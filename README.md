@@ -63,7 +63,8 @@ Options
 - `--display-bufsize=10` Set the number of URLs shown during execution.
 - `--client-redirects=5` Set the maximum number of times the client should
   redirect (`0` to never redirect).
-- `--client-timeout=15000` Set the maximum amount of time (in milliseconds).
+- `--client-timeout=15000` Set the maximum amount of time (in milliseconds)
+  the client should wait for a response, defaults to 15,000 (15 seconds).
 - `--exclude-url=logout` (multiple) Exclude URLs matching the given PCRE pattern.
 
 Examples
