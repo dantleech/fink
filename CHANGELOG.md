@@ -1,5 +1,9 @@
 # Changelog
 
+## unreleased
+
+- Allow exclusion of URL patterns #30
+
 ## [0.3.0] - 2019-02-02
 
 - Unconditionally remove URL fragments.

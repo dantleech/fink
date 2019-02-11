@@ -36,6 +36,7 @@ class CrawlCommand extends Command
     private const OPT_DISPLAY_BUFSIZE = 'display-bufsize';
     private const OPT_CLIENT_MAX_TIMEOUT = 'client-timeout';
     private const OPT_CLIENT_MAX_REDIRECTS = 'client-redirects';
+    public const OPT_EXCLUDE_URL = 'exclude-url';
 
     /**
      * @var DispatcherBuilderFactory
@@ -72,6 +73,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_DISPLAY_BUFSIZE, null, InputOption::VALUE_REQUIRED, 'Size of report buffer to display', 5);
         $this->addOption(self::OPT_CLIENT_MAX_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Number of milliseconds to wait for URL', 15000);
         $this->addOption(self::OPT_CLIENT_MAX_REDIRECTS, null, InputOption::VALUE_REQUIRED, 'Maximum number of redirects to follow', 5);
+        $this->addOption(self::OPT_EXCLUDE_URL, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Exclude PCRE URL pattern', []);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -124,6 +126,7 @@ class CrawlCommand extends Command
         $bufSize = $this->castToInt($input->getOption(self::OPT_DISPLAY_BUFSIZE));
         $maxRedirects = $this->castToInt($input->getOption(self::OPT_CLIENT_MAX_REDIRECTS));
         $maxTimeout = $this->castToInt($input->getOption(self::OPT_CLIENT_MAX_TIMEOUT));
+        $excludeUrls = $this->castToArray($input->getOption(self::OPT_EXCLUDE_URL));
         
         $builder = $this->factory->createForUrl($url);
         $builder->maxConcurrency($maxConcurrency);
@@ -147,6 +150,9 @@ class CrawlCommand extends Command
 
         if (null !== $maxDistance) {
             $builder->maxDistance($this->castToInt($maxDistance));
+        }
+        if (!empty($excludeUrls)) {
+            $builder->excludeUrlPatterns($excludeUrls);
         }
 
         return $builder->build();
@@ -184,5 +190,10 @@ class CrawlCommand extends Command
         }
 
         return $value;
+    }
+
+    private function castToArray($value)
+    {
+        return (array) $value;
     }
 }

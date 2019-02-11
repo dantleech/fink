@@ -16,6 +16,7 @@ use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
 use DTL\Extension\Fink\Model\Publisher\CsvStreamPublisher;
 use DTL\Extension\Fink\Model\Publisher\JsonStreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
+use DTL\Extension\Fink\Model\Queue\ExcludingQueue;
 use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
 use DTL\Extension\Fink\Model\Queue\ExternalDistanceLimitingQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
@@ -89,6 +90,11 @@ class DispatcherBuilder
      */
     private $clientMaxRedirects = 5;
 
+    /**
+     * @var array
+     */
+    private $excludeUrlPatterns;
+
     public function __construct(Url $baseUrl)
     {
         $this->baseUrl = $baseUrl;
@@ -99,6 +105,13 @@ class DispatcherBuilder
         $url = Url::fromUrl($url);
 
         return new self($url);
+    }
+
+    public function excludeUrlPatterns(array $urlPatterns): self
+    {
+        $this->excludeUrlPatterns = $urlPatterns;
+
+        return $this;
     }
 
     public function publisher(string $type): self
@@ -210,6 +223,10 @@ class DispatcherBuilder
 
         if (null !== $this->maxDistance) {
             $queue = new MaxDistanceQueue($queue, $this->maxDistance);
+        }
+
+        if (null !== $this->excludeUrlPatterns) {
+            $queue = new ExcludingQueue($queue, $this->excludeUrlPatterns);
         }
 
         return $queue;
