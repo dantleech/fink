@@ -65,6 +65,7 @@ Options
   redirect (`0` to never redirect).
 - `--client-timeout=15000` Set the maximum amount of time (in milliseconds)
   the client should wait for a response, defaults to 15,000 (15 seconds).
+- `--exclude-url=logout` (multiple) Exclude URLs matching the given PCRE pattern.
 
 Examples
 --------

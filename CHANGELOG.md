@@ -1,5 +1,10 @@
 # Changelog
 
+## unreleased
+
+- Do not include parent document query in child links #32
+- Allow exclusion of URL patterns #30
+
 ## [0.3.0] - 2019-02-02
 
 - Unconditionally remove URL fragments.

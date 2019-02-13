@@ -205,6 +205,24 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
+    public function testExcludesUrlPatterns()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--output='.$this->workspace()->path('/out.json'),
+            '--exclude-url=post1.html',
+            '--exclude-url=post2.html'
+        ], 'website');
+
+        $this->assertProcessSuccess($process);
+
+        $rows = $this->parseResults($this->workspace()->path('/out.json'));
+
+        $this->assertUrlCount($rows, 0, 'posts/post1.html');
+        $this->assertUrlCount($rows, 1, 'blog.html');
+        $this->assertUrlCount($rows, 0, 'posts/post2.html');
+    }
+
     private function assertStatus(array $results, int $code, string $target): void
     {
         $target = self::EXAMPLE_URL . '/'. $target;
@@ -223,6 +241,6 @@ class CrawlCommandTest extends EndToEndTestCase
         $target = self::EXAMPLE_URL . '/'. $target;
         $this->assertCount($count, array_filter($rows, function (array $row) use ($target) {
             return $row['url'] === $target;
-        }));
+        }), $target);
     }
 }
