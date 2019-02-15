@@ -4,6 +4,9 @@
 
 - Do not include parent document query in child links #32
 - Allow exclusion of URL patterns #30
+- Handle SIGINT signal #39
+- Introduced Dockerfile with lib event (much increase in throughput).
+- Reads response body in chunks.
 
 ## [0.3.0] - 2019-02-02
 

@@ -104,7 +104,7 @@ class CrawlCommand extends Command
         });
 
         if (extension_loaded('pcntl')) {
-            Loop::onSignal((int) SIGINT, function () use ($output) {
+            Loop::onSignal(SIGINT, function () use ($output) {
                 $output->writeln('Shutting down');
                 Loop::stop();
             });
