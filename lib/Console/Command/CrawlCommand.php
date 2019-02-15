@@ -17,7 +17,8 @@ use DTL\Extension\Fink\Console\Command\Exception\AtLeastOneFailure;
 
 class CrawlCommand extends Command
 {
-    public const EXIT_STATUS_FAILURE = 2;
+    public const EXIT_STATUS_FAILURE = 4;
+    public const EXIT_STATUS_CANCELLED = 2;
     public const EXIT_STATUS_SUCCESS = 0;
 
     private const DISPLAY_POLL_TIME = 100;
@@ -100,6 +101,11 @@ class CrawlCommand extends Command
                     throw new AtLeastOneFailure();
                 }
             }
+        });
+
+        Loop::onSignal(SIGINT, function () use ($output) {
+            $output->writeln('Shutting down');
+            Loop::stop();
         });
 
         try {
