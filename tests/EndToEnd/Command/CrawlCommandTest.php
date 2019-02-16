@@ -174,13 +174,15 @@ class CrawlCommandTest extends EndToEndTestCase
             '--concurrency=1',
             '--interval=10000',
         ]);
+
         $process->start();
         $process->waitUntil(function ($error, $data) {
             return (bool) $data;
         });
         $process->signal(SIGINT);
         $process->wait();
-        $out = $process->getOutput();
+
+        $server->stop();
 
         $this->assertEquals(130, $process->getExitCode());
         $this->assertContains('SIGINT received', $process->getOutput());
