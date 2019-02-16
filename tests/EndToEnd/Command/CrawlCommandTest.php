@@ -6,7 +6,8 @@ use DTL\Extension\Fink\Tests\EndToEnd\EndToEndTestCase;
 
 class CrawlCommandTest extends EndToEndTestCase
 {
-    public const EXAMPLE_URL = 'http://127.0.0.1:8124';
+    private const EXAMPLE_URL = 'http://127.0.0.1:8124';
+
     public function testCrawlsUrl()
     {
         $process = $this->execute([
@@ -161,6 +162,32 @@ class CrawlCommandTest extends EndToEndTestCase
 
         $this->assertEquals(1, $process->getExitCode());
     }
+
+    public function testExitsWith128PlusSigintOnSigint()
+    {
+        if (!extension_loaded('pcntl')) {
+            $this->markTestSkipped('pcntl extension is not loaded');
+        }
+        $server = $this->serve('website');
+        $process = $this->finkProcess([
+            self::EXAMPLE_URL,
+            '--concurrency=1',
+            '--interval=10000',
+        ]);
+
+        $process->start();
+        $process->waitUntil(function ($error, $data) {
+            return (bool) $data;
+        });
+        $process->signal(SIGINT);
+        $process->wait();
+
+        $server->stop();
+
+        $this->assertEquals(130, $process->getExitCode());
+        $this->assertContains('SIGINT received', $process->getOutput());
+    }
+
 
     public function testPublishToCsv()
     {

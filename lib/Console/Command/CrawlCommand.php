@@ -17,7 +17,8 @@ use DTL\Extension\Fink\Console\Command\Exception\AtLeastOneFailure;
 
 class CrawlCommand extends Command
 {
-    public const EXIT_STATUS_FAILURE = 2;
+    public const EXIT_STATUS_SIGINT = 128 + SIGINT;
+    public const EXIT_STATUS_FAILURE = 4;
     public const EXIT_STATUS_SUCCESS = 0;
 
     private const DISPLAY_POLL_TIME = 100;
@@ -47,6 +48,16 @@ class CrawlCommand extends Command
      * @var Display
      */
     private $display;
+
+    /**
+     * @var int
+     */
+    private $exitCode = self::EXIT_STATUS_SUCCESS;
+
+    /**
+     * @var bool
+     */
+    private $shuttingDown = false;
 
     public function __construct(DispatcherBuilderFactory $factory, Display $display)
     {
@@ -90,7 +101,9 @@ class CrawlCommand extends Command
         $section1 = $output->section();
 
         Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section1, $dispatcher) {
-            $section1->overwrite($this->display->render($section1->getFormatter(), $dispatcher->status()));
+            if (false === $this->shuttingDown) {
+                $section1->overwrite($this->display->render($section1->getFormatter(), $dispatcher->status()));
+            }
 
             $status = $dispatcher->status();
             if ($status->nbConcurrentRequests === 0 && $status->queueSize === 0) {
@@ -102,13 +115,22 @@ class CrawlCommand extends Command
             }
         });
 
+        if (extension_loaded('pcntl')) {
+            Loop::onSignal(SIGINT, function () use ($output) {
+                $this->exitCode = self::EXIT_STATUS_SIGINT;
+                $this->shuttingDown = true;
+                $output->write('SIGINT received');
+                Loop::stop();
+            });
+        }
+
         try {
             Loop::run();
         } catch (AtLeastOneFailure $e) {
             return self::EXIT_STATUS_FAILURE;
         }
 
-        return self::EXIT_STATUS_SUCCESS;
+        return $this->exitCode;
     }
 
     private function buildDispatcher(InputInterface $input): Dispatcher

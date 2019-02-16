@@ -26,12 +26,17 @@ class Crawler
         $start = microtime(true);
         $response = yield $this->client->request($documentUrl->__toString());
         $time = (microtime(true) - $start) * 1E6;
+
         $report->withRequestTime((int) $time);
 
         assert($response instanceof Response);
         $report->withStatus($response->getStatus());
 
-        $body = yield $response->getBody();
+        $body = '';
+        while ($chunk = yield $response->getBody()->read()) {
+            $body .= $chunk;
+        }
+
         $dom = new DOMDocument('1.0');
 
         @$dom->loadHTML($body);
