@@ -13,9 +13,7 @@ abstract class EndToEndTestCase extends IntegrationTestCase
     {
         $server = $this->serve($project);
 
-        $fink = new Process(array_merge([
-            'bin/fink'
-        ], $args), __DIR__ . '/../..');
+        $fink = $this->finkProcess($args);
 
         $fink->run(function ($error, $data) {
             if (getenv('FINK_DEBUG')) {
@@ -66,5 +64,13 @@ abstract class EndToEndTestCase extends IntegrationTestCase
         }
 
         $this->addToAssertionCount(1);
+    }
+
+    protected function finkProcess(array $args): Process
+    {
+        $fink = new Process(array_merge([
+            'bin/fink'
+        ], $args), __DIR__ . '/../..');
+        return $fink;
     }
 }

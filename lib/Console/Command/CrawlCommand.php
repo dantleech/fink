@@ -17,7 +17,7 @@ use DTL\Extension\Fink\Console\Command\Exception\AtLeastOneFailure;
 
 class CrawlCommand extends Command
 {
-    public const EXIT_STATUS_SIGINT = 128 + 2;
+    public const EXIT_STATUS_SIGINT = 128 + SIGINT;
     public const EXIT_STATUS_FAILURE = 4;
     public const EXIT_STATUS_SUCCESS = 0;
 
@@ -50,7 +50,7 @@ class CrawlCommand extends Command
     private $display;
 
     /**
-     * @var int Store exit code here after stopping the loop.
+     * @var int
      */
     private $exitCode = self::EXIT_STATUS_SUCCESS;
 
