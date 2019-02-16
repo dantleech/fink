@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## [0.4.0] - 2019-02-16
 
 - Do not include parent document query in child links #32
 - Allow exclusion of URL patterns #30
