@@ -5,7 +5,7 @@ Fink
 
 Fink (pronounced "Phpink") is a command line tool for checking HTTP links written in PHP.
 
-- Check websites for broken links or error pages.PHP
+- Check websites for broken links or error pages.
 - Fast concurrent HTTP requests.
 
 ![recording](https://user-images.githubusercontent.com/530801/52165571-7d74d900-26fa-11e9-9086-318c479616a9.gif)
@@ -24,7 +24,7 @@ $ composer require dantleech/fink --dev
 ### Installing from a PHAR
 
 Download the PHAR from the
-[Releases](https://github.com/dantleech/fink/releases) page.n
+[Releases](https://github.com/dantleech/fink/releases) page.
 
 Usage
 -----
@@ -37,7 +37,7 @@ $ ./vendor/bin/fink https://www.example.com
 
 Use `--output=somefile` to log verbose information for each URL in JSON format, including:
 
-- `url`: Then tested URL.
+- `url`: The tested URL.
 - `status`: The HTTP status code.
 - `referrer`: The page which linked to the URL.
 - `distance`: The number of links away from the start document.
@@ -92,7 +92,7 @@ $ fink http://www.example.com -x0 -oreport.json
 ```
 
 ```
-$ cat report.json| jq -c '. | select(.status==404) | {url: .url, refferer: .referrer}'
+$ cat report.json| jq -c '. | select(.status==404) | {url: .url, referrer: .referrer}'
 ```
 
 Exit Codes
