@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.4.1]
+
+- SIGINT not defined
+
 ## [0.4.0] - 2019-02-16
 
 - Do not include parent document query in child links #32

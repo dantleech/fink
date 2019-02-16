@@ -17,7 +17,7 @@ use DTL\Extension\Fink\Console\Command\Exception\AtLeastOneFailure;
 
 class CrawlCommand extends Command
 {
-    public const EXIT_STATUS_SIGINT = 128 + SIGINT;
+    public const EXIT_STATUS_SIGINT = 130; // 128 + SIGINT
     public const EXIT_STATUS_FAILURE = 4;
     public const EXIT_STATUS_SUCCESS = 0;
 
