@@ -95,6 +95,13 @@ class DispatcherBuilder
      */
     private $excludeUrlPatterns;
 
+    /**
+     * @var array
+     */
+    private $headers = [
+        'User-Agent' => 'Mozilla/5.0 (compatible; Artax; FinkPHP)'
+    ];
+
     public function __construct(Url $baseUrl)
     {
         $this->baseUrl = $baseUrl;
@@ -198,6 +205,13 @@ class DispatcherBuilder
         return $this->buildDispatcher($queue);
     }
 
+    public function headers(array $headers): self
+    {
+        $this->headers = array_merge($this->headers, $headers);
+
+        return $this;
+    }
+
     private function buildDispatcher(UrlQueue $queue): Dispatcher
     {
         return new Dispatcher(
@@ -264,6 +278,7 @@ class DispatcherBuilder
         $client->setOptions([
             Client::OP_TRANSFER_TIMEOUT => $this->clientTransferTimeout,
             Client::OP_MAX_REDIRECTS => $this->clientMaxRedirects,
+            Client::OP_DEFAULT_HEADERS => $this->headers,
         ]);
 
         return $client;

@@ -4,6 +4,7 @@ namespace DTL\Extension\Fink\Console\Command;
 
 use Amp\Loop;
 use DTL\Extension\Fink\Console\Display;
+use DTL\Extension\Fink\Console\HeaderParser;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use DTL\Extension\Fink\Model\Dispatcher;
 use RuntimeException;
@@ -38,6 +39,7 @@ class CrawlCommand extends Command
     private const OPT_CLIENT_MAX_TIMEOUT = 'client-timeout';
     private const OPT_CLIENT_MAX_REDIRECTS = 'client-redirects';
     private const OPT_EXCLUDE_URL = 'exclude-url';
+    private const OPT_HEADER = 'header';
 
     /**
      * @var DispatcherBuilderFactory
@@ -59,11 +61,17 @@ class CrawlCommand extends Command
      */
     private $shuttingDown = false;
 
+    /**
+     * @var HeaderParser
+     */
+    private $headerParser;
+
     public function __construct(DispatcherBuilderFactory $factory, Display $display)
     {
         parent::__construct();
         $this->factory = $factory;
         $this->display = $display;
+        $this->headerParser = new HeaderParser();
     }
 
     protected function configure()
@@ -85,6 +93,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_CLIENT_MAX_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Number of milliseconds to wait for URL', 15000);
         $this->addOption(self::OPT_CLIENT_MAX_REDIRECTS, null, InputOption::VALUE_REQUIRED, 'Maximum number of redirects to follow', 5);
         $this->addOption(self::OPT_EXCLUDE_URL, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Exclude PCRE URL pattern', []);
+        $this->addOption(self::OPT_HEADER, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Custom header, e.g. "X-Teapot: Me"', []);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -149,6 +158,7 @@ class CrawlCommand extends Command
         $maxRedirects = $this->castToInt($input->getOption(self::OPT_CLIENT_MAX_REDIRECTS));
         $maxTimeout = $this->castToInt($input->getOption(self::OPT_CLIENT_MAX_TIMEOUT));
         $excludeUrls = $this->castToArray($input->getOption(self::OPT_EXCLUDE_URL));
+        $headers = $this->castToArray($input->getOption(self::OPT_HEADER));
         
         $builder = $this->factory->createForUrl($url);
         $builder->maxConcurrency($maxConcurrency);
@@ -157,15 +167,18 @@ class CrawlCommand extends Command
         $builder->urlReportSize($bufSize);
         $builder->clientMaxRedirects($maxRedirects);
         $builder->clientTransferTimeout($maxTimeout);
+        $builder->headers($this->headerParser->parseHeaders($headers));
 
         if (null !== $externalDistance) {
             $builder->limitExternalDistance($this->castToInt($externalDistance));
         }
 
         $builder->noPeerVerification($insecure);
+
         if ($outfile) {
             $builder->publishTo($this->castToString($outfile));
         }
+
         if ($cookieFile) {
             $builder->loadCookies($this->castToString($cookieFile));
         }
@@ -173,6 +186,7 @@ class CrawlCommand extends Command
         if (null !== $maxDistance) {
             $builder->maxDistance($this->castToInt($maxDistance));
         }
+
         if (!empty($excludeUrls)) {
             $builder->excludeUrlPatterns($excludeUrls);
         }

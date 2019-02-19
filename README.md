@@ -47,7 +47,14 @@ Use `--output=somefile` to log verbose information for each URL in JSON format, 
 Options
 -------
 
+- `--client-redirects=5` Set the maximum number of times the client should
+  redirect (`0` to never redirect).
+- `--client-timeout=15000` Set the maximum amount of time (in milliseconds)
+  the client should wait for a response, defaults to 15,000 (15 seconds).
 - `--concurrency`: Number of simultaneous HTTP requests to use.
+- `--display-bufsize=10` Set the number of URLs shown during execution.
+- `--exclude-url=logout` (multiple) Exclude URLs matching the given PCRE pattern.
+- `--header="Foo: Bar"` (multiple) Specify custom header(s).
 - `--insecure`: Do not verify SSL certificates.
 - `--load-cookies`: Load from a [cookies.txt](http://www.cookiecentral.com/faq/#3.5).
 - `--max-distance`: Maximum allowed distance from base URL (if not specified
@@ -60,12 +67,6 @@ Options
   (truncates existing content).
 - `--publisher=csv` Set the publisher (defaults to `json`) can be either
   `json` or `csv`.
-- `--display-bufsize=10` Set the number of URLs shown during execution.
-- `--client-redirects=5` Set the maximum number of times the client should
-  redirect (`0` to never redirect).
-- `--client-timeout=15000` Set the maximum amount of time (in milliseconds)
-  the client should wait for a response, defaults to 15,000 (15 seconds).
-- `--exclude-url=logout` (multiple) Exclude URLs matching the given PCRE pattern.
 
 Examples
 --------
