@@ -39,7 +39,7 @@ class CrawlCommand extends Command
     private const OPT_CLIENT_MAX_TIMEOUT = 'client-timeout';
     private const OPT_CLIENT_MAX_REDIRECTS = 'client-redirects';
     private const OPT_EXCLUDE_URL = 'exclude-url';
-    public const OPT_HEADER = 'header';
+    private const OPT_HEADER = 'header';
 
     /**
      * @var DispatcherBuilderFactory
