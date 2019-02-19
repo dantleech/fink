@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Support for custom headers via. `--header=Foo:Bar` #46
+
 ## [0.4.1]
 
 - SIGINT not defined

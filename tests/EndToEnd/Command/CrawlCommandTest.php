@@ -232,6 +232,20 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
+    public function testCustomHeaders()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL . '/teapot.php',
+            '--header=X-One: Teapot',
+            '--header=X-Two: Pottea',
+            '--output='.$this->workspace()->path('/out.json'),
+        ], 'custom-headers');
+
+        $this->assertProcessSuccess($process);
+        $rows = $this->parseResults($this->workspace()->path('/out.json'));
+        $this->assertStatus($rows, 418, 'teapot.php');
+    }
+
     public function testExcludesUrlPatterns()
     {
         $process = $this->execute([
