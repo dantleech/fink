@@ -140,4 +140,13 @@ final class Url
             $this->__toString()
         ));
     }
+
+    public function originUrl(): Url
+    {
+        if (null === $this->referrer) {
+            return $this;
+        }
+
+        return $this->referrer->originUrl();
+    }
 }

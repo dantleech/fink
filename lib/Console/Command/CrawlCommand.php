@@ -7,6 +7,7 @@ use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Console\HeaderParser;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use DTL\Extension\Fink\Model\Dispatcher;
+use DTL\Extension\Fink\Model\Urls;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -24,7 +25,7 @@ class CrawlCommand extends Command
 
     private const DISPLAY_POLL_TIME = 100;
 
-    private const ARG_URL = 'url';
+    private const ARG_URLS = 'url';
 
     private const OPT_CONCURRENCY = 'concurrency';
     private const OPT_EXT_DISTANCE = 'max-external-distance';
@@ -78,7 +79,7 @@ class CrawlCommand extends Command
     {
         $this->setDescription('Crawl the given URL');
 
-        $this->addArgument(self::ARG_URL, InputArgument::REQUIRED, 'URL to crawl');
+        $this->addArgument(self::ARG_URLS, InputArgument::REQUIRED|InputArgument::IS_ARRAY, 'URL(s) to crawl');
 
         $this->addOption(self::OPT_CONCURRENCY, 'c', InputOption::VALUE_REQUIRED, 'Concurrency', 10);
         $this->addOption(self::OPT_OUTPUT, 'o', InputOption::VALUE_REQUIRED, 'Output file');
@@ -144,7 +145,7 @@ class CrawlCommand extends Command
 
     private function buildDispatcher(InputInterface $input): Dispatcher
     {
-        $url = $this->castToString($input->getArgument('url'));
+        $urls = $this->castToArray($input->getArgument(self::ARG_URLS));
         
         $maxConcurrency = $this->castToInt($input->getOption(self::OPT_CONCURRENCY));
         $outfile = $input->getOption(self::OPT_OUTPUT);
@@ -160,7 +161,7 @@ class CrawlCommand extends Command
         $excludeUrls = $this->castToArray($input->getOption(self::OPT_EXCLUDE_URL));
         $headers = $this->castToArray($input->getOption(self::OPT_HEADER));
         
-        $builder = $this->factory->createForUrl($url);
+        $builder = $this->factory->createForUrls($urls);
         $builder->maxConcurrency($maxConcurrency);
         $builder->noDeduplication($noDedupe);
         $builder->publisher($publisher);

@@ -22,6 +22,7 @@ use DTL\Extension\Fink\Model\Queue\ExternalDistanceLimitingQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlQueue;
+use DTL\Extension\Fink\Model\Urls;
 use RuntimeException;
 use DTL\Extension\Fink\Model\Store\CircularReportStore;
 
@@ -29,11 +30,6 @@ class DispatcherBuilder
 {
     public const PUBLISHER_CSV = 'csv';
     public const PUBLISHER_JSON = 'json';
-
-    /**
-     * @var Url
-     */
-    private $baseUrl;
 
     /**
      * @var int
@@ -102,16 +98,19 @@ class DispatcherBuilder
         'User-Agent' => 'Mozilla/5.0 (compatible; Artax; FinkPHP)'
     ];
 
-    public function __construct(Url $baseUrl)
+    /**
+     * @var Urls
+     */
+    private $baseUrls;
+
+    public function __construct(Urls $baseUrls)
     {
-        $this->baseUrl = $baseUrl;
+        $this->baseUrls = $baseUrls;
     }
 
-    public static function create(string $url): self
+    public static function create(array $urls): self
     {
-        $url = Url::fromUrl($url);
-
-        return new self($url);
+        return new self(Urls::fromUrls($urls));
     }
 
     public function excludeUrlPatterns(array $urlPatterns): self
@@ -200,7 +199,9 @@ class DispatcherBuilder
     public function build(): Dispatcher
     {
         $queue = $this->buildQueue();
-        $queue->enqueue($this->baseUrl);
+        foreach ($this->baseUrls as $baseUrl) {
+            $queue->enqueue($baseUrl);
+        }
 
         return $this->buildDispatcher($queue);
     }
@@ -232,7 +233,7 @@ class DispatcherBuilder
         }
 
         if (null !== $this->limitExternalDistance) {
-            $queue = new ExternalDistanceLimitingQueue($queue, $this->baseUrl, $this->limitExternalDistance);
+            $queue = new ExternalDistanceLimitingQueue($queue, $this->limitExternalDistance);
         }
 
         if (null !== $this->maxDistance) {

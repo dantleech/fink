@@ -6,8 +6,8 @@ use DTL\Extension\Fink\DispatcherBuilder;
 
 class DispatcherBuilderFactory
 {
-    public function createForUrl(string $url): DispatcherBuilder
+    public function createForUrls($urls): DispatcherBuilder
     {
-        return DispatcherBuilder::create($url);
+        return DispatcherBuilder::create($urls);
     }
 }
