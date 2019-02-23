@@ -12,6 +12,7 @@ use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
 use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
 use DTL\Extension\Fink\Model\Crawler;
 use DTL\Extension\Fink\Model\Dispatcher;
+use DTL\Extension\Fink\Model\Limiter\ConcurrenyLimiter;
 use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
 use DTL\Extension\Fink\Model\Publisher\CsvStreamPublisher;
 use DTL\Extension\Fink\Model\Publisher\JsonStreamPublisher;
@@ -101,6 +102,11 @@ class DispatcherBuilder
      * @var Urls
      */
     private $baseUrls;
+
+    /**
+     * @var float
+     */
+    private $rateLimit;
 
     public function __construct(Urls $baseUrls)
     {
@@ -212,14 +218,21 @@ class DispatcherBuilder
         return $this;
     }
 
+    public function limitRate(float $rate): self
+    {
+        $this->rateLimit = $rate;
+
+        return $this;
+    }
+
     private function buildDispatcher(UrlQueue $queue): Dispatcher
     {
         return new Dispatcher(
-            $this->maxConcurrency,
             $this->buildPublisher(),
             new Crawler($this->buildClient()),
             $queue,
-            new CircularReportStore($this->urlReportSize)
+            new CircularReportStore($this->urlReportSize),
+            new ConcurrenyLimiter($this->maxConcurrency)
         );
     }
 

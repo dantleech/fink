@@ -5,6 +5,7 @@ namespace DTL\Extension\Fink\Model;
 use DTL\Extension\Fink\Model\Store\ImmutableReportStore;
 use DTL\Extension\Fink\Model\ImmutableReportStore as ImmutableReportStoreInterface;
 use Exception;
+use DTL\Extension\Fink\Model\Limiter;
 
 class Dispatcher
 {
@@ -17,11 +18,6 @@ class Dispatcher
      * @var Status
      */
     private $status;
-
-    /**
-     * @var int
-     */
-    private $maxConcurrency;
 
     /**
      * @var Publisher
@@ -43,25 +39,30 @@ class Dispatcher
      */
     private $store;
 
+    /**
+     * @var DispatchLimiter
+     */
+    private $limiter;
+
     public function __construct(
-        int $maxConcurrency,
         Publisher $publisher,
         Crawler $crawler,
         UrlQueue $queue,
-        ReportStore $store
+        ReportStore $store,
+        Limiter $limiter
     ) {
         $this->crawler = $crawler;
         $this->publisher = $publisher;
-        $this->maxConcurrency = $maxConcurrency;
         $this->queue = $queue;
         $this->store = $store;
         $this->status = new Status(new ImmutableReportStore($store));
+        $this->limiter = $limiter;
     }
 
     public function dispatch()
     {
         while (true) {
-            if ($this->status->nbConcurrentRequests >= $this->maxConcurrency) {
+            if ($this->limiter->limitReached($this->status)) {
                 return;
             }
             

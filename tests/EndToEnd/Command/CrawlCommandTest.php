@@ -282,6 +282,17 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertUrlCount($rows, 1, 'hidden/secret.html');
     }
 
+    public function testRateLimiting()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL, 
+            '--rate=2',
+            '--output='.$this->workspace()->path('/out.json'),
+        ], 'website');
+
+        $this->assertProcessSuccess($process);
+    }
+
     private function assertStatus(array $results, int $code, string $target): void
     {
         $target = self::EXAMPLE_URL . '/'. $target;
