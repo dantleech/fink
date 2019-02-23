@@ -12,7 +12,10 @@ use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
 use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
 use DTL\Extension\Fink\Model\Crawler;
 use DTL\Extension\Fink\Model\Dispatcher;
+use DTL\Extension\Fink\Model\Limiter;
+use DTL\Extension\Fink\Model\Limiter\ChainLimiter;
 use DTL\Extension\Fink\Model\Limiter\ConcurrenyLimiter;
+use DTL\Extension\Fink\Model\Limiter\RateLimiter;
 use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
 use DTL\Extension\Fink\Model\Publisher\CsvStreamPublisher;
 use DTL\Extension\Fink\Model\Publisher\JsonStreamPublisher;
@@ -232,7 +235,7 @@ class DispatcherBuilder
             new Crawler($this->buildClient()),
             $queue,
             new CircularReportStore($this->urlReportSize),
-            new ConcurrenyLimiter($this->maxConcurrency)
+            $this->buildLimiter()
         );
     }
 
@@ -330,5 +333,18 @@ class DispatcherBuilder
         }
         
         return new JsonStreamPublisher(new ResourceOutputStream($resource));
+    }
+
+    private function buildLimiter(): Limiter
+    {
+        $limiters = [
+            new ConcurrenyLimiter($this->maxConcurrency)
+        ];
+
+        if ($this->rateLimit) {
+            $limiters[] = new RateLimiter($this->rateLimit);
+        }
+
+        return new ChainLimiter($limiters);
     }
 }

@@ -285,7 +285,7 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testRateLimiting()
     {
         $process = $this->execute([
-            self::EXAMPLE_URL, 
+            self::EXAMPLE_URL,
             '--rate=2',
             '--output='.$this->workspace()->path('/out.json'),
         ], 'website');

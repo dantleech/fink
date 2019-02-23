@@ -5,7 +5,6 @@ namespace DTL\Extension\Fink\Model;
 use DTL\Extension\Fink\Model\Store\ImmutableReportStore;
 use DTL\Extension\Fink\Model\ImmutableReportStore as ImmutableReportStoreInterface;
 use Exception;
-use DTL\Extension\Fink\Model\Limiter;
 
 class Dispatcher
 {
