@@ -39,7 +39,7 @@ class Dispatcher
     private $store;
 
     /**
-     * @var DispatchLimiter
+     * @var Limiter
      */
     private $limiter;
 

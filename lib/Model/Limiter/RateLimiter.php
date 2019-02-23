@@ -52,9 +52,6 @@ class RateLimiter implements Limiter
 
     private function calculateInterval(float $ratePerSecond): float
     {
-        if (0 == $ratePerSecond) {
-            return 0.0;
-        }
         return 1 / $ratePerSecond;
     }
 }
