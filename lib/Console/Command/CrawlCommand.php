@@ -40,6 +40,7 @@ class CrawlCommand extends Command
     private const OPT_CLIENT_MAX_REDIRECTS = 'client-redirects';
     private const OPT_EXCLUDE_URL = 'exclude-url';
     private const OPT_HEADER = 'header';
+    private const OPT_RATE = 'rate';
 
     /**
      * @var DispatcherBuilderFactory
@@ -94,6 +95,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_CLIENT_MAX_REDIRECTS, null, InputOption::VALUE_REQUIRED, 'Maximum number of redirects to follow', 5);
         $this->addOption(self::OPT_EXCLUDE_URL, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Exclude PCRE URL pattern', []);
         $this->addOption(self::OPT_HEADER, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Custom header, e.g. "X-Teapot: Me"', []);
+        $this->addOption(self::OPT_RATE, null, InputOption::VALUE_REQUIRED, 'Set max request rate (as requests per second)', []);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -159,6 +161,7 @@ class CrawlCommand extends Command
         $maxTimeout = $this->castToInt($input->getOption(self::OPT_CLIENT_MAX_TIMEOUT));
         $excludeUrls = $this->castToArray($input->getOption(self::OPT_EXCLUDE_URL));
         $headers = $this->castToArray($input->getOption(self::OPT_HEADER));
+        $rate = $input->getOption(self::OPT_RATE);
         
         $builder = $this->factory->createForUrls($urls);
         $builder->maxConcurrency($maxConcurrency);
@@ -168,6 +171,10 @@ class CrawlCommand extends Command
         $builder->clientMaxRedirects($maxRedirects);
         $builder->clientTransferTimeout($maxTimeout);
         $builder->headers($this->headerParser->parseHeaders($headers));
+
+        if (null !== $rate) {
+            $builder->limitRate($this->castToFloat($rate));
+        }
 
         if (null !== $externalDistance) {
             $builder->limitExternalDistance($this->castToInt($externalDistance));
@@ -231,5 +238,10 @@ class CrawlCommand extends Command
     private function castToArray($value): array
     {
         return (array) $value;
+    }
+
+    private function castToFloat($value): float
+    {
+        return (float) $value;
     }
 }

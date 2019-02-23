@@ -19,11 +19,6 @@ class Dispatcher
     private $status;
 
     /**
-     * @var int
-     */
-    private $maxConcurrency;
-
-    /**
      * @var Publisher
      */
     private $publisher;
@@ -43,25 +38,30 @@ class Dispatcher
      */
     private $store;
 
+    /**
+     * @var Limiter
+     */
+    private $limiter;
+
     public function __construct(
-        int $maxConcurrency,
         Publisher $publisher,
         Crawler $crawler,
         UrlQueue $queue,
-        ReportStore $store
+        ReportStore $store,
+        Limiter $limiter
     ) {
         $this->crawler = $crawler;
         $this->publisher = $publisher;
-        $this->maxConcurrency = $maxConcurrency;
         $this->queue = $queue;
         $this->store = $store;
         $this->status = new Status(new ImmutableReportStore($store));
+        $this->limiter = $limiter;
     }
 
     public function dispatch()
     {
         while (true) {
-            if ($this->status->nbConcurrentRequests >= $this->maxConcurrency) {
+            if ($this->limiter->limitReached($this->status)) {
                 return;
             }
             
