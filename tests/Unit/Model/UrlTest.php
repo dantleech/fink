@@ -278,4 +278,14 @@ tids[n]+" ];
         $url2 = Url::fromUrl('https://www.example2.com');
         $url1->externalDistanceTo($url2);
     }
+
+    public function testReturnsBaseUrl()
+    {
+        $url1 = Url::fromUrl('https://www.example1.com');
+        $url = $url1->resolveUrl('https://foobar.com');
+        $url = $url->resolveUrl('https://barfoo.com');
+        $url = $url->resolveUrl('https://yzed.com');
+
+        $this->assertSame($url1, $url->originUrl());
+    }
 }

@@ -11,10 +11,9 @@ class ExternalDisatanceLimitingQueueTest extends TestCase
 {
     public function testLimitsExternalDistanceToZero()
     {
+        $queue = new ExternalDistanceLimitingQueue(new RealUrlQueue(), 0);
+
         $url = Url::fromUrl('https://www.dantleech.com');
-
-        $queue = new ExternalDistanceLimitingQueue(new RealUrlQueue(), $url, 0);
-
         $internalUrl = $url->resolveUrl('https://www.dantleech.com/1234');
         $externalUrl = $internalUrl->resolveUrl('https://foobar.com');
         $externalUrlChild = $externalUrl->resolveUrl('https://foobar.com/test');
@@ -29,7 +28,7 @@ class ExternalDisatanceLimitingQueueTest extends TestCase
     {
         $url = Url::fromUrl('https://www.dantleech.com');
 
-        $queue = new ExternalDistanceLimitingQueue(new RealUrlQueue(), $url, 1);
+        $queue = new ExternalDistanceLimitingQueue(new RealUrlQueue(), 1);
 
         $internalUrl = $url->resolveUrl('https://www.dantleech.com/1234');
         $externalUrl = $internalUrl->resolveUrl('https://foobar.com');
@@ -48,7 +47,7 @@ class ExternalDisatanceLimitingQueueTest extends TestCase
     {
         $url = Url::fromUrl('https://www.dantleech.com');
 
-        $queue = new ExternalDistanceLimitingQueue(new RealUrlQueue(), $url, 2);
+        $queue = new ExternalDistanceLimitingQueue(new RealUrlQueue(), 2);
 
         $one = $url->resolveUrl('https://foobar.com');
         $two = $one->resolveUrl('https://foobar.com/test');

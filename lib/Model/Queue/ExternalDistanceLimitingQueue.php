@@ -13,19 +13,13 @@ class ExternalDistanceLimitingQueue implements UrlQueue
     private $innerQueue;
 
     /**
-     * @var Url
-     */
-    private $baseUrl;
-
-    /**
      * @var int
      */
     private $maxDistance;
 
-    public function __construct(UrlQueue $innerQueue, Url $baseUrl, int $maxDistance = 0)
+    public function __construct(UrlQueue $innerQueue, int $maxDistance = 0)
     {
         $this->innerQueue = $innerQueue;
-        $this->baseUrl = $baseUrl;
         $this->maxDistance = $maxDistance;
     }
 
@@ -39,7 +33,7 @@ class ExternalDistanceLimitingQueue implements UrlQueue
 
     public function enqueue(Url $url): void
     {
-        if ($this->baseUrl->externalDistanceTo($url) > $this->maxDistance) {
+        if ($url->originUrl()->externalDistanceTo($url) > $this->maxDistance) {
             return;
         }
 
