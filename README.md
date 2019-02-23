@@ -72,6 +72,7 @@ Options
   (truncates existing content).
 - `--publisher=csv` Set the publisher (defaults to `json`) can be either
   `json` or `csv`.
+- `--rate` Set a maximum number of requests to make in a second.
 
 Examples
 --------
