@@ -42,7 +42,7 @@ class RateLimiterTest extends TestCase
             usleep(500);
         }
 
-        $this->assertEquals($expectedHits, $hits);
+        $this->assertEquals($expectedHits, $hits, 'Expected number of hits', 1);
     }
 
     public function provideLimitsRate()
