@@ -267,7 +267,8 @@ class CrawlCommandTest extends EndToEndTestCase
     public function testCrawlsMultipleUrls()
     {
         $process = $this->execute([
-            self::EXAMPLE_URL, self::EXAMPLE_URL . '/hidden.html',
+            self::EXAMPLE_URL,
+            self::EXAMPLE_URL . '/hidden.html',
             '--output='.$this->workspace()->path('/out.json'),
         ], 'website');
 
@@ -275,6 +276,8 @@ class CrawlCommandTest extends EndToEndTestCase
 
         $rows = $this->parseResults($this->workspace()->path('/out.json'));
 
+        $this->assertUrlCount($rows, 1, 'blog.html');
+        $this->assertUrlCount($rows, 1, 'about.html');
         $this->assertUrlCount($rows, 1, 'hidden.html');
         $this->assertUrlCount($rows, 1, 'hidden/secret.html');
     }

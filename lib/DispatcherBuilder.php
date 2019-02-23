@@ -20,7 +20,6 @@ use DTL\Extension\Fink\Model\Queue\ExcludingQueue;
 use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
 use DTL\Extension\Fink\Model\Queue\ExternalDistanceLimitingQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
-use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlQueue;
 use DTL\Extension\Fink\Model\Urls;
 use RuntimeException;

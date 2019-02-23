@@ -3,6 +3,7 @@
 ## Unreleased
 
 - Support for custom headers via. `--header=Foo:Bar` #46
+- Support multiple base URLs #44
 
 ## [0.4.1]
 

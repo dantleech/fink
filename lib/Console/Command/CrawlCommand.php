@@ -7,7 +7,6 @@ use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Console\HeaderParser;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use DTL\Extension\Fink\Model\Dispatcher;
-use DTL\Extension\Fink\Model\Urls;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
