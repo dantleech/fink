@@ -128,6 +128,12 @@ tids[n]+" ];
             '../../../../../baz',
             'https://example.com/baz'
         ];
+
+        yield 'uses current base path for relative names' => [
+            'https://example.com/info/faq.html',
+            'baz.html',
+            'https://example.com/info/baz.html'
+        ];
     }
 
     public function testIsHttp()
