@@ -20,7 +20,7 @@ class StatusLineDisplay implements Display
             number_format($status->failurePercentage(), 2)
         );
 
-        return implode(PHP_EOL, [
+        return implode("\n", [
             str_repeat('-', FormatterHelper::strlenWithoutDecoration($formatter, $line)),
             $line,
         ]);

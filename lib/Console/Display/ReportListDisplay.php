@@ -25,7 +25,7 @@ class ReportListDisplay implements Display
             );
         }
 
-        return implode(PHP_EOL, $statuses);
+        return implode("\n", $statuses);
     }
 
     private function resolveFormat(bool $last, Report $report)
