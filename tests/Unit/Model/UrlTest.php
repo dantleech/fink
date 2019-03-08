@@ -117,9 +117,15 @@ tids[n]+" ];
             'https://training.github.com'
         ];
 
-        yield 'relative URL 1' => [
-            'https://example.com/foo/bar',
-            '../../baz',
+        yield 'makes relative URLs absolute' => [
+            'https://example.com/info/faq',
+            '../../info/app',
+            'https://example.com/info/app'
+        ];
+
+        yield 'ignores extra ".." segments' => [
+            'https://example.com/info/faq',
+            '../../../../../baz',
             'https://example.com/baz'
         ];
     }
