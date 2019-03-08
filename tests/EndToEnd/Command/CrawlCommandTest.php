@@ -282,6 +282,27 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertUrlCount($rows, 1, 'hidden/secret.html');
     }
 
+    public function testCrawlsGivenHiddenUrls()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            self::EXAMPLE_URL . '/hidden.html',
+            '--include-link=/hidden.html',
+            '--output='.$this->workspace()->path('/out.json'),
+        ], 'website');
+
+        $this->assertProcessSuccess($process);
+
+        $rows = $this->parseResults($this->workspace()->path('/out.json'));
+
+        $this->assertUrlCount($rows, 1, 'blog.html');
+        $this->assertUrlCount($rows, 1, 'about.html');
+        $this->assertUrlCount($rows, 1, 'hidden.html');
+        $this->assertUrlCount($rows, 1, 'hidden/secret.html');
+        $this->assertUrlCount($rows, 1, 'hidden/secret1.html');
+        $this->assertUrlCount($rows, 1, 'hidden/secret2.html');
+    }
+
     public function testRateLimiting()
     {
         $process = $this->execute([

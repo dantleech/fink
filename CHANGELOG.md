@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Allow additional links to be included #60
 - Resolve relative URLs to absolute URLs #64
 
 ## [0.5.0]

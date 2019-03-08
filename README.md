@@ -60,6 +60,8 @@ Options
 - `--display-bufsize=10` Set the number of URLs shown during execution.
 - `--exclude-url=logout` (multiple) Exclude URLs matching the given PCRE pattern.
 - `--header="Foo: Bar"` (multiple) Specify custom header(s).
+- `--include-link=foobar.html` Include given link as if it were linked from the
+  base URL.
 - `--insecure`: Do not verify SSL certificates.
 - `--load-cookies`: Load from a [cookies.txt](http://www.cookiecentral.com/faq/#3.5).
 - `--max-distance`: Maximum allowed distance from base URL (if not specified

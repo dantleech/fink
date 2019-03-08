@@ -24,6 +24,7 @@ use DTL\Extension\Fink\Model\Queue\ExcludingQueue;
 use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
 use DTL\Extension\Fink\Model\Queue\ExternalDistanceLimitingQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
+use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlQueue;
 use DTL\Extension\Fink\Model\Urls;
 use RuntimeException;
@@ -102,7 +103,7 @@ class DispatcherBuilder
     ];
 
     /**
-     * @var Urls
+     * @var Urls<Url>
      */
     private $baseUrls;
 
@@ -110,6 +111,11 @@ class DispatcherBuilder
      * @var float
      */
     private $rateLimit;
+
+    /**
+     * @var string[]
+     */
+    private $includeLinks = [];
 
     public function __construct(Urls $baseUrls)
     {
@@ -209,6 +215,9 @@ class DispatcherBuilder
         $queue = $this->buildQueue();
         foreach ($this->baseUrls as $baseUrl) {
             $queue->enqueue($baseUrl);
+            foreach ($this->includeLinks as $additionalUrl) {
+                $queue->enqueue($baseUrl->resolveUrl($additionalUrl));
+            }
         }
 
         return $this->buildDispatcher($queue);
@@ -224,6 +233,13 @@ class DispatcherBuilder
     public function limitRate(float $rate): self
     {
         $this->rateLimit = $rate;
+
+        return $this;
+    }
+
+    public function includeLinks(array $includeLinks): self
+    {
+        $this->includeLinks = $includeLinks;
 
         return $this;
     }
