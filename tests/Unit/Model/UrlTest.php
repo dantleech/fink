@@ -116,6 +116,18 @@ tids[n]+" ];
             'https://training.github.com',
             'https://training.github.com'
         ];
+
+        yield 'makes relative URLs absolute' => [
+            'https://example.com/info/faq',
+            '../../info/app',
+            'https://example.com/info/app'
+        ];
+
+        yield 'ignores extra ".." segments' => [
+            'https://example.com/info/faq',
+            '../../../../../baz',
+            'https://example.com/baz'
+        ];
     }
 
     public function testIsHttp()

@@ -4,8 +4,10 @@ namespace DTL\Extension\Fink\Model;
 
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use DTL\Extension\Fink\Model\Exception\InvalidUrlComparison;
+use League\Uri\AbstractUri;
 use League\Uri\Exception;
 use League\Uri\Uri;
+use Webmozart\PathUtil\Path;
 
 final class Url
 {
@@ -56,10 +58,7 @@ final class Url
         }
 
         if ($link->getPath()) {
-            // prepend non-absolute paths with "/" to prevent them being
-            // concatenated with the host, for example:
-            // https://www.example.comtemplate.html
-            $link = $link->withPath('/'.ltrim($link->getPath(), '/'));
+            $link = $link->withPath($this->normalizePath($link));
         }
 
         if (!$link->getScheme()) {
@@ -148,5 +147,18 @@ final class Url
         }
 
         return $this->referrer->originUrl();
+    }
+
+    private function normalizePath(AbstractUri $link): string
+    {
+        // prepend non-absolute paths with "/" to prevent them being
+        // concatenated with the host, for example:
+        // https://www.example.comtemplate.html
+        $path = '/'.ltrim($link->getPath(), '/');
+
+        if ($this->uri->getPath()) {
+            $path = Path::makeAbsolute($path, $this->uri->getPath());
+        }
+        return $path;
     }
 }

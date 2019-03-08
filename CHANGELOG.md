@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Resolve relative URLs to absolute URLs #64
+
 ## [0.5.0]
 
 - Support for custom headers via. `--header=Foo:Bar` #46
