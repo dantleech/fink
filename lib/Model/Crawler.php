@@ -5,6 +5,7 @@ namespace DTL\Extension\Fink\Model;
 use Amp\Artax\Client;
 use Amp\Artax\Response;
 use DOMDocument;
+use DOMElement;
 use DOMXPath;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use Generator;
@@ -28,6 +29,9 @@ class Crawler
         $time = (microtime(true) - $start) * 1E6;
 
         $report->withRequestTime((int) $time);
+        if ($documentUrl->context()) {
+            $report->withContext($documentUrl->context());
+        }
 
         assert($response instanceof Response);
         $report->withStatus($response->getStatus());
@@ -43,6 +47,7 @@ class Crawler
         $xpath = new DOMXPath($dom);
 
         foreach ($xpath->query('//a') as $linkElement) {
+            assert($linkElement instanceof DOMElement);
             $href = $linkElement->getAttribute('href');
 
             if (!$href) {
@@ -50,7 +55,7 @@ class Crawler
             }
 
             try {
-                $url = $documentUrl->resolveUrl($href);
+                $url = $documentUrl->resolveUrl($href, $this->formatLink($linkElement));
             } catch (InvalidUrl $invalidUrl) {
                 $report->withException($invalidUrl);
                 continue;
@@ -62,5 +67,13 @@ class Crawler
 
             $queue->enqueue($url);
         }
+    }
+
+    private function formatLink(DOMElement $linkElement): string
+    {
+        $dom = new DOMDocument('1.0');
+        $node = $dom->appendChild($dom->importNode($linkElement, true));
+
+        return $dom->saveXML($node);
     }
 }

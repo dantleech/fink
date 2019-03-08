@@ -31,6 +31,11 @@ class ReportBuilder
      */
     private $requestTime = 0;
 
+    /**
+     * @var string
+     */
+    private $context;
+
     private function __construct(Url $url)
     {
         $this->url = $url;
@@ -65,13 +70,20 @@ class ReportBuilder
         return $this;
     }
 
+    public function withContext(string $context): self
+    {
+        $this->context = $context;
+        return $this;
+    }
+
     public function build(): Report
     {
         return new Report(
             $this->url,
             $this->statusCode,
             $this->exception,
-            $this->requestTime
+            $this->requestTime,
+            $this->context
         );
     }
 }

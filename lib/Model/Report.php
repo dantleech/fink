@@ -26,16 +26,23 @@ class Report
      */
     private $exception;
 
+    /**
+     * @var string|null
+     */
+    private $context;
+
     public function __construct(
         Url $url,
         HttpStatusCode $statusCode = null,
         Exception $exception = null,
-        int $requestTime = 0
+        int $requestTime = 0,
+        string $context = null
     ) {
         $this->url = $url;
         $this->statusCode = $statusCode;
         $this->requestTime = $requestTime;
         $this->exception = $exception;
+        $this->context = $context;
     }
 
     public function url(): Url
@@ -68,6 +75,7 @@ class Report
             'status' => $this->statusCode ? $this->statusCode->toInt() : null,
             'request-time' => $this->requestTime,
             'exception' => $this->exception ? $this->exception->getMessage() : null,
+            'context' => $this->context,
         ];
     }
 
