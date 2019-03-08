@@ -29,9 +29,7 @@ class Crawler
         $time = (microtime(true) - $start) * 1E6;
 
         $report->withRequestTime((int) $time);
-        if ($documentUrl->context()) {
-            $report->withContext($documentUrl->context());
-        }
+        $report->withReferrerElement($documentUrl->referrerElement());
 
         assert($response instanceof Response);
         $report->withStatus($response->getStatus());

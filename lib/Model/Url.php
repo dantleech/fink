@@ -29,14 +29,14 @@ final class Url
     /**
      * @var string|null
      */
-    private $context;
+    private $referrerElement;
 
-    private function __construct(Uri $uri, Url $referrer = null, int $distance = 0, string $context = null)
+    private function __construct(Uri $uri, Url $referrer = null, int $distance = 0, string $referrerElement = null)
     {
         $this->uri = $uri;
         $this->referrer = $referrer;
         $this->distance = $distance;
-        $this->context = $context;
+        $this->referrerElement = $referrerElement;
     }
 
     public static function fromUrl(string $url): self
@@ -55,7 +55,7 @@ final class Url
         return rtrim($this->uri->__toString(), '/');
     }
 
-    public function resolveUrl(string $link, string $context): self
+    public function resolveUrl(string $link, string $referrerElement = null): self
     {
         try {
             $link = Uri::createFromString($link);
@@ -84,7 +84,7 @@ final class Url
             $link = $link->withFragment('');
         }
 
-        return new self($link, $this, $this->distance + 1, $context);
+        return new self($link, $this, $this->distance + 1, $referrerElement);
     }
 
     public function isHttp(): bool
@@ -155,9 +155,9 @@ final class Url
         return $this->referrer->originUrl();
     }
 
-    public function context(): ?string
+    public function referrerElement(): ?string
     {
-        return $this->context;
+        return $this->referrerElement;
     }
 
     private function normalizePath(AbstractUri $link): string

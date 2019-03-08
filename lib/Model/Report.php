@@ -29,20 +29,20 @@ class Report
     /**
      * @var string|null
      */
-    private $context;
+    private $referrerElement;
 
     public function __construct(
         Url $url,
         HttpStatusCode $statusCode = null,
         Exception $exception = null,
         int $requestTime = 0,
-        string $context = null
+        string $referrerElement = null
     ) {
         $this->url = $url;
         $this->statusCode = $statusCode;
         $this->requestTime = $requestTime;
         $this->exception = $exception;
-        $this->context = $context;
+        $this->referrerElement = $referrerElement;
     }
 
     public function url(): Url
@@ -72,10 +72,10 @@ class Report
             'url' => $this->url->__toString(),
             'distance' => $this->url->distance(),
             'referrer' => $referrer ? $referrer->__toString() : null,
+            'referrer-element' => $this->referrerElement,
             'status' => $this->statusCode ? $this->statusCode->toInt() : null,
             'request-time' => $this->requestTime,
             'exception' => $this->exception ? $this->exception->getMessage() : null,
-            'context' => $this->context,
         ];
     }
 

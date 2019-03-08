@@ -334,6 +334,21 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
+    public function testShowsTheReferringLinkElement()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--output='.$this->workspace()->path('/out.json'),
+        ]);
+        $this->assertProcessSuccess($process);
+        $rows = $this->parseResults($this->workspace()->path('/out.json'));
+
+        $this->assertUrlCount($rows, 1, 'posts/post1.html');
+        $url = $this->findUrl($rows, 'posts/post1.html');
+        $this->assertNotNull($url);
+        $this->assertEquals('<a href="/posts/post1.html">Post 1</a>', $url['referrer-element']);
+    }
+
     private function assertStatus(array $results, int $code, string $target): void
     {
         $target = self::EXAMPLE_URL . '/'. $target;
@@ -353,5 +368,16 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertCount($count, array_filter($rows, function (array $row) use ($target) {
             return $row['url'] === $target;
         }), $target);
+    }
+
+    private function findUrl(array $rows, string $target): ?array
+    {
+        foreach ($rows as $row) {
+            if (preg_match('{' . $target . '$}', $row['url'])) {
+                return $row;
+            }
+        }
+
+        return null;
     }
 }
