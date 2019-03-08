@@ -113,9 +113,9 @@ class DispatcherBuilder
     private $rateLimit;
 
     /**
-     * @var array
+     * @var string[]
      */
-    private $includeLinks;
+    private $includeLinks = [];
 
     public function __construct(Urls $baseUrls)
     {
