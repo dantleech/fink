@@ -116,6 +116,12 @@ tids[n]+" ];
             'https://training.github.com',
             'https://training.github.com'
         ];
+
+        yield 'relative URL 1' => [
+            'https://example.com/foo/bar',
+            '../../baz',
+            'https://example.com/baz'
+        ];
     }
 
     public function testIsHttp()
