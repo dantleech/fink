@@ -84,7 +84,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_CONCURRENCY, 'c', InputOption::VALUE_REQUIRED, 'Concurrency', 10);
         $this->addOption(self::OPT_OUTPUT, 'o', InputOption::VALUE_REQUIRED, 'Output file');
         $this->addOption(self::OPT_NO_DEDUPE, 'D', InputOption::VALUE_NONE, 'Do not de-duplicate URLs');
-        $this->addOption(self::OPT_EXT_DISTANCE, 'x', InputOption::VALUE_REQUIRED, 'Limit the external (disjoint) distance from the base URL');
+        $this->addOption(self::OPT_EXT_DISTANCE, 'x', InputOption::VALUE_REQUIRED, 'Limit the external (disjoint) distance from the base URL', 1);
         $this->addOption(self::OPT_INSECURE, 'k', InputOption::VALUE_NONE, 'Allow insecure server connections with SSL');
         $this->addOption(self::OPT_MAX_DISTANCE, 'm', InputOption::VALUE_REQUIRED, 'Maximum link distance from base URL');
         $this->addOption(self::OPT_LOAD_COOKIES, null, InputOption::VALUE_REQUIRED, 'Load cookies from file');
