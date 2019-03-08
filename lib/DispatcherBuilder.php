@@ -19,6 +19,7 @@ use DTL\Extension\Fink\Model\Limiter\RateLimiter;
 use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
 use DTL\Extension\Fink\Model\Publisher\CsvStreamPublisher;
 use DTL\Extension\Fink\Model\Publisher\JsonStreamPublisher;
+use DTL\Extension\Fink\Model\Publisher\YamlStreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\ExcludingQueue;
 use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
@@ -33,6 +34,7 @@ class DispatcherBuilder
 {
     public const PUBLISHER_CSV = 'csv';
     public const PUBLISHER_JSON = 'json';
+    public const PUBLISHER_YAML = 'yaml';
 
     /**
      * @var int
@@ -311,6 +313,10 @@ class DispatcherBuilder
                 return new CsvStreamPublisher($this->publishTo, true);
             }
 
+            if ($this->publisherType === self::PUBLISHER_YAML) {
+                return $this->buildYamlPublisher();
+            }
+
             throw new RuntimeException(sprintf(
                 'Unknown publisher type "%s" must be one of "%s"',
                 $this->publisherType,
@@ -333,6 +339,20 @@ class DispatcherBuilder
         }
         
         return new JsonStreamPublisher(new ResourceOutputStream($resource));
+    }
+
+    private function buildYamlPublisher()
+    {
+        $resource = fopen($this->publishTo, 'w');
+
+        if (false === $resource) {
+            throw new RuntimeException(sprintf(
+                'Could not open file "%s"',
+                $this->publishTo
+            ));
+        }
+
+        return new YamlStreamPublisher(new ResourceOutputStream($resource));
     }
 
     private function buildLimiter(): Limiter
