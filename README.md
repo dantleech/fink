@@ -40,9 +40,10 @@ Use `--output=somefile` to log verbose information for each URL in JSON format, 
 - `url`: The tested URL.
 - `status`: The HTTP status code.
 - `referrer`: The page which linked to the URL.
-- `referrer-element`: The HTML element text from which this URL was linked.
+- `referrer_title`: The value (e.g. link title) of the referring element.
+- `referrer_xpath`: The path to the node in the referring document.
 - `distance`: The number of links away from the start document.
-- `request-time`: Number of microseconds taken to make the request.
+- `request_time`: Number of microseconds taken to make the request.
 - `exception`: Any runtime exception encountered (e.g. malformed URL, etc).
 
 Arguments
