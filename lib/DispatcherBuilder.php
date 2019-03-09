@@ -117,6 +117,16 @@ class DispatcherBuilder
      */
     private $includeLinks = [];
 
+    /**
+     * @var int
+     */
+    private $clientMaxHeaderSize;
+
+    /**
+     * @var int
+     */
+    private $clientMaxBodySize;
+
     public function __construct(Urls $baseUrls)
     {
         $this->baseUrls = $baseUrls;
@@ -189,14 +199,14 @@ class DispatcherBuilder
         return $this;
     }
 
-    public function clientTransferTimeout(int $milliseconds)
+    public function clientTransferTimeout(int $milliseconds): self
     {
         $this->clientTransferTimeout = $milliseconds;
 
         return $this;
     }
 
-    public function clientMaxRedirects(int $maxRedirects)
+    public function clientMaxRedirects(int $maxRedirects): self
     {
         $this->clientMaxRedirects = $maxRedirects;
 
@@ -240,6 +250,20 @@ class DispatcherBuilder
     public function includeLinks(array $includeLinks): self
     {
         $this->includeLinks = $includeLinks;
+
+        return $this;
+    }
+
+    public function clientMaxHeaderSize(int $maxHeaderSize): self
+    {
+        $this->clientMaxHeaderSize = $maxHeaderSize;
+
+        return $this;
+    }
+
+    public function clientMaxBodySize(int $maxBodySize): self
+    {
+        $this->clientMaxBodySize = $maxBodySize;
 
         return $this;
     }
@@ -311,6 +335,8 @@ class DispatcherBuilder
             Client::OP_TRANSFER_TIMEOUT => $this->clientTransferTimeout,
             Client::OP_MAX_REDIRECTS => $this->clientMaxRedirects,
             Client::OP_DEFAULT_HEADERS => $this->headers,
+            Client::OP_MAX_BODY_BYTES => $this->clientMaxBodySize,
+            Client::OP_MAX_HEADER_BYTES => $this->clientMaxHeaderSize,
         ]);
 
         return $client;

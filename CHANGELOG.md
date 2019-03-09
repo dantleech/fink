@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Support passing max header and body sizes to client #74
 - Allow additional links to be included #60
 - Resolve relative URLs to absolute URLs #64
 

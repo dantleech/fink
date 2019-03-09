@@ -52,6 +52,8 @@ Arguments
 Options
 -------
 
+- `--client-max-body-size` 'Max body size for HTTP client (in bytes).
+- `--client-max-header-size` 'Max header size for HTTP client (in bytes).
 - `--client-redirects=5` Set the maximum number of times the client should
   redirect (`0` to never redirect).
 - `--client-timeout=15000` Set the maximum amount of time (in milliseconds)

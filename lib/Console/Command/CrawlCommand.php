@@ -42,6 +42,8 @@ class CrawlCommand extends Command
     private const OPT_HEADER = 'header';
     private const OPT_RATE = 'rate';
     private const OPT_INCLUDE_LINK = 'include-link';
+    private const OPT_CLIENT_MAX_HEADER_SIZE = 'client-max-header-size';
+    private const OPT_CLIENT_MAX_BODY_SIZE = 'client-max-body-size';
 
     /**
      * @var DispatcherBuilderFactory
@@ -92,8 +94,10 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_REQUEST_INTERVAL, null, InputOption::VALUE_REQUIRED, 'Dispatch request every n milliseconds', 10);
         $this->addOption(self::OPT_PUBLISHER, 'p', InputOption::VALUE_REQUIRED, 'Publisher to use: `json` or `csv`', 'json');
         $this->addOption(self::OPT_DISPLAY_BUFSIZE, null, InputOption::VALUE_REQUIRED, 'Size of report buffer to display', 5);
-        $this->addOption(self::OPT_CLIENT_MAX_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Number of milliseconds to wait for URL', 15000);
+        $this->addOption(self::OPT_CLIENT_MAX_BODY_SIZE, null, InputOption::VALUE_REQUIRED, 'Max body size for HTTP client (in bytes)', 10485760);
+        $this->addOption(self::OPT_CLIENT_MAX_HEADER_SIZE, null, InputOption::VALUE_REQUIRED, 'Max header size for HTTP client (in bytes)', 8192);
         $this->addOption(self::OPT_CLIENT_MAX_REDIRECTS, null, InputOption::VALUE_REQUIRED, 'Maximum number of redirects to follow', 5);
+        $this->addOption(self::OPT_CLIENT_MAX_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Number of milliseconds to wait for URL', 15000);
         $this->addOption(self::OPT_EXCLUDE_URL, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Exclude PCRE URL pattern', []);
         $this->addOption(self::OPT_HEADER, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Custom header, e.g. "X-Teapot: Me"', []);
         $this->addOption(self::OPT_RATE, null, InputOption::VALUE_REQUIRED, 'Set max request rate (as requests per second)', []);
@@ -165,6 +169,8 @@ class CrawlCommand extends Command
         $headers = $this->castToArray($input->getOption(self::OPT_HEADER));
         $rate = $input->getOption(self::OPT_RATE);
         $includeLinks = $this->castToArray($input->getOption(self::OPT_INCLUDE_LINK));
+        $maxBodySize = $this->castToInt($input->getOption(self::OPT_CLIENT_MAX_BODY_SIZE));
+        $maxHeaderSize = $this->castToInt($input->getOption(self::OPT_CLIENT_MAX_HEADER_SIZE));
         
         $builder = $this->factory->createForUrls($urls);
         $builder->maxConcurrency($maxConcurrency);
@@ -174,6 +180,8 @@ class CrawlCommand extends Command
         $builder->clientMaxRedirects($maxRedirects);
         $builder->clientTransferTimeout($maxTimeout);
         $builder->headers($this->headerParser->parseHeaders($headers));
+        $builder->clientMaxBodySize($maxBodySize);
+        $builder->clientMaxHeaderSize($maxHeaderSize);
 
         if (null !== $rate) {
             $builder->limitRate($this->castToFloat($rate));
