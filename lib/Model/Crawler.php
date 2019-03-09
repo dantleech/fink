@@ -29,7 +29,7 @@ class Crawler
         $time = (microtime(true) - $start) * 1E6;
 
         $report->withRequestTime((int) $time);
-        $report->withReferrerElement($documentUrl->referrerElement());
+        $report->withReferringElement($documentUrl->referringElement());
 
         assert($response instanceof Response);
         $report->withStatus($response->getStatus());
@@ -53,7 +53,7 @@ class Crawler
             }
 
             try {
-                $url = $documentUrl->resolveUrl($href, $this->formatLink($linkElement));
+                $url = $documentUrl->resolveUrl($href, ReferringElement::fromDOMElement($linkElement));
             } catch (InvalidUrl $invalidUrl) {
                 $report->withException($invalidUrl);
                 continue;
@@ -65,13 +65,5 @@ class Crawler
 
             $queue->enqueue($url);
         }
-    }
-
-    private function formatLink(DOMElement $linkElement): string
-    {
-        $dom = new DOMDocument('1.0');
-        $node = $dom->appendChild($dom->importNode($linkElement, true));
-
-        return $dom->saveXML($node);
     }
 }

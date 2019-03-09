@@ -334,7 +334,7 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
-    public function testShowsTheReferringLinkElement()
+    public function testShowsTheReferringLinkText()
     {
         $process = $this->execute([
             self::EXAMPLE_URL,
@@ -346,7 +346,8 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertUrlCount($rows, 1, 'posts/post1.html');
         $url = $this->findUrl($rows, 'posts/post1.html');
         $this->assertNotNull($url);
-        $this->assertEquals('<a href="/posts/post1.html">Post 1</a>', $url['referrer-element']);
+        $this->assertEquals('Post 1', $url['referrer_title']);
+        $this->assertEquals('/html/body/ul/li[1]/a', $url['referrer_xpath']);
     }
 
     private function assertStatus(array $results, int $code, string $target): void

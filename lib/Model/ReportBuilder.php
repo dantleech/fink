@@ -32,9 +32,9 @@ class ReportBuilder
     private $requestTime = 0;
 
     /**
-     * @var string|null
+     * @var ReferringElement|null
      */
-    private $referrerElement;
+    private $referringElement;
 
     private function __construct(Url $url)
     {
@@ -70,9 +70,9 @@ class ReportBuilder
         return $this;
     }
 
-    public function withReferrerElement(string $referrerElement = null): self
+    public function withReferringElement(ReferringElement $referringElement = null): self
     {
-        $this->referrerElement = $referrerElement;
+        $this->referringElement = $referringElement;
         return $this;
     }
 
@@ -83,7 +83,7 @@ class ReportBuilder
             $this->statusCode,
             $this->exception,
             $this->requestTime,
-            $this->referrerElement
+            $this->referringElement
         );
     }
 }
