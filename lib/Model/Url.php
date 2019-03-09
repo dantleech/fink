@@ -55,7 +55,7 @@ final class Url
         return rtrim($this->uri->__toString(), '/');
     }
 
-    public function resolveUrl(string $link, ReferringElement $referringElement): self
+    public function resolveUrl(string $link, ReferringElement $referringElement = null): self
     {
         try {
             $link = Uri::createFromString($link);

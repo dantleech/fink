@@ -4,7 +4,6 @@ namespace DTL\Extension\Fink;
 
 use DTL\Extension\Fink\Console\Command\CrawlCommand;
 use DTL\Extension\Fink\Console\Display\ConcatenatingDisplay;
-use DTL\Extension\Fink\Console\Display\MemoryDisplay;
 use DTL\Extension\Fink\Console\Display\RateDisplay;
 use DTL\Extension\Fink\Console\Display\StatusLineDisplay;
 use DTL\Extension\Fink\Console\Display\ReportListDisplay;
