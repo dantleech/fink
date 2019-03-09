@@ -232,6 +232,26 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
+    public function testClientMaxHeaderSize()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--client-max-header-size=8192',
+        ]);
+
+        $this->assertProcessSuccess($process);
+    }
+
+    public function testClientMaxBodySize()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--client-max-body-size=8192',
+        ]);
+
+        $this->assertProcessSuccess($process);
+    }
+
     public function testCustomHeaders()
     {
         $process = $this->execute([
