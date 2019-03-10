@@ -8,6 +8,9 @@ use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
+use DTL\Extension\Fink\Model\ReportBuilder;
+use DTL\Extension\Fink\Model\Url;
+use DTL\Extension\Fink\Model\UrlQueue;
 use Generator;
 
 class Crawler
@@ -39,30 +42,38 @@ class Crawler
             $body .= $chunk;
         }
 
+        $this->enqueueLinks($this->loadXpath($body), $documentUrl, $report, $queue);
+    }
+
+    private function loadXpath(string $body): DOMXPath
+    {
         $dom = new DOMDocument('1.0');
-
         @$dom->loadHTML($body);
-        $xpath = new DOMXPath($dom);
 
+        return new DOMXPath($dom);
+    }
+
+    private function enqueueLinks(DOMXPath $xpath, Url $documentUrl, ReportBuilder $report, UrlQueue $queue): void
+    {
         foreach ($xpath->query('//a') as $linkElement) {
             assert($linkElement instanceof DOMElement);
             $href = $linkElement->getAttribute('href');
-
+        
             if (!$href) {
                 continue;
             }
-
+        
             try {
                 $url = $documentUrl->resolveUrl($href, ReferringElement::fromDOMElement($linkElement));
             } catch (InvalidUrl $invalidUrl) {
                 $report->withException($invalidUrl);
                 continue;
             }
-
+        
             if (!$url->isHttp()) {
                 continue;
             }
-
+        
             $queue->enqueue($url);
         }
     }
