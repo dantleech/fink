@@ -1,12 +1,12 @@
 # Changelog
 
-## Unreleased
+## [0.6.0] 2019-03-14
 
 - Support passing max header and body sizes to client #74
 - Allow additional links to be included #60
 - Resolve relative URLs to absolute URLs #64
 
-## [0.5.0]
+## [0.5.0] 2019-02-23
 
 - Support for custom headers via. `--header=Foo:Bar` #46
 - Support multiple base URLs #44
