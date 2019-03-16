@@ -2,7 +2,7 @@
 
 namespace DTL\Extension\Fink\Model;
 
-use DOMElement;
+use DOMNode;
 
 class ReferringElement
 {
@@ -14,11 +14,11 @@ class ReferringElement
         return new self();
     }
 
-    public static function fromDOMElement(DOMElement $element): ReferringElement
+    public static function fromDOMNode(DOMNode $element): ReferringElement
     {
         $new = new self();
         $new->xpath = $element->getNodePath();
-        $new->title = $element->nodeValue;
+        $new->title = trim($element->nodeValue);
 
         return $new;
     }

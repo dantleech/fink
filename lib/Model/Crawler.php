@@ -56,7 +56,7 @@ class Crawler
             }
         
             try {
-                $url = $documentUrl->resolveUrl($href, ReferringElement::fromDOMElement($linkElement));
+                $url = $documentUrl->resolveUrl($href, ReferringElement::fromDOMNode($linkElement));
             } catch (InvalidUrl $invalidUrl) {
                 $report->withException($invalidUrl);
                 continue;
