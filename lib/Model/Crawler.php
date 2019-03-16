@@ -45,14 +45,6 @@ class Crawler
         $this->enqueueLinks($this->loadXpath($body), $documentUrl, $report, $queue);
     }
 
-    private function loadXpath(string $body): DOMXPath
-    {
-        $dom = new DOMDocument('1.0');
-        @$dom->loadHTML($body);
-
-        return new DOMXPath($dom);
-    }
-
     private function enqueueLinks(DOMXPath $xpath, Url $documentUrl, ReportBuilder $report, UrlQueue $queue): void
     {
         foreach ($xpath->query('//a') as $linkElement) {
@@ -76,5 +68,13 @@ class Crawler
         
             $queue->enqueue($url);
         }
+    }
+
+    private function loadXpath(string $body): DOMXPath
+    {
+        $dom = new DOMDocument('1.0');
+        @$dom->loadHTML($body);
+
+        return new DOMXPath($dom);
     }
 }
