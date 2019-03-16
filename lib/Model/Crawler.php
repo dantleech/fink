@@ -8,9 +8,6 @@ use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
-use DTL\Extension\Fink\Model\ReportBuilder;
-use DTL\Extension\Fink\Model\Url;
-use DTL\Extension\Fink\Model\UrlQueue;
 use Generator;
 
 class Crawler

@@ -52,6 +52,5 @@ EOT
         $dom = new DOMDocument(1.0);
         $dom->loadXML('<xml>'.$string .'</xml>');
         return $dom->firstChild->firstChild;
-
     }
 }
