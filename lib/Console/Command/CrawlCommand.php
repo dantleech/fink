@@ -44,6 +44,7 @@ class CrawlCommand extends Command
     private const OPT_INCLUDE_LINK = 'include-link';
     private const OPT_CLIENT_MAX_HEADER_SIZE = 'client-max-header-size';
     private const OPT_CLIENT_MAX_BODY_SIZE = 'client-max-body-size';
+    private const OPT_DISPLAY = 'display';
 
     /**
      * @var DispatcherBuilderFactory
@@ -102,7 +103,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_HEADER, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Custom header, e.g. "X-Teapot: Me"', []);
         $this->addOption(self::OPT_RATE, null, InputOption::VALUE_REQUIRED, 'Set max request rate (as requests per second)', []);
         $this->addOption(self::OPT_INCLUDE_LINK, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Add an additional URL to the set of URLs under the base URL', []);
-        $this->addOption('display', 'd', InputOption::VALUE_REQUIRED, 'Display specification, e.g. +memory', '');
+        $this->addOption(self::OPT_DISPLAY, 'd', InputOption::VALUE_REQUIRED, 'Display specification, e.g. +memory', '');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -118,7 +119,7 @@ class CrawlCommand extends Command
 
         $section1 = $output->section();
 
-        $display = $this->displayBuilder->build($this->castToString($input->getOption('display')));
+        $display = $this->displayBuilder->build($this->castToString($input->getOption(self::OPT_DISPLAY)));
 
         Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($display, $section1, $dispatcher) {
             if (false === $this->shuttingDown) {

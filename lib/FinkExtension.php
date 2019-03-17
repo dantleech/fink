@@ -35,7 +35,7 @@ class FinkExtension implements Extension
 
         $container->register('fink.console.display_registry', function (Container $container) {
             return new DisplayRegistry([
-                'url_list' => new ReportListDisplay(),
+                'urllist' => new ReportListDisplay(),
                 'status' => new StatusLineDisplay(),
                 'rate' => new RateDisplay(),
                 'memory' => new MemoryDisplay(),
@@ -45,7 +45,7 @@ class FinkExtension implements Extension
 
         $container->register('fink.console.display_builder', function (Container $container) {
             return new DisplayBuilder($container->get('fink.console.display_registry'), [
-                'url_list', 'status', 'rate', 'uptime'
+                'urllist', 'status', 'rate', 'uptime'
             ]);
         });
 
