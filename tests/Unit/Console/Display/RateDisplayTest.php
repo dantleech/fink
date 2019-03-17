@@ -15,7 +15,7 @@ class RateDisplayTest extends DisplayTestCase
         $output = $display->render($this->formatter, new Status());
 
         $this->assertContains(<<<'EOT'
-Up 0.0 sec, 0.00 r/sec
+Rate: 0.00 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
     }
@@ -26,7 +26,7 @@ EOT
         $output = $display->render($this->formatter, new Status());
 
         $this->assertContains(<<<'EOT'
-Up 1.0 sec, 0.00 r/sec
+Rate: 0.00 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
     }
@@ -41,7 +41,7 @@ EOT
         $output = $display->render($this->formatter, new Status());
 
         $this->assertContains(<<<'EOT'
-Up 1.0 sec, 1.00 r/sec
+Rate: 1.00 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
     }
@@ -57,7 +57,7 @@ EOT
         $output = $display->render($this->formatter, new Status());
 
         $this->assertContains(<<<'EOT'
-Up 5.0 sec, 0.25 r/sec
+Rate: 0.25 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
     }

@@ -23,15 +23,15 @@ class UptimeDisplayTest extends DisplayTestCase
     public function provideShowsUptime()
     {
         yield [
-            1, 'Up 00h 00m 01s',
+            1, 'Uptime: 00h 00m 01s',
         ];
 
         yield [
-            60, 'Up 00h 01m 00s',
+            60, 'Uptime: 00h 01m 00s',
         ];
 
         yield [
-            3600, 'Up 01h 00m 00s',
+            3600, 'Uptime: 01h 00m 00s',
         ];
     }
 }

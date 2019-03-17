@@ -34,7 +34,7 @@ class UptimeDisplay implements Display
         $interval = $this->initialTime->diff(new DateTimeImmutable());
 
         return sprintf(
-            '<info>Up</> %s',
+            '<info>Uptime:</> %s',
             $this->formatDuration($interval)
         );
     }
