@@ -1,6 +1,6 @@
 # Changelog
 
-## [unreleased]
+## [0.7.0] 2019-03-17
 
 - Show referring link text and xpath #49.
 - Allow display elements to be set, added or removed #54,
