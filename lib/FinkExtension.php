@@ -45,7 +45,7 @@ class FinkExtension implements Extension
 
         $container->register('fink.console.display_builder', function (Container $container) {
             return new DisplayBuilder($container->get('fink.console.display_registry'), [
-                'url_list', 'status', 'rate'
+                'url_list', 'status', 'rate', 'uptime'
             ]);
         });
 
