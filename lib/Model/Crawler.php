@@ -5,6 +5,7 @@ namespace DTL\Extension\Fink\Model;
 use Amp\Artax\Client;
 use Amp\Artax\Response;
 use DOMDocument;
+use DOMElement;
 use DOMXPath;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use Generator;
@@ -28,6 +29,7 @@ class Crawler
         $time = (microtime(true) - $start) * 1E6;
 
         $report->withRequestTime((int) $time);
+        $report->withReferringElement($documentUrl->referringElement());
 
         assert($response instanceof Response);
         $report->withStatus($response->getStatus());
@@ -37,30 +39,39 @@ class Crawler
             $body .= $chunk;
         }
 
-        $dom = new DOMDocument('1.0');
+        $this->enqueueLinks($this->loadXpath($body), $documentUrl, $report, $queue);
+    }
 
-        @$dom->loadHTML($body);
-        $xpath = new DOMXPath($dom);
-
+    private function enqueueLinks(DOMXPath $xpath, Url $documentUrl, ReportBuilder $report, UrlQueue $queue): void
+    {
         foreach ($xpath->query('//a') as $linkElement) {
+            assert($linkElement instanceof DOMElement);
             $href = $linkElement->getAttribute('href');
-
+        
             if (!$href) {
                 continue;
             }
-
+        
             try {
-                $url = $documentUrl->resolveUrl($href);
+                $url = $documentUrl->resolveUrl($href, ReferringElement::fromDOMNode($linkElement));
             } catch (InvalidUrl $invalidUrl) {
                 $report->withException($invalidUrl);
                 continue;
             }
-
+        
             if (!$url->isHttp()) {
                 continue;
             }
-
+        
             $queue->enqueue($url);
         }
+    }
+
+    private function loadXpath(string $body): DOMXPath
+    {
+        $dom = new DOMDocument('1.0');
+        @$dom->loadHTML($body);
+
+        return new DOMXPath($dom);
     }
 }

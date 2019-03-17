@@ -31,6 +31,11 @@ class ReportBuilder
      */
     private $requestTime = 0;
 
+    /**
+     * @var ReferringElement|null
+     */
+    private $referringElement;
+
     private function __construct(Url $url)
     {
         $this->url = $url;
@@ -65,13 +70,20 @@ class ReportBuilder
         return $this;
     }
 
+    public function withReferringElement(ReferringElement $referringElement = null): self
+    {
+        $this->referringElement = $referringElement;
+        return $this;
+    }
+
     public function build(): Report
     {
         return new Report(
             $this->url,
             $this->statusCode,
             $this->exception,
-            $this->requestTime
+            $this->requestTime,
+            $this->referringElement
         );
     }
 }

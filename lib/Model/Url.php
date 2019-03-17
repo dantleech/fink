@@ -26,11 +26,17 @@ final class Url
      */
     private $distance;
 
-    private function __construct(Uri $uri, Url $referrer = null, int $distance = 0)
+    /**
+     * @var ReferringElement|null
+     */
+    private $referringElement;
+
+    private function __construct(Uri $uri, Url $referrer = null, int $distance = 0, ReferringElement $referringElement = null)
     {
         $this->uri = $uri;
         $this->referrer = $referrer;
         $this->distance = $distance;
+        $this->referringElement = $referringElement;
     }
 
     public static function fromUrl(string $url): self
@@ -49,7 +55,7 @@ final class Url
         return rtrim($this->uri->__toString(), '/');
     }
 
-    public function resolveUrl(string $link): self
+    public function resolveUrl(string $link, ReferringElement $referringElement = null): self
     {
         try {
             $link = Uri::createFromString($link);
@@ -78,7 +84,7 @@ final class Url
             $link = $link->withFragment('');
         }
 
-        return new self($link, $this, $this->distance + 1);
+        return new self($link, $this, $this->distance + 1, $referringElement);
     }
 
     public function isHttp(): bool
@@ -161,5 +167,10 @@ final class Url
         // concatenated with the host, for example:
         // https://www.example.comtemplate.html
         return '/'.ltrim($path, '/');
+    }
+
+    public function referringElement(): ?ReferringElement
+    {
+        return $this->referringElement;
     }
 }

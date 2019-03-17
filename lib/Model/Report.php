@@ -26,16 +26,23 @@ class Report
      */
     private $exception;
 
+    /**
+     * @var ReferringElement
+     */
+    private $referringElement;
+
     public function __construct(
         Url $url,
         HttpStatusCode $statusCode = null,
         Exception $exception = null,
-        int $requestTime = 0
+        int $requestTime = 0,
+        ReferringElement $referringElement = null
     ) {
         $this->url = $url;
         $this->statusCode = $statusCode;
         $this->requestTime = $requestTime;
         $this->exception = $exception;
+        $this->referringElement = $referringElement ?: ReferringElement::none();
     }
 
     public function url(): Url
@@ -62,12 +69,14 @@ class Report
         $referrer = $this->url->referrer();
 
         return [
-            'url' => $this->url->__toString(),
             'distance' => $this->url->distance(),
-            'referrer' => $referrer ? $referrer->__toString() : null,
-            'status' => $this->statusCode ? $this->statusCode->toInt() : null,
-            'request-time' => $this->requestTime,
             'exception' => $this->exception ? $this->exception->getMessage() : null,
+            'referrer' => $referrer ? $referrer->__toString() : null,
+            'referrer_title' => $this->referringElement->title(),
+            'referrer_xpath' => $this->referringElement->path(),
+            'request_time' => $this->requestTime,
+            'status' => $this->statusCode ? $this->statusCode->toInt() : null,
+            'url' => $this->url->__toString(),
         ];
     }
 
