@@ -1,5 +1,9 @@
 # Changelog
 
+## [unreleased]
+
+- Show referring link text and xpath #49
+
 ## [0.6.0] 2019-03-14
 
 - Support passing max header and body sizes to client #74

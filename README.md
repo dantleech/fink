@@ -26,6 +26,14 @@ $ composer require dantleech/fink --dev
 Download the PHAR from the
 [Releases](https://github.com/dantleech/fink/releases) page.
 
+### Building your own PHAR with Box
+
+You can build your own PHAR by cloning this repository and running:
+
+```bash
+$ ./vendor/bin/box compile
+```
+
 Usage
 -----
 
