@@ -102,7 +102,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_HEADER, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Custom header, e.g. "X-Teapot: Me"', []);
         $this->addOption(self::OPT_RATE, null, InputOption::VALUE_REQUIRED, 'Set max request rate (as requests per second)', []);
         $this->addOption(self::OPT_INCLUDE_LINK, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Add an additional URL to the set of URLs under the base URL', []);
-        $this->addOption('display', null, InputOption::VALUE_REQUIRED, 'Display specification, e.g. +memory', '');
+        $this->addOption('display', 'd', InputOption::VALUE_REQUIRED, 'Display specification, e.g. +memory', '');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
