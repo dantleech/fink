@@ -2,7 +2,9 @@
 
 ## [unreleased]
 
-- Show referring link text and xpath #49
+- Show referring link text and xpath #49.
+- Allow display elements to be set, added or removed #54,
+- Adds "uptime" display showing running time in hours, minutes and seconds.
 
 ## [0.6.0] 2019-03-14
 

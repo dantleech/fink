@@ -38,8 +38,7 @@ class RateDisplay implements Display
         $averageRequestTime = $this->averageRequestTime($status->reportStore());
 
         return sprintf(
-            '<info>Up</> %s <info>sec</>, %s <info>r/sec</>, %s<info> ms/r</>',
-            number_format(microtime(true) - $this->initialTime, 1),
+            '<info>Rate</>: %s <info>r/sec</>, %s<info> ms/r</>',
             number_format($ratePerSecond, 2),
             number_format($averageRequestTime * 0.001, 2)
         );

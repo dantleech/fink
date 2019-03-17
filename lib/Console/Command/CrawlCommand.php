@@ -3,7 +3,7 @@
 namespace DTL\Extension\Fink\Console\Command;
 
 use Amp\Loop;
-use DTL\Extension\Fink\Console\Display;
+use DTL\Extension\Fink\Console\DisplayBuilder;
 use DTL\Extension\Fink\Console\HeaderParser;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use DTL\Extension\Fink\Model\Dispatcher;
@@ -44,6 +44,7 @@ class CrawlCommand extends Command
     private const OPT_INCLUDE_LINK = 'include-link';
     private const OPT_CLIENT_MAX_HEADER_SIZE = 'client-max-header-size';
     private const OPT_CLIENT_MAX_BODY_SIZE = 'client-max-body-size';
+    private const OPT_DISPLAY = 'display';
 
     /**
      * @var DispatcherBuilderFactory
@@ -51,9 +52,9 @@ class CrawlCommand extends Command
     private $factory;
 
     /**
-     * @var Display
+     * @var DisplayBuilder
      */
-    private $display;
+    private $displayBuilder;
 
     /**
      * @var int
@@ -70,11 +71,11 @@ class CrawlCommand extends Command
      */
     private $headerParser;
 
-    public function __construct(DispatcherBuilderFactory $factory, Display $display)
+    public function __construct(DispatcherBuilderFactory $factory, DisplayBuilder $displayBuilder)
     {
         parent::__construct();
         $this->factory = $factory;
-        $this->display = $display;
+        $this->displayBuilder = $displayBuilder;
         $this->headerParser = new HeaderParser();
     }
 
@@ -102,6 +103,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_HEADER, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Custom header, e.g. "X-Teapot: Me"', []);
         $this->addOption(self::OPT_RATE, null, InputOption::VALUE_REQUIRED, 'Set max request rate (as requests per second)', []);
         $this->addOption(self::OPT_INCLUDE_LINK, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Add an additional URL to the set of URLs under the base URL', []);
+        $this->addOption(self::OPT_DISPLAY, 'd', InputOption::VALUE_REQUIRED, 'Display specification, e.g. +memory', '');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -117,9 +119,11 @@ class CrawlCommand extends Command
 
         $section1 = $output->section();
 
-        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section1, $dispatcher) {
+        $display = $this->displayBuilder->build($this->castToString($input->getOption(self::OPT_DISPLAY)));
+
+        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($display, $section1, $dispatcher) {
             if (false === $this->shuttingDown) {
-                $section1->overwrite($this->display->render($section1->getFormatter(), $dispatcher->status()));
+                $section1->overwrite($display->render($section1->getFormatter(), $dispatcher->status()));
             }
 
             $status = $dispatcher->status();

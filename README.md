@@ -69,7 +69,10 @@ Options
 - `--client-timeout=15000` Set the maximum amount of time (in milliseconds)
   the client should wait for a response, defaults to 15,000 (15 seconds).
 - `--concurrency`: Number of simultaneous HTTP requests to use.
-- `--display-bufsize=10` Set the number of URLs shown during execution.
+- `--display-bufsize=10` Set the number of URLs to consider when showing the
+  display.
+- `--display=+memory` Set, add or remove elements of the runtime display
+  (prefix with `-` or `+` to modify the default set).
 - `--exclude-url=logout` (multiple) Exclude URLs matching the given PCRE pattern.
 - `--header="Foo: Bar"` (multiple) Specify custom header(s).
 - `--include-link=foobar.html` Include given link as if it were linked from the
