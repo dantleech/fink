@@ -9,6 +9,7 @@ use DTL\Extension\Fink\Console\Display\MemoryDisplay;
 use DTL\Extension\Fink\Console\Display\RateDisplay;
 use DTL\Extension\Fink\Console\Display\StatusLineDisplay;
 use DTL\Extension\Fink\Console\Display\ReportListDisplay;
+use DTL\Extension\Fink\Console\Display\UptimeDisplay;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use Phpactor\Container\Container;
 use Phpactor\Container\ContainerBuilder;
@@ -37,7 +38,8 @@ class FinkExtension implements Extension
                 'url_list' => new ReportListDisplay(),
                 'status' => new StatusLineDisplay(),
                 'rate' => new RateDisplay(),
-                'memory' => new MemoryDisplay()
+                'memory' => new MemoryDisplay(),
+                'uptime' => new UptimeDisplay(),
             ]);
         });
 
