@@ -3,6 +3,7 @@
 ## [unreleased]
 
 - Show referring link text and xpath #49
+- Allow display elements to be set, added or removed #54
 
 ## [0.6.0] 2019-03-14
 

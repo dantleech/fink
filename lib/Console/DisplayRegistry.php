@@ -23,7 +23,8 @@ class DisplayRegistry
         if (!isset($this->displays[$name])) {
             throw new DisplayNotFound(sprintf(
                 'Display "%s" not found, known displays "%s"',
-                $name, implode('", "', array_keys($this->displays))
+                $name,
+                implode('", "', array_keys($this->displays))
             ));
         }
 

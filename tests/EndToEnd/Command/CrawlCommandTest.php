@@ -350,6 +350,15 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertEquals('/html/body/ul/li[1]/a', $url['referrer_xpath']);
     }
 
+    public function testAllowsDisplayCustomization()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--display=status'
+        ]);
+        $this->assertProcessSuccess($process);
+    }
+
     private function assertStatus(array $results, int $code, string $target): void
     {
         $target = self::EXAMPLE_URL . '/'. $target;
