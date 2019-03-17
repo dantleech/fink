@@ -3,7 +3,10 @@
 namespace DTL\Extension\Fink;
 
 use DTL\Extension\Fink\Console\Command\CrawlCommand;
+use DTL\Extension\Fink\Console\DisplayBuilder;
+use DTL\Extension\Fink\Console\DisplayRegistry;
 use DTL\Extension\Fink\Console\Display\ConcatenatingDisplay;
+use DTL\Extension\Fink\Console\Display\MemoryDisplay;
 use DTL\Extension\Fink\Console\Display\RateDisplay;
 use DTL\Extension\Fink\Console\Display\StatusLineDisplay;
 use DTL\Extension\Fink\Console\Display\ReportListDisplay;
@@ -26,15 +29,22 @@ class FinkExtension implements Extension
         $container->register('fink.console.command.crawl', function (Container $container) {
             return new CrawlCommand(
                 $container->get(self::SERVICE_DISPATCHER_BUILDER_FACTORY),
-                $container->get('fink.console.display')
+                $container->get('fink.console.display_builder')
             );
         }, [ ConsoleExtension::TAG_COMMAND => [ 'name' => 'crawl' ]]);
 
-        $container->register('fink.console.display', function (Container $container) {
-            return new ConcatenatingDisplay([
-                new ReportListDisplay(),
-                new StatusLineDisplay(),
-                new RateDisplay(),
+        $container->register('fink.console.display_registry', function (Container $container) {
+            return new DisplayRegistry([
+                'url_list' => new ReportListDisplay(),
+                'status' => new StatusLineDisplay(),
+                'rate' => new RateDisplay(),
+                'memory' => new MemoryDisplay()
+            ]);
+        });
+
+        $container->register('fink.console.display_builder', function (Container $container) {
+            return new DisplayBuilder($container->get('fink.console.display_registry'), [
+                'url_list', 'status', 'rate'
             ]);
         });
 

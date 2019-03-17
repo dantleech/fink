@@ -4,6 +4,7 @@ namespace DTL\Extension\Fink\Console\Command;
 
 use Amp\Loop;
 use DTL\Extension\Fink\Console\Display;
+use DTL\Extension\Fink\Console\DisplayBuilder;
 use DTL\Extension\Fink\Console\HeaderParser;
 use DTL\Extension\Fink\Model\DispatcherBuilderFactory;
 use DTL\Extension\Fink\Model\Dispatcher;
@@ -51,9 +52,9 @@ class CrawlCommand extends Command
     private $factory;
 
     /**
-     * @var Display
+     * @var DisplayBuilder
      */
-    private $display;
+    private $displayBuilder;
 
     /**
      * @var int
@@ -70,11 +71,11 @@ class CrawlCommand extends Command
      */
     private $headerParser;
 
-    public function __construct(DispatcherBuilderFactory $factory, Display $display)
+    public function __construct(DispatcherBuilderFactory $factory, DisplayBuilder $displayBuilder)
     {
         parent::__construct();
         $this->factory = $factory;
-        $this->display = $display;
+        $this->displayBuilder = $displayBuilder;
         $this->headerParser = new HeaderParser();
     }
 
@@ -116,10 +117,11 @@ class CrawlCommand extends Command
         });
 
         $section1 = $output->section();
+        $display = $this->displayBuilder->build('');
 
-        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($section1, $dispatcher) {
+        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($display, $section1, $dispatcher) {
             if (false === $this->shuttingDown) {
-                $section1->overwrite($this->display->render($section1->getFormatter(), $dispatcher->status()));
+                $section1->overwrite($display->render($section1->getFormatter(), $dispatcher->status()));
             }
 
             $status = $dispatcher->status();
