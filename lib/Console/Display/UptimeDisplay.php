@@ -3,13 +3,9 @@
 namespace DTL\Extension\Fink\Console\Display;
 
 use DTL\Extension\Fink\Console\Display;
-use DTL\Extension\Fink\Model\Report;
 use DTL\Extension\Fink\Model\Status;
-use DTL\Extension\Fink\Model\Store\ImmutableReportStore;
 use DateInterval;
 use DateTimeImmutable;
-use Khill\Duration\Duration;
-use RuntimeException;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
 class UptimeDisplay implements Display
@@ -45,7 +41,7 @@ class UptimeDisplay implements Display
             '%02dh %02dm %02ds',
             $interval->h,
             $interval->i,
-            $interval->s,
+            $interval->s
         );
     }
 }

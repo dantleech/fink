@@ -5,7 +5,6 @@ namespace DTL\Extension\Fink\Tests\Unit\Console\Display;
 use DTL\Extension\Fink\Console\Display\UptimeDisplay;
 use DTL\Extension\Fink\Model\Status;
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Helper\FormatterHelper;
 
 class UptimeDisplayTest extends DisplayTestCase
