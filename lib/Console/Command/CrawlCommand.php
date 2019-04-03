@@ -44,6 +44,7 @@ class CrawlCommand extends Command
     private const OPT_INCLUDE_LINK = 'include-link';
     private const OPT_CLIENT_MAX_HEADER_SIZE = 'client-max-header-size';
     private const OPT_CLIENT_MAX_BODY_SIZE = 'client-max-body-size';
+    private const OPT_CLIENT_SECURITY_LEVEL = 'client-security-level';
     private const OPT_DISPLAY = 'display';
 
     /**
@@ -99,6 +100,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_CLIENT_MAX_HEADER_SIZE, null, InputOption::VALUE_REQUIRED, 'Max header size for HTTP client (in bytes)', 8192);
         $this->addOption(self::OPT_CLIENT_MAX_REDIRECTS, null, InputOption::VALUE_REQUIRED, 'Maximum number of redirects to follow', 5);
         $this->addOption(self::OPT_CLIENT_MAX_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Number of milliseconds to wait for URL', 15000);
+        $this->addOption(self::OPT_CLIENT_SECURITY_LEVEL, null, InputOption::VALUE_REQUIRED, 'TLS Security level, see https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_security_level.html');
         $this->addOption(self::OPT_EXCLUDE_URL, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Exclude PCRE URL pattern', []);
         $this->addOption(self::OPT_HEADER, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Custom header, e.g. "X-Teapot: Me"', []);
         $this->addOption(self::OPT_RATE, null, InputOption::VALUE_REQUIRED, 'Set max request rate (as requests per second)', []);
@@ -175,7 +177,8 @@ class CrawlCommand extends Command
         $includeLinks = $this->castToArray($input->getOption(self::OPT_INCLUDE_LINK));
         $maxBodySize = $this->castToInt($input->getOption(self::OPT_CLIENT_MAX_BODY_SIZE));
         $maxHeaderSize = $this->castToInt($input->getOption(self::OPT_CLIENT_MAX_HEADER_SIZE));
-        
+        $sslSecurityLevel = $input->getOption(self::OPT_CLIENT_SECURITY_LEVEL);
+
         $builder = $this->factory->createForUrls($urls);
         $builder->maxConcurrency($maxConcurrency);
         $builder->noDeduplication($noDedupe);
@@ -186,6 +189,10 @@ class CrawlCommand extends Command
         $builder->headers($this->headerParser->parseHeaders($headers));
         $builder->clientMaxBodySize($maxBodySize);
         $builder->clientMaxHeaderSize($maxHeaderSize);
+
+        if ($sslSecurityLevel) {
+            $builder->clientSecurityLevel($this->castToInt($sslSecurityLevel));
+        }
 
         if (null !== $rate) {
             $builder->limitRate($this->castToFloat($rate));

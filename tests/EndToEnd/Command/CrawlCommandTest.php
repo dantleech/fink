@@ -242,6 +242,21 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
+    public function testClientSslSecurityLevel()
+    {
+        if (\OPENSSL_VERSION_NUMBER < 0x10100000) {
+            $this->markTestSkipped('OpenSSL version does not support setting secutity level');
+            return;
+        }
+
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--client-security-level=4',
+        ]);
+
+        $this->assertProcessSuccess($process);
+    }
+
     public function testClientMaxBodySize()
     {
         $process = $this->execute([

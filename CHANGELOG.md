@@ -1,5 +1,11 @@
 # Changelog
 
+## unreleased
+
+- Support setting the TLS security level (`--client-security-level`), fixes
+  #52 (again)
+- Sets the default TLS secutity level to 1 rather than 2.
+
 ## [0.7.0] 2019-03-17
 
 - Show referring link text and xpath #49.

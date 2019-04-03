@@ -2,18 +2,18 @@
 
 namespace DTL\Extension\Fink\Tests\Unit\Model\Limiter;
 
-use DTL\Extension\Fink\Model\Limiter\ConcurrenyLimiter;
+use DTL\Extension\Fink\Model\Limiter\ConcurrencyLimiter;
 use DTL\Extension\Fink\Model\Status;
 use PHPUnit\Framework\TestCase;
 
-class ConcurrenyLimiterTest extends TestCase
+class ConcurrecnyLimiterTest extends TestCase
 {
     /**
      * @dataProvider provideLimitsConcurrency
      */
     public function testLimitsConcurrency(int $concurrency, int $max, bool $limitReached)
     {
-        $limiter = new ConcurrenyLimiter($max);
+        $limiter = new ConcurrencyLimiter($max);
         $status = new Status();
         $status->nbConcurrentRequests = $concurrency;
 

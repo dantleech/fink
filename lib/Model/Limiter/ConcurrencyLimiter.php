@@ -5,7 +5,7 @@ namespace DTL\Extension\Fink\Model\Limiter;
 use DTL\Extension\Fink\Model\Limiter;
 use DTL\Extension\Fink\Model\Status;
 
-class ConcurrenyLimiter implements Limiter
+class ConcurrencyLimiter implements Limiter
 {
     /**
      * @var int
