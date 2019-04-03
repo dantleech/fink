@@ -14,7 +14,7 @@ use DTL\Extension\Fink\Model\Crawler;
 use DTL\Extension\Fink\Model\Dispatcher;
 use DTL\Extension\Fink\Model\Limiter;
 use DTL\Extension\Fink\Model\Limiter\ChainLimiter;
-use DTL\Extension\Fink\Model\Limiter\ConcurrenyLimiter;
+use DTL\Extension\Fink\Model\Limiter\ConcurrencyLimiter;
 use DTL\Extension\Fink\Model\Limiter\RateLimiter;
 use DTL\Extension\Fink\Model\Publisher\BlackholePublisher;
 use DTL\Extension\Fink\Model\Publisher\CsvStreamPublisher;
@@ -127,6 +127,11 @@ class DispatcherBuilder
      */
     private $clientMaxBodySize;
 
+    /**
+     * @var int
+     */
+    private $clientSslSecurityLevel;
+
     public function __construct(Urls $baseUrls)
     {
         $this->baseUrls = $baseUrls;
@@ -209,6 +214,13 @@ class DispatcherBuilder
     public function clientMaxRedirects(int $maxRedirects): self
     {
         $this->clientMaxRedirects = $maxRedirects;
+
+        return $this;
+    }
+
+    public function clientSecurityLevel(int $sslSecurityLevel)
+    {
+        $this->clientSslSecurityLevel = $sslSecurityLevel;
 
         return $this;
     }
@@ -321,6 +333,15 @@ class DispatcherBuilder
             );
         }
 
+        // set the default secutity level if PHP is compiled with support for it
+        if (\OPENSSL_VERSION_NUMBER >= 0x10100000) {
+            $tlsContext = $tlsContext->withSecurityLevel(1);
+        }
+
+        if ($this->clientSslSecurityLevel) {
+            $tlsContext = $tlsContext->withSecurityLevel($this->clientSslSecurityLevel);
+        }
+
         if ($this->noPeerVerification) {
             $tlsContext = $tlsContext->withoutPeerVerification();
         }
@@ -380,7 +401,7 @@ class DispatcherBuilder
     private function buildLimiter(): Limiter
     {
         $limiters = [
-            new ConcurrenyLimiter($this->maxConcurrency)
+            new ConcurrencyLimiter($this->maxConcurrency)
         ];
 
         if ($this->rateLimit) {
