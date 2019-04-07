@@ -27,5 +27,5 @@ $application = new Application($title, '@git_version@ (@datetime@)');
 $application->setCommandLoader(
     $container->get(ConsoleExtension::SERVICE_COMMAND_LOADER)
 );
-$application->setDefaultCommand('crawl', true);
+$application->setDefaultCommand('fink', true);
 $application->run();

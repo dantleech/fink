@@ -31,7 +31,7 @@ class FinkExtension implements Extension
                 $container->get(self::SERVICE_DISPATCHER_BUILDER_FACTORY),
                 $container->get('fink.console.display_builder')
             );
-        }, [ ConsoleExtension::TAG_COMMAND => [ 'name' => 'crawl' ]]);
+        }, [ ConsoleExtension::TAG_COMMAND => [ 'name' => 'fink' ]]);
 
         $container->register('fink.console.display_registry', function (Container $container) {
             return new DisplayRegistry([

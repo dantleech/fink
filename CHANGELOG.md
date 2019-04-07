@@ -5,6 +5,7 @@
 - Support setting the TLS security level (`--client-security-level`), fixes
   #52 (again)
 - Sets the default TLS secutity level to 1 rather than 2.
+- Set process title and adds version information to Phar #21
 
 ## [0.7.0] 2019-03-17
 
