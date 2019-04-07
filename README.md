@@ -52,6 +52,7 @@ Use `--output=somefile` to log verbose information for each URL in JSON format, 
 - `referrer_xpath`: The path to the node in the referring document.
 - `distance`: The number of links away from the start document.
 - `request_time`: Number of microseconds taken to make the request.
+- `timestamp`: The time that the request was made.
 - `exception`: Any runtime exception encountered (e.g. malformed URL, etc).
 
 Arguments

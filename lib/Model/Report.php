@@ -2,6 +2,7 @@
 
 namespace DTL\Extension\Fink\Model;
 
+use DateTimeImmutable;
 use Exception;
 
 class Report
@@ -31,18 +32,25 @@ class Report
      */
     private $referringElement;
 
+    /**
+     * @var DateTimeImmutable
+     */
+    private $timestamp;
+
     public function __construct(
         Url $url,
         HttpStatusCode $statusCode = null,
         Exception $exception = null,
         int $requestTime = 0,
-        ReferringElement $referringElement = null
+        ReferringElement $referringElement = null,
+        DateTimeImmutable $timestamp = null
     ) {
         $this->url = $url;
         $this->statusCode = $statusCode;
         $this->requestTime = $requestTime;
         $this->exception = $exception;
         $this->referringElement = $referringElement ?: ReferringElement::none();
+        $this->timestamp = $timestamp ?: new DateTimeImmutable();
     }
 
     public function url(): Url
@@ -77,6 +85,7 @@ class Report
             'request_time' => $this->requestTime,
             'status' => $this->statusCode ? $this->statusCode->toInt() : null,
             'url' => $this->url->__toString(),
+            'timestamp' => $this->timestamp->format('c')
         ];
     }
 

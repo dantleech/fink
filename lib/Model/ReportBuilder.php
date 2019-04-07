@@ -2,6 +2,7 @@
 
 namespace DTL\Extension\Fink\Model;
 
+use DateTimeImmutable;
 use Exception;
 
 class ReportBuilder
@@ -36,9 +37,15 @@ class ReportBuilder
      */
     private $referringElement;
 
+    /**
+     * @var DateTimeImmutable
+     */
+    private $timestamp;
+
     private function __construct(Url $url)
     {
         $this->url = $url;
+        $this->timestamp = new DateTimeImmutable();
     }
 
     public static function forUrl(Url $url): self
@@ -76,6 +83,12 @@ class ReportBuilder
         return $this;
     }
 
+    public function withTimestamp(DateTimeImmutable $dateTimeImmutable)
+    {
+        $this->timestamp = $dateTimeImmutable;
+        return $this;
+    }
+
     public function build(): Report
     {
         return new Report(
@@ -83,7 +96,8 @@ class ReportBuilder
             $this->statusCode,
             $this->exception,
             $this->requestTime,
-            $this->referringElement
+            $this->referringElement,
+            $this->timestamp
         );
     }
 }
