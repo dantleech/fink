@@ -21,9 +21,11 @@ $container = PhpactorContainer::fromExtensions([
     FinkExtension::class
 ], []);
 
-$application = new Application();
+$title = 'Fink Link Checker';
+cli_set_process_title($title);
+$application = new Application($title, '@git_version@ (@datetime@)');
 $application->setCommandLoader(
     $container->get(ConsoleExtension::SERVICE_COMMAND_LOADER)
 );
-$application->setDefaultCommand('crawl', true);
+$application->setDefaultCommand('fink', true);
 $application->run();

@@ -117,7 +117,7 @@ $ fink http://www.example.com -x0 -oreport.json
 ```
 
 ```
-$ cat report.json| jq -c '. | select(.status==404) | {url: .url, referrer: .referrer}'
+$ cat report.json| jq -c '. | select(.status==404) | {url: .url, referrer: .referrer}' | jq
 ```
 
 Exit Codes
