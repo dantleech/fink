@@ -6,6 +6,7 @@
   #52 (again)
 - Sets the default TLS secutity level to 1 rather than 2.
 - Set process title and adds version information to Phar #21
+- `crawl` "command" renamed to `fink` #61
 
 ## [0.7.0] 2019-03-17
 
