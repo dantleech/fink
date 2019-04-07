@@ -2,6 +2,7 @@
 
 ## unreleased
 
+- Record the request timestamp #33
 - Support setting the TLS security level (`--client-security-level`), fixes
   #52 (again)
 - Sets the default TLS secutity level to 1 rather than 2.
