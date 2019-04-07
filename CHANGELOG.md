@@ -1,6 +1,6 @@
 # Changelog
 
-## unreleased
+## [0.8.0] 2019-04-07
 
 - Record the request timestamp #33
 - Support setting the TLS security level (`--client-security-level`), fixes
