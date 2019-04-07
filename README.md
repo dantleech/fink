@@ -8,7 +8,7 @@ Fink (pronounced "Phpink") is a command line tool for checking HTTP links writte
 - Check websites for broken links or error pages.
 - Asynchronous HTTP requests.
 
-![recording](https://user-images.githubusercontent.com/530801/52165571-7d74d900-26fa-11e9-9086-318c479616a9.gif)
+![recording](https://user-images.githubusercontent.com/530801/55685040-e4f11400-5949-11e9-9f79-51c5c23a40c0.gif)
 
 Installation
 ------------
