@@ -21,7 +21,7 @@ class JsonStreamPublisher implements Publisher
     public function publish(Report $report): void
     {
         \Amp\asyncCall(function (Report $report) {
-            yield $this->outputStream->write(json_encode($report->toArray()).PHP_EOL);
+            yield $this->outputStream->write(json_encode($report->toArray())."\n");
         }, $report);
     }
 }

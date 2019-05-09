@@ -22,7 +22,7 @@ class ConcatenatingDisplay implements Display
 
     public function render(OutputFormatterInterface $formatter, Status $status): string
     {
-        return implode(PHP_EOL, array_map(function (Display $display) use ($formatter, $status) {
+        return implode("\n", array_map(function (Display $display) use ($formatter, $status) {
             return $display->render($formatter, $status);
         }, $this->displays));
     }
