@@ -25,11 +25,11 @@ class Crawler
     public function crawl(Url $documentUrl, UrlQueue $queue, ReportBuilder $report): Generator
     {
         $start = microtime(true);
+        $report->withReferringElement($documentUrl->referringElement());
         $response = yield $this->client->request($documentUrl->__toString());
         $time = (microtime(true) - $start) * 1E6;
 
         $report->withRequestTime((int) $time);
-        $report->withReferringElement($documentUrl->referringElement());
 
         assert($response instanceof Response);
         $report->withStatus($response->getStatus());
