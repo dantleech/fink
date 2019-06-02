@@ -1,5 +1,9 @@
 # Changelog
 
+## develop
+
+- Record referrer title if client encounters error while requesting URL, fixes #88
+
 ## [0.8.0] 2019-04-07
 
 - Record the request timestamp #33

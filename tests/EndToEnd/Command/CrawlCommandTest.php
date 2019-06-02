@@ -365,6 +365,21 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertEquals('/html/body/ul/li[1]/a', $url['referrer_xpath']);
     }
 
+    public function testShowsReferrerIfExceptionEncountered()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--output='.$this->workspace()->path('/out.json'),
+        ], 'malformed-host');
+        $this->assertProcessSuccess($process);
+        $rows = $this->parseResults($this->workspace()->path('/out.json'));
+
+        $this->assertCount(2, $rows);
+        $row = $rows[1];
+        $this->assertNotNull($row['exception']);
+        $this->assertEquals('This is a link', $row['referrer_title']);
+    }
+
     public function testAllowsDisplayCustomization()
     {
         $process = $this->execute([
