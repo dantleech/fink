@@ -46,6 +46,7 @@ class CrawlCommand extends Command
     private const OPT_CLIENT_MAX_BODY_SIZE = 'client-max-body-size';
     private const OPT_CLIENT_SECURITY_LEVEL = 'client-security-level';
     private const OPT_DISPLAY = 'display';
+    private const OPT_STDOUT = 'stdout';
 
     /**
      * @var DispatcherBuilderFactory
@@ -106,6 +107,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_RATE, null, InputOption::VALUE_REQUIRED, 'Set max request rate (as requests per second)', []);
         $this->addOption(self::OPT_INCLUDE_LINK, null, InputOption::VALUE_REQUIRED|InputOption::VALUE_IS_ARRAY, 'Add an additional URL to the set of URLs under the base URL', []);
         $this->addOption(self::OPT_DISPLAY, 'd', InputOption::VALUE_REQUIRED, 'Display specification, e.g. +memory', '');
+        $this->addOption(self::OPT_STDOUT, null, InputOption::VALUE_NONE, 'Stream directly to stdout (disable realtime display and out file)');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -115,21 +117,20 @@ class CrawlCommand extends Command
         $dispatcher = $this->buildDispatcher($input);
         $dispatcher->dispatch();
 
-        Loop::repeat($this->castToInt($input->getOption(self::OPT_REQUEST_INTERVAL)), function () use ($dispatcher) {
-            $dispatcher->dispatch();
-        });
-
         $section1 = $output->section();
 
         $display = $this->displayBuilder->build($this->castToString($input->getOption(self::OPT_DISPLAY)));
 
-        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($display, $section1, $dispatcher) {
-            if (false === $this->shuttingDown) {
+        Loop::repeat($this->castToInt($input->getOption(self::OPT_REQUEST_INTERVAL)), function () use ($dispatcher) {
+            $dispatcher->dispatch();
+        });
+
+        Loop::repeat(self::DISPLAY_POLL_TIME, function () use ($display, $section1, $dispatcher, $input) {
+            if (false === $input->getOption(self::OPT_STDOUT) && false === $this->shuttingDown) {
                 $section1->overwrite($display->render($section1->getFormatter(), $dispatcher->status()));
             }
 
-            $status = $dispatcher->status();
-            if ($status->nbConcurrentRequests === 0 && $status->queueSize === 0) {
+            if ($dispatcher->status()->nbConcurrentRequests === 0 && $dispatcher->status()->queueSize === 0) {
                 Loop::stop();
 
                 if ($dispatcher->status()->nbFailures) {
@@ -159,7 +160,7 @@ class CrawlCommand extends Command
     private function buildDispatcher(InputInterface $input): Dispatcher
     {
         $urls = $this->castToArray($input->getArgument(self::ARG_URLS));
-        
+
         $maxConcurrency = $this->castToInt($input->getOption(self::OPT_CONCURRENCY));
         $outfile = $input->getOption(self::OPT_OUTPUT);
         $noDedupe = $this->castToBool($input->getOption(self::OPT_NO_DEDUPE));
@@ -206,6 +207,10 @@ class CrawlCommand extends Command
 
         if ($outfile) {
             $builder->publishTo($this->castToString($outfile));
+        }
+
+        if ($input->getOption(self::OPT_STDOUT)) {
+            $builder->publishResource(STDOUT);
         }
 
         if ($cookieFile) {

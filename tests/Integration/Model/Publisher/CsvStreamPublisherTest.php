@@ -46,6 +46,7 @@ EOT
 
     private function create(bool $withHeaders = false): Publisher
     {
-        return new CsvStreamPublisher($this->workspace()->path(self::EXAMPLE_FILEANME), $withHeaders);
+        $resource = fopen($this->workspace()->path(self::EXAMPLE_FILEANME), 'w');
+        return new CsvStreamPublisher($resource, $withHeaders);
     }
 }

@@ -389,6 +389,16 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
+    public function testStreamsToStdout()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--stdout',
+        ]);
+        $this->assertProcessSuccess($process);
+        $this->assertStringContainsString('blog.html', $process->getOutput());
+    }
+
     private function assertStatus(array $results, int $code, string $target): void
     {
         $target = self::EXAMPLE_URL . '/'. $target;

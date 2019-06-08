@@ -68,9 +68,8 @@ abstract class EndToEndTestCase extends IntegrationTestCase
 
     protected function finkProcess(array $args): Process
     {
-        $fink = new Process(array_merge([
+        return new Process(array_merge([
             'bin/fink'
         ], $args), __DIR__ . '/../..');
-        return $fink;
     }
 }

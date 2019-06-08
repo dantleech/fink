@@ -92,6 +92,7 @@ Options
 - `--publisher=csv` Set the publisher (defaults to `json`) can be either
   `json` or `csv`.
 - `--rate` Set a maximum number of requests to make in a second.
+- `--stdout` Stream to STDOUT directly, disables display and any specified outfile.
 
 Examples
 --------
