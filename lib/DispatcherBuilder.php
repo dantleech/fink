@@ -132,6 +132,11 @@ class DispatcherBuilder
      */
     private $clientSslSecurityLevel;
 
+    /**
+     * @var resource|null
+     */
+    private $publishToResource;
+
     public function __construct(Urls $baseUrls)
     {
         $this->baseUrls = $baseUrls;
@@ -186,6 +191,13 @@ class DispatcherBuilder
     public function publishTo(string $outfile): self
     {
         $this->publishTo = $outfile;
+
+        return $this;
+    }
+
+    public function publishResource($resource): self
+    {
+        $this->publishToResource = $resource;
 
         return $this;
     }
@@ -365,13 +377,13 @@ class DispatcherBuilder
 
     private function buildPublisher()
     {
-        if ($this->publishTo) {
+        if ($this->publishTo || $this->publishToResource) {
             if ($this->publisherType === self::PUBLISHER_JSON) {
                 return $this->buildJsonPublisher();
             }
 
             if ($this->publisherType === self::PUBLISHER_CSV) {
-                return new CsvStreamPublisher($this->publishTo, true);
+                return new CsvStreamPublisher($this->buildPublishStream(), true);
             }
 
             throw new RuntimeException(sprintf(
@@ -386,16 +398,7 @@ class DispatcherBuilder
 
     private function buildJsonPublisher()
     {
-        $resource = fopen($this->publishTo, 'w');
-        
-        if (false === $resource) {
-            throw new RuntimeException(sprintf(
-                'Could not open file "%s"',
-                $this->publishTo
-            ));
-        }
-        
-        return new JsonStreamPublisher(new ResourceOutputStream($resource));
+        return new JsonStreamPublisher(new ResourceOutputStream($this->buildPublishStream()));
     }
 
     private function buildLimiter(): Limiter
@@ -409,5 +412,23 @@ class DispatcherBuilder
         }
 
         return new ChainLimiter($limiters);
+    }
+
+    private function buildPublishStream()
+    {
+        if ($this->publishToResource) {
+            return $this->publishToResource;
+        }
+
+        $resource = fopen($this->publishTo, 'w');
+        
+        if (false === $resource) {
+            throw new RuntimeException(sprintf(
+                'Could not open file "%s"',
+                $this->publishTo
+            ));
+        }
+
+        return $resource;
     }
 }
