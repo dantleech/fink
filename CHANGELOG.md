@@ -1,6 +1,6 @@
 # Changelog
 
-## develop
+## [0.9.0] 2019-06-08
 
 - Record referrer title if client encounters error while requesting URL, fixes #88
 - Verbose mode streams report to STDOUT with `--stdout` #83 #65
