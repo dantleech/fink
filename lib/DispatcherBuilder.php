@@ -2,12 +2,18 @@
 
 namespace DTL\Extension\Fink;
 
-use Amp\Artax\Client;
-use Amp\Artax\Cookie\NullCookieJar;
-use Amp\Artax\DefaultClient;
-use Amp\Artax\HttpSocketPool;
 use Amp\ByteStream\ResourceOutputStream;
+use Amp\Http\Client\Client;
+use Amp\Http\Client\Connection\DefaultConnectionPool;
+use Amp\Http\Client\Cookie\CookieHandler;
+use Amp\Http\Client\Cookie\NullCookieJar;
+use Amp\Http\Client\Interceptor\DefaultHeader;
+use Amp\Http\Client\Interceptor\RedirectHandler;
+use Amp\Http\Client\Interceptor\RequestMapper;
+use Amp\Http\Client\Request;
 use Amp\Socket\ClientTlsContext;
+use Amp\Socket\ConnectContext;
+use Amp\Socket\DnsConnector;
 use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
 use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
 use DTL\Extension\Fink\Model\Crawler;
@@ -21,117 +27,104 @@ use DTL\Extension\Fink\Model\Publisher\CsvStreamPublisher;
 use DTL\Extension\Fink\Model\Publisher\JsonStreamPublisher;
 use DTL\Extension\Fink\Model\Queue\DedupeQueue;
 use DTL\Extension\Fink\Model\Queue\ExcludingQueue;
-use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
 use DTL\Extension\Fink\Model\Queue\ExternalDistanceLimitingQueue;
+use DTL\Extension\Fink\Model\Queue\MaxDistanceQueue;
 use DTL\Extension\Fink\Model\Queue\RealUrlQueue;
+use DTL\Extension\Fink\Model\Store\CircularReportStore;
 use DTL\Extension\Fink\Model\Url;
 use DTL\Extension\Fink\Model\UrlQueue;
 use DTL\Extension\Fink\Model\Urls;
 use RuntimeException;
-use DTL\Extension\Fink\Model\Store\CircularReportStore;
+use function Amp\Socket\hasTlsSecurityLevelSupport;
 
 class DispatcherBuilder
 {
     public const PUBLISHER_CSV = 'csv';
     public const PUBLISHER_JSON = 'json';
 
+    public static function create(array $urls): self
+    {
+        return new self(Urls::fromUrls($urls));
+    }
+
     /**
      * @var int
      */
     private $maxConcurrency = 10;
-
     /**
      * @var bool
      */
     private $noDedupe = false;
-
     /**
      * @var int|null
      */
-    private $limitExternalDistance = null;
-
+    private $limitExternalDistance;
     /**
      * @var string
      */
     private $publishTo;
-
     /**
      * @var bool
      */
     private $noPeerVerification = false;
-
     /**
      * @var int|null
      */
-    private $maxDistance = null;
-
+    private $maxDistance;
     /**
      * @var string
      */
     private $loadCookies;
-
     /**
      * @var int
      */
     private $urlReportSize = 5;
-
     /**
      * @var string
      */
     private $publisherType = self::PUBLISHER_JSON;
-
     /**
      * @var int
      */
     private $clientTransferTimeout = 15000;
-
     /**
      * @var int
      */
     private $clientMaxRedirects = 5;
-
     /**
      * @var array|null
      */
     private $excludeUrlPatterns;
-
     /**
      * @var array
      */
     private $headers = [
-        'User-Agent' => 'Mozilla/5.0 (compatible; Artax; FinkPHP)'
+        'User-Agent' => 'Mozilla/5.0 (compatible; Artax; FinkPHP)',
     ];
-
     /**
      * @var Urls<Url>
      */
     private $baseUrls;
-
     /**
      * @var float
      */
     private $rateLimit;
-
     /**
      * @var string[]
      */
     private $includeLinks = [];
-
     /**
      * @var int
      */
     private $clientMaxHeaderSize;
-
     /**
      * @var int
      */
     private $clientMaxBodySize;
-
     /**
      * @var int
      */
     private $clientSslSecurityLevel;
-
     /**
      * @var resource|null
      */
@@ -140,11 +133,6 @@ class DispatcherBuilder
     public function __construct(Urls $baseUrls)
     {
         $this->baseUrls = $baseUrls;
-    }
-
-    public static function create(array $urls): self
-    {
-        return new self(Urls::fromUrls($urls));
     }
 
     public function excludeUrlPatterns(array $urlPatterns): self
@@ -306,7 +294,7 @@ class DispatcherBuilder
     private function buildQueue(): UrlQueue
     {
         $queue = new RealUrlQueue();
-        
+
         if (!$this->noDedupe) {
             $queue = new DedupeQueue($queue);
         }
@@ -329,8 +317,7 @@ class DispatcherBuilder
     private function buildClient(): Client
     {
         $cookieJar = new NullCookieJar;
-        $tlsContext = new ClientTlsContext;
-        $socketPool = new HttpSocketPool;
+        $tlsContext = new ClientTlsContext('');
 
         if ($this->loadCookies) {
             if (!file_exists($this->loadCookies)) {
@@ -345,8 +332,8 @@ class DispatcherBuilder
             );
         }
 
-        // set the default secutity level if PHP is compiled with support for it
-        if (\OPENSSL_VERSION_NUMBER >= 0x10100000) {
+        // set the default security level if PHP is compiled with support for it
+        if (hasTlsSecurityLevelSupport()) {
             $tlsContext = $tlsContext->withSecurityLevel(1);
         }
 
@@ -358,19 +345,22 @@ class DispatcherBuilder
             $tlsContext = $tlsContext->withoutPeerVerification();
         }
 
-        $client = new DefaultClient(
-            $cookieJar,
-            $socketPool,
-            $tlsContext
-        );
+        $client = new Client(new DefaultConnectionPool(null, (new ConnectContext)->withTlsContext($tlsContext)));
+        $client->addNetworkInterceptor(new RequestMapper(function (Request $request): Request {
+            return $request->withTransferTimeout($this->clientTransferTimeout)
+                ->withHeaderSizeLimit($this->clientMaxHeaderSize)
+                ->withBodySizeLimit($this->clientMaxBodySize);
+        }));
 
-        $client->setOptions([
-            Client::OP_TRANSFER_TIMEOUT => $this->clientTransferTimeout,
-            Client::OP_MAX_REDIRECTS => $this->clientMaxRedirects,
-            Client::OP_DEFAULT_HEADERS => $this->headers,
-            Client::OP_MAX_BODY_BYTES => $this->clientMaxBodySize,
-            Client::OP_MAX_HEADER_BYTES => $this->clientMaxHeaderSize,
-        ]);
+        if ($this->clientMaxRedirects > 0) {
+            $client->addApplicationInterceptor(new RedirectHandler($this->clientMaxRedirects));
+        }
+
+        foreach ($this->headers as $headerField => $headerValue) {
+            $client->addNetworkInterceptor(new DefaultHeader($headerField, $headerValue));
+        }
+
+        $client->addNetworkInterceptor(new CookieHandler($cookieJar));
 
         return $client;
     }
@@ -389,10 +379,10 @@ class DispatcherBuilder
             throw new RuntimeException(sprintf(
                 'Unknown publisher type "%s" must be one of "%s"',
                 $this->publisherType,
-                implode('", "', [ self::PUBLISHER_JSON, self::PUBLISHER_CSV ])
+                implode('", "', [self::PUBLISHER_JSON, self::PUBLISHER_CSV])
             ));
         }
-            
+
         return new BlackholePublisher();
     }
 
@@ -404,7 +394,7 @@ class DispatcherBuilder
     private function buildLimiter(): Limiter
     {
         $limiters = [
-            new ConcurrencyLimiter($this->maxConcurrency)
+            new ConcurrencyLimiter($this->maxConcurrency),
         ];
 
         if ($this->rateLimit) {
@@ -421,7 +411,7 @@ class DispatcherBuilder
         }
 
         $resource = fopen($this->publishTo, 'w');
-        
+
         if (false === $resource) {
             throw new RuntimeException(sprintf(
                 'Could not open file "%s"',

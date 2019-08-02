@@ -2,8 +2,9 @@
 
 namespace DTL\Extension\Fink\Adapter\Artax;
 
-use Amp\Artax\Cookie\Cookie;
-use Amp\Artax\Cookie\CookieJar;
+use Amp\Http\Client\Cookie\CookieJar;
+use Amp\Http\Client\Request;
+use Amp\Http\Cookie\ResponseCookie;
 
 class ImmutableCookieJar implements CookieJar
 {
@@ -17,9 +18,9 @@ class ImmutableCookieJar implements CookieJar
         $this->innerJar = $innerJar;
     }
 
-    public function get(string $domain, string $path = '', string $name = null): array
+    public function get(Request $request): array
     {
-        return $this->innerJar->get($domain, $path, $name);
+        return $this->innerJar->get($request);
     }
 
     public function getAll(): array
@@ -27,17 +28,17 @@ class ImmutableCookieJar implements CookieJar
         return $this->innerJar->getAll();
     }
 
-    public function store(Cookie $cookie)
+    public function store(ResponseCookie $cookie): void
     {
         // nothing
     }
 
-    public function remove(Cookie $cookie)
+    public function remove(ResponseCookie $cookie): void
     {
         // nothing
     }
 
-    public function removeAll()
+    public function removeAll(): void
     {
         // nothing
     }

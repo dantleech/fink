@@ -2,8 +2,9 @@
 
 namespace DTL\Extension\Fink\Tests\Unit\Adapter\Artax;
 
-use Amp\Artax\Cookie\Cookie;
-use Amp\Artax\Cookie\CookieJar;
+use Amp\Http\Client\Cookie\CookieJar;
+use Amp\Http\Client\Request;
+use Amp\Http\Cookie\ResponseCookie;
 use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -35,9 +36,9 @@ class ImmutableCookieJarTest extends TestCase
 
     public function testDelegatesToInnerJarForGet()
     {
-        $this->innerJar->get(self::EXAMPLE_DOMAIN, self::EXAMPLE_PATH, self::EXAMPLE_NAME)->willReturn([self::EXAMPLE_VALUE]);
+        $this->innerJar->get(new Request("http://" . self::EXAMPLE_DOMAIN . self::EXAMPLE_PATH))->willReturn([self::EXAMPLE_VALUE]);
 
-        $value = $this->jar->get(self::EXAMPLE_DOMAIN, self::EXAMPLE_PATH, self::EXAMPLE_NAME);
+        $value = $this->jar->get(new Request('http://' . self::EXAMPLE_DOMAIN . self::EXAMPLE_PATH));
 
         $this->assertEquals([self::EXAMPLE_VALUE], $value);
     }
@@ -57,8 +58,8 @@ class ImmutableCookieJarTest extends TestCase
         $this->innerJar->removeAll()->shouldNotBeCalled();
         $this->innerJar->store(Argument::any())->shouldNotBeCalled();
 
-        $this->jar->remove(Cookie::fromString('foo=bar'));
+        $this->jar->remove(ResponseCookie::fromHeader('foo=bar'));
         $this->jar->removeAll();
-        $this->jar->store(Cookie::fromString('foo=bar'));
+        $this->jar->store(ResponseCookie::fromHeader('foo=bar'));
     }
 }

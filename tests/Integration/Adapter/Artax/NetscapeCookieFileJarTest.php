@@ -2,6 +2,7 @@
 
 namespace DTL\Extension\Fink\Tests\Integration\Adapter\Artax;
 
+use Amp\Http\Client\Request;
 use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
 use DTL\Extension\Fink\Tests\IntegrationTestCase;
 use DateTimeImmutable;
@@ -44,23 +45,23 @@ EOT
 
         $this->assertEquals(
             '-5061451:',
-            $jar->get('.google.com', '', 'OGP')[0]->getValue()
+            $jar->get(new Request('https://google.com/'))[0]->getValue()
         );
         $this->assertEquals(
             '19010135-2:',
-            $jar->get('.google.com', '/', 'OGPC')[0]->getValue()
+            $jar->get(new Request('https://google.com/'))[1]->getValue()
         );
         $this->assertEquals(
             'hello',
-            $jar->get('.google.com', '/complete/search', 'CGIC')[0]->getValue()
+            $jar->get(new Request('https://google.com/complete/search'))[2]->getValue()
         );
         $this->assertEquals(
             '19010135-2:',
-            $jar->get('.google.com', '/', 'OGPC')[0]->getValue()
+            $jar->get(new Request('https://google.com/'))[1]->getValue()
         );
         $this->assertEquals(
             'world',
-            $jar->get('127.0.0.1', '/', 'hello')[0]->getValue()
+            $jar->get(new Request('http://127.0.0.1/'))[0]->getValue()
         );
     }
 }

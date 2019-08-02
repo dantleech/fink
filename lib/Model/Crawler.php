@@ -2,8 +2,9 @@
 
 namespace DTL\Extension\Fink\Model;
 
-use Amp\Artax\Client;
-use Amp\Artax\Response;
+use Amp\Http\Client\Client;
+use Amp\Http\Client\Request;
+use Amp\Http\Client\Response;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -26,7 +27,7 @@ class Crawler
     {
         $start = microtime(true);
         $report->withReferringElement($documentUrl->referringElement());
-        $response = yield $this->client->request($documentUrl->__toString());
+        $response = yield $this->client->request(new Request($documentUrl->__toString()));
         $time = (microtime(true) - $start) * 1E6;
 
         $report->withRequestTime((int) $time);
@@ -47,22 +48,22 @@ class Crawler
         foreach ($xpath->query('//a') as $linkElement) {
             assert($linkElement instanceof DOMElement);
             $href = $linkElement->getAttribute('href');
-        
+
             if (!$href) {
                 continue;
             }
-        
+
             try {
                 $url = $documentUrl->resolveUrl($href, ReferringElement::fromDOMNode($linkElement));
             } catch (InvalidUrl $invalidUrl) {
                 $report->withException($invalidUrl);
                 continue;
             }
-        
+
             if (!$url->isHttp()) {
                 continue;
             }
-        
+
             $queue->enqueue($url);
         }
     }

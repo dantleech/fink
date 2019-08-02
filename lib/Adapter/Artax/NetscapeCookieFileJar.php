@@ -2,8 +2,8 @@
 
 namespace DTL\Extension\Fink\Adapter\Artax;
 
-use Amp\Artax\Cookie\ArrayCookieJar;
-use Amp\Artax\Cookie\Cookie;
+use Amp\Http\Client\Cookie\ArrayCookieJar;
+use Amp\Http\Cookie\ResponseCookie;
 use DateTimeImmutable;
 use RuntimeException;
 
@@ -38,7 +38,7 @@ class NetscapeCookieFileJar extends ArrayCookieJar
         }
     }
 
-    private function parse(string $line): ?Cookie
+    private function parse(string $line): ?ResponseCookie
     {
         $line = trim($line);
 
@@ -46,7 +46,7 @@ class NetscapeCookieFileJar extends ArrayCookieJar
             return null;
         }
 
-        if (substr($line, 0, 1) === '#') {
+        if ($line[0] === '#') {
             return null;
         }
 
@@ -57,13 +57,7 @@ class NetscapeCookieFileJar extends ArrayCookieJar
             return null;
         }
 
-        $domain = $parts[0];
-        $flag = $parts[1];
-        $path = $parts[2];
-        $secure = $parts[3];
-        $expiration = $parts[4];
-        $name = $parts[5];
-        $value = @$parts[6];
+        [$domain, $flag, $path, $secure, $expiration, $name, $value] = $parts + [6 => null];
 
         $expiration = DateTimeImmutable::createFromFormat('U', $expiration);
 
@@ -85,6 +79,6 @@ class NetscapeCookieFileJar extends ArrayCookieJar
             $string .= '; secure';
         }
 
-        return Cookie::fromString($string);
+        return ResponseCookie::fromHeader($string);
     }
 }

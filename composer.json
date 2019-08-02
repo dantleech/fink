@@ -14,7 +14,8 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.1",
-        "amphp/artax": "^3.0",
+        "amphp/http-client": "dev-master as 4.0",
+        "amphp/http-client-cookies": "dev-master",
         "league/uri-schemes": "^1.0",
         "phpactor/console-extension": "~0.1",
         "phpactor/container": "^1.0",
