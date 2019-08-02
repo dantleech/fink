@@ -38,6 +38,11 @@ class ReportBuilder
     private $referringElement;
 
     /**
+     * @var string|null
+     */
+    private $httpVersion;
+
+    /**
      * @var DateTimeImmutable
      */
     private $timestamp;
@@ -56,6 +61,12 @@ class ReportBuilder
     public function withStatus(int $statusCode): self
     {
         $this->statusCode = HttpStatusCode::fromInt($statusCode);
+        return $this;
+    }
+
+    public function withHttpVersion(string $httpVersion): self
+    {
+        $this->httpVersion = $httpVersion;
         return $this;
     }
 
@@ -97,7 +108,8 @@ class ReportBuilder
             $this->exception,
             $this->requestTime,
             $this->referringElement,
-            $this->timestamp
+            $this->timestamp,
+            $this->httpVersion
         );
     }
 }

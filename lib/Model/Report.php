@@ -18,6 +18,11 @@ class Report
     private $statusCode;
 
     /**
+     * @var ?string
+     */
+    private $httpVersion;
+
+    /**
      * @var int
      */
     private $requestTime;
@@ -43,7 +48,8 @@ class Report
         Exception $exception = null,
         int $requestTime = 0,
         ReferringElement $referringElement = null,
-        DateTimeImmutable $timestamp = null
+        DateTimeImmutable $timestamp = null,
+        ?string $httpVersion = null
     ) {
         $this->url = $url;
         $this->statusCode = $statusCode;
@@ -51,6 +57,7 @@ class Report
         $this->exception = $exception;
         $this->referringElement = $referringElement ?: ReferringElement::none();
         $this->timestamp = $timestamp ?: new DateTimeImmutable();
+        $this->httpVersion = $httpVersion;
     }
 
     public function url(): Url
@@ -61,6 +68,11 @@ class Report
     public function statusCode(): ?HttpStatusCode
     {
         return $this->statusCode;
+    }
+
+    public function httpVersion(): ?string
+    {
+        return $this->httpVersion;
     }
 
     public function isSuccess(): bool
@@ -84,6 +96,7 @@ class Report
             'referrer_xpath' => $this->referringElement->path(),
             'request_time' => $this->requestTime,
             'status' => $this->statusCode ? $this->statusCode->toInt() : null,
+            'http_version' => $this->httpVersion,
             'url' => $this->url->__toString(),
             'timestamp' => $this->timestamp->format('c')
         ];

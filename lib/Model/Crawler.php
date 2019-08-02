@@ -34,6 +34,7 @@ class Crawler
 
         assert($response instanceof Response);
         $report->withStatus($response->getStatus());
+        $report->withHttpVersion($response->getProtocolVersion());
 
         $body = '';
         while ($chunk = yield $response->getBody()->read()) {

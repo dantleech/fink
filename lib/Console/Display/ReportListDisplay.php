@@ -18,8 +18,9 @@ class ReportListDisplay implements Display
             $statuses[] = sprintf(
                 $this->resolveFormat($index + 1 === count($status->reportStore()), $report),
                 sprintf(
-                    '[%3s] %s',
+                    '[%3s][%s] %s',
                     $statusCode ? $this->formatStatusCode($statusCode) : '---',
+                    $report->httpVersion(),
                     $report->url()->__toString()
                 )
             );
