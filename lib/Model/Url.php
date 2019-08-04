@@ -161,10 +161,19 @@ final class Url
 
         if ($this->uri->getPath()) {
             $myPath = $this->uri->getPath();
-            if (substr($this->uri->getPath(), -1, 1) !== '/') {
+            $hasTrailingSlash = substr($this->uri->getPath(), -1, 1) === '/';
+
+            // if link has no trailing slash, then it is a document, so so this
+            // link would be relative to its directory
+            if (!$hasTrailingSlash) {
                 $myPath = Path::getDirectory($myPath);
             }
+
             $linkPath = Path::makeAbsolute($linkPath, $myPath);
+
+            if ($hasTrailingSlash) {
+                $linkPath .= '/';
+            }
         }
 
         // prepend non-absolute paths with "/" to prevent them being
