@@ -389,6 +389,18 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
+    public function testResolveRelativeLinkInSegmentWhenParentUrlHasTrailingSlash()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL . '/',
+            '--output='.$this->workspace()->path('/out.json'),
+        ], 'amphp-website');
+        $this->assertProcessSuccess($process);
+        $rows = $this->parseResults($this->workspace()->path('/out.json'));
+        $url = $this->findUrl($rows, 'amp/coroutines');
+        $this->assertNotNull($url, 'Redirect URL was found');
+    }
+
     public function testStreamsToStdout()
     {
         $process = $this->execute([

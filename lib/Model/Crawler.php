@@ -39,7 +39,12 @@ class Crawler
             $body .= $chunk;
         }
 
-        $this->enqueueLinks($this->loadXpath($body), $documentUrl, $report, $queue);
+        $this->enqueueLinks(
+            $this->loadXpath($body),
+            Url::fromUrl($response->getRequest()->getUri()),
+            $report,
+            $queue
+        );
     }
 
     private function enqueueLinks(DOMXPath $xpath, Url $documentUrl, ReportBuilder $report, UrlQueue $queue): void

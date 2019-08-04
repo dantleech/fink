@@ -134,6 +134,12 @@ tids[n]+" ];
             'baz.html',
             'https://example.com/info/baz.html'
         ];
+
+        yield 'relative path with parent with trailing slash' => [
+            'https://example.com/info/',
+            './baz.html',
+            'https://example.com/info/baz.html'
+        ];
     }
 
     public function testIsHttp()
