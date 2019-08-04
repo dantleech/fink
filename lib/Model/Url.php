@@ -157,16 +157,20 @@ final class Url
 
     private function normalizePath(AbstractUri $link): string
     {
-        $path = $link->getPath();
+        $linkPath = $link->getPath();
 
         if ($this->uri->getPath()) {
-            $path = Path::makeAbsolute($path, Path::getDirectory($this->uri->getPath()));
+            $myPath = $this->uri->getPath();
+            if (substr($this->uri->getPath(), -1, 1) !== '/') {
+                $myPath = Path::getDirectory($myPath);
+            }
+            $linkPath = Path::makeAbsolute($linkPath, $myPath);
         }
 
         // prepend non-absolute paths with "/" to prevent them being
         // concatenated with the host, for example:
         // https://www.example.comtemplate.html
-        return '/'.ltrim($path, '/');
+        return '/'.ltrim($linkPath, '/');
     }
 
     public function referringElement(): ?ReferringElement
