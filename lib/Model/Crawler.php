@@ -10,6 +10,7 @@ use DOMElement;
 use DOMXPath;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use Generator;
+use League\Uri\Http;
 
 class Crawler
 {
@@ -36,12 +37,9 @@ class Crawler
         $report->withStatus($response->getStatus());
         $report->withHttpVersion($response->getProtocolVersion());
 
-        $body = '';
-        while ($chunk = yield $response->getBody()->read()) {
-            $body .= $chunk;
-        }
+        $body = yield $response->getBody()->buffer();
 
-        $this->enqueueLinks($this->loadXpath($body), $documentUrl, $report, $queue);
+        $this->enqueueLinks($this->loadXpath($body), Url::fromUrl((string)$response->getRequest()->getUri()), $report, $queue);
     }
 
     private function enqueueLinks(DOMXPath $xpath, Url $documentUrl, ReportBuilder $report, UrlQueue $queue): void

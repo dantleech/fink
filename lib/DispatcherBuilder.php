@@ -7,9 +7,9 @@ use Amp\Http\Client\Client;
 use Amp\Http\Client\Connection\DefaultConnectionPool;
 use Amp\Http\Client\Cookie\CookieHandler;
 use Amp\Http\Client\Cookie\NullCookieJar;
-use Amp\Http\Client\Interceptor\DefaultHeader;
-use Amp\Http\Client\Interceptor\RedirectHandler;
-use Amp\Http\Client\Interceptor\RequestMapper;
+use Amp\Http\Client\Interceptor\FollowRedirects;
+use Amp\Http\Client\Interceptor\ModifyRequest;
+use Amp\Http\Client\Interceptor\SetRequestHeaderIfUnset;
 use Amp\Http\Client\Request;
 use Amp\Socket\ClientTlsContext;
 use Amp\Socket\ConnectContext;
@@ -346,18 +346,20 @@ class DispatcherBuilder
         }
 
         $client = new Client(new DefaultConnectionPool(null, (new ConnectContext)->withTlsContext($tlsContext)));
-        $client->addNetworkInterceptor(new RequestMapper(function (Request $request): Request {
-            return $request->withTransferTimeout($this->clientTransferTimeout)
-                ->withHeaderSizeLimit($this->clientMaxHeaderSize)
-                ->withBodySizeLimit($this->clientMaxBodySize);
+        $client->addNetworkInterceptor(new ModifyRequest(function (Request $request): Request {
+            $request->setTransferTimeout($this->clientTransferTimeout);
+            $request->setHeaderSizeLimit($this->clientMaxHeaderSize);
+            $request->setBodySizeLimit($this->clientMaxBodySize);
+
+            return $request;
         }));
 
         if ($this->clientMaxRedirects > 0) {
-            $client->addApplicationInterceptor(new RedirectHandler($this->clientMaxRedirects));
+            $client->addApplicationInterceptor(new FollowRedirects($this->clientMaxRedirects));
         }
 
         foreach ($this->headers as $headerField => $headerValue) {
-            $client->addNetworkInterceptor(new DefaultHeader($headerField, $headerValue));
+            $client->addNetworkInterceptor(new SetRequestHeaderIfUnset($headerField, $headerValue));
         }
 
         $client->addNetworkInterceptor(new CookieHandler($cookieJar));
