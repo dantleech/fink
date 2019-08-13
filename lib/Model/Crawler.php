@@ -3,14 +3,12 @@
 namespace DTL\Extension\Fink\Model;
 
 use Amp\Http\Client\Client;
-use Amp\Http\Client\Request;
 use Amp\Http\Client\Response;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use Generator;
-use League\Uri\Http;
 
 class Crawler
 {
@@ -28,7 +26,7 @@ class Crawler
     {
         $start = microtime(true);
         $report->withReferringElement($documentUrl->referringElement());
-        $response = yield $this->client->request(new Request($documentUrl->__toString()));
+        $response = yield $this->client->request((string) $documentUrl);
         $time = (microtime(true) - $start) * 1E6;
 
         $report->withRequestTime((int) $time);
@@ -39,7 +37,7 @@ class Crawler
 
         $body = yield $response->getBody()->buffer();
 
-        $this->enqueueLinks($this->loadXpath($body), Url::fromUrl((string)$response->getRequest()->getUri()), $report, $queue);
+        $this->enqueueLinks($this->loadXpath($body), $documentUrl, $report, $queue);
     }
 
     private function enqueueLinks(DOMXPath $xpath, Url $documentUrl, ReportBuilder $report, UrlQueue $queue): void

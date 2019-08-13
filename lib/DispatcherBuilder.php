@@ -13,7 +13,6 @@ use Amp\Http\Client\Interceptor\SetRequestHeaderIfUnset;
 use Amp\Http\Client\Request;
 use Amp\Socket\ClientTlsContext;
 use Amp\Socket\ConnectContext;
-use Amp\Socket\DnsConnector;
 use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
 use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
 use DTL\Extension\Fink\Model\Crawler;
