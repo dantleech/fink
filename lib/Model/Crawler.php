@@ -37,6 +37,10 @@ class Crawler
 
         $body = yield $response->getBody()->buffer();
 
+        if ((string) $response->getRequest()->getUri() !== (string) $response->getOriginalRequest()->getUri()) {
+            $documentUrl = Url::fromUrl($response->getRequest()->getUri());
+        }
+
         $this->enqueueLinks($this->loadXpath($body), $documentUrl, $report, $queue);
     }
 
