@@ -344,24 +344,26 @@ class DispatcherBuilder
             $tlsContext = $tlsContext->withoutPeerVerification();
         }
 
-        $client = new Client(new DefaultConnectionPool(null, (new ConnectContext)->withTlsContext($tlsContext)));
-        $client->addNetworkInterceptor(new ModifyRequest(function (Request $request): Request {
-            $request->setTransferTimeout($this->clientTransferTimeout);
-            $request->setHeaderSizeLimit($this->clientMaxHeaderSize);
-            $request->setBodySizeLimit($this->clientMaxBodySize);
+        $client = (new Client(new DefaultConnectionPool(null, (new ConnectContext)->withTlsContext($tlsContext))))
+            ->withNetworkInterceptor(new ModifyRequest(function (Request $request): Request {
+                $request->setTransferTimeout($this->clientTransferTimeout);
+                $request->setHeaderSizeLimit($this->clientMaxHeaderSize);
+                $request->setBodySizeLimit($this->clientMaxBodySize);
 
-            return $request;
-        }));
+                return $request;
+            }));
 
         if ($this->clientMaxRedirects > 0) {
-            $client->addApplicationInterceptor(new FollowRedirects($this->clientMaxRedirects));
+            $client = $client->withFollowingRedirects($this->clientMaxRedirects);
+        } else {
+            $client = $client->withoutFollowingRedirects();
         }
 
         foreach ($this->headers as $headerField => $headerValue) {
-            $client->addNetworkInterceptor(new SetRequestHeaderIfUnset($headerField, $headerValue));
+            $client = $client->withNetworkInterceptor(new SetRequestHeaderIfUnset($headerField, $headerValue));
         }
 
-        $client->addNetworkInterceptor(new CookieHandler($cookieJar));
+        $client = $client->withNetworkInterceptor(new CookieHandler($cookieJar));
 
         return $client;
     }
