@@ -3,8 +3,10 @@
 namespace DTL\Extension\Fink\Adapter\Artax;
 
 use Amp\Http\Client\Cookie\CookieJar;
-use Amp\Http\Client\Request;
 use Amp\Http\Cookie\ResponseCookie;
+use Amp\Promise;
+use Amp\Success;
+use Psr\Http\Message\UriInterface as PsrUri;
 
 class ImmutableCookieJar implements CookieJar
 {
@@ -18,28 +20,13 @@ class ImmutableCookieJar implements CookieJar
         $this->innerJar = $innerJar;
     }
 
-    public function get(Request $request): array
+    public function get(PsrUri $uri): Promise
     {
-        return $this->innerJar->get($request);
+        return $this->innerJar->get($uri);
     }
 
-    public function getAll(): array
+    public function store(ResponseCookie ...$cookies): Promise
     {
-        return $this->innerJar->getAll();
-    }
-
-    public function store(ResponseCookie $cookie): void
-    {
-        // nothing
-    }
-
-    public function remove(ResponseCookie $cookie): void
-    {
-        // nothing
-    }
-
-    public function removeAll(): void
-    {
-        // nothing
+        return new Success; // nothing else to do
     }
 }

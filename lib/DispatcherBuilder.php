@@ -3,11 +3,11 @@
 namespace DTL\Extension\Fink;
 
 use Amp\ByteStream\ResourceOutputStream;
-use Amp\Http\Client\Client;
-use Amp\Http\Client\Connection\DefaultConnectionPool;
-use Amp\Http\Client\Cookie\CookieHandler;
+use Amp\Http\Client\Connection\UnlimitedConnectionPool;
+use Amp\Http\Client\Cookie\CookieInterceptor;
 use Amp\Http\Client\Cookie\NullCookieJar;
-use Amp\Http\Client\Interceptor\FollowRedirects;
+use Amp\Http\Client\HttpClient;
+use Amp\Http\Client\HttpClientBuilder;
 use Amp\Http\Client\Interceptor\ModifyRequest;
 use Amp\Http\Client\Interceptor\SetRequestHeaderIfUnset;
 use Amp\Http\Client\Request;
@@ -217,7 +217,7 @@ class DispatcherBuilder
         return $this;
     }
 
-    public function clientSecurityLevel(int $sslSecurityLevel)
+    public function clientSecurityLevel(int $sslSecurityLevel): self
     {
         $this->clientSslSecurityLevel = $sslSecurityLevel;
 
@@ -313,7 +313,7 @@ class DispatcherBuilder
         return $queue;
     }
 
-    private function buildClient(): Client
+    private function buildClient(): HttpClient
     {
         $cookieJar = new NullCookieJar;
         $tlsContext = new ClientTlsContext('');
@@ -344,8 +344,9 @@ class DispatcherBuilder
             $tlsContext = $tlsContext->withoutPeerVerification();
         }
 
-        $client = (new Client(new DefaultConnectionPool(null, (new ConnectContext)->withTlsContext($tlsContext))))
-            ->withNetworkInterceptor(new ModifyRequest(function (Request $request): Request {
+        $clientBuilder = (new HttpClientBuilder)
+            ->usingPool(new UnlimitedConnectionPool(null, (new ConnectContext)->withTlsContext($tlsContext)))
+            ->interceptNetwork(new ModifyRequest(function (Request $request): Request {
                 $request->setTransferTimeout($this->clientTransferTimeout);
                 $request->setHeaderSizeLimit($this->clientMaxHeaderSize);
                 $request->setBodySizeLimit($this->clientMaxBodySize);
@@ -354,18 +355,18 @@ class DispatcherBuilder
             }));
 
         if ($this->clientMaxRedirects > 0) {
-            $client = $client->withFollowingRedirects($this->clientMaxRedirects);
+            $clientBuilder = $clientBuilder->followRedirects($this->clientMaxRedirects);
         } else {
-            $client = $client->withoutFollowingRedirects();
+            $clientBuilder = $clientBuilder->followRedirects(0);
         }
 
         foreach ($this->headers as $headerField => $headerValue) {
-            $client = $client->withNetworkInterceptor(new SetRequestHeaderIfUnset($headerField, $headerValue));
+            $clientBuilder = $clientBuilder->interceptNetwork(new SetRequestHeaderIfUnset($headerField, $headerValue));
         }
 
-        $client = $client->withNetworkInterceptor(new CookieHandler($cookieJar));
+        $clientBuilder = $clientBuilder->interceptNetwork(new CookieInterceptor($cookieJar));
 
-        return $client;
+        return $clientBuilder->build();
     }
 
     private function buildPublisher()
@@ -389,7 +390,7 @@ class DispatcherBuilder
         return new BlackholePublisher();
     }
 
-    private function buildJsonPublisher()
+    private function buildJsonPublisher(): JsonStreamPublisher
     {
         return new JsonStreamPublisher(new ResourceOutputStream($this->buildPublishStream()));
     }

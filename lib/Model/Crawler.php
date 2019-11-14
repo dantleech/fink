@@ -2,7 +2,8 @@
 
 namespace DTL\Extension\Fink\Model;
 
-use Amp\Http\Client\Client;
+use Amp\Http\Client\HttpClient;
+use Amp\Http\Client\Request;
 use Amp\Http\Client\Response;
 use DOMDocument;
 use DOMElement;
@@ -13,11 +14,11 @@ use Generator;
 class Crawler
 {
     /**
-     * @var Client
+     * @var HttpClient
      */
     private $client;
 
-    public function __construct(Client $client)
+    public function __construct(HttpClient $client)
     {
         $this->client = $client;
     }
@@ -26,7 +27,7 @@ class Crawler
     {
         $start = microtime(true);
         $report->withReferringElement($documentUrl->referringElement());
-        $response = yield $this->client->request((string) $documentUrl);
+        $response = yield $this->client->request(new Request((string) $documentUrl));
         $time = (microtime(true) - $start) * 1E6;
 
         $report->withRequestTime((int) $time);

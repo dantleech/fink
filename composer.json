@@ -13,10 +13,10 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.1",
+        "php": "^7.2",
         "amphp/http-client": "dev-master as 4.0.0",
-        "amphp/http-client-cookies": "^1.0.0-RC1",
-        "league/uri-schemes": "^1.0",
+        "amphp/http-client-cookies": "dev-master",
+        "league/uri": "^6",
         "phpactor/console-extension": "~0.1",
         "phpactor/container": "^1.0",
         "webmozart/path-util": "^2.3"

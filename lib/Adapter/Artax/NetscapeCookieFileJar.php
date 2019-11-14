@@ -2,13 +2,19 @@
 
 namespace DTL\Extension\Fink\Adapter\Artax;
 
-use Amp\Http\Client\Cookie\ArrayCookieJar;
+use Amp\Http\Client\Cookie\CookieJar;
+use Amp\Http\Client\Cookie\InMemoryCookieJar;
 use Amp\Http\Cookie\ResponseCookie;
+use Amp\Promise;
 use DateTimeImmutable;
+use Psr\Http\Message\UriInterface as PsrUri;
 use RuntimeException;
 
-class NetscapeCookieFileJar extends ArrayCookieJar
+class NetscapeCookieFileJar implements CookieJar
 {
+    /** @var InMemoryCookieJar */
+    private $cookieJar;
+
     public function __construct(string $filePath)
     {
         if (!file_exists($filePath)) {
@@ -25,6 +31,8 @@ class NetscapeCookieFileJar extends ArrayCookieJar
             ));
         }
 
+        $this->cookieJar = new InMemoryCookieJar;
+
         while (!feof($cookieFileHandle)) {
             if (!$line = fgets($cookieFileHandle)) {
                 continue;
@@ -36,6 +44,16 @@ class NetscapeCookieFileJar extends ArrayCookieJar
 
             $this->store($cookie);
         }
+    }
+
+    public function get(PsrUri $uri): Promise
+    {
+        return $this->cookieJar->get($uri);
+    }
+
+    public function store(ResponseCookie ...$cookies): Promise
+    {
+        return $this->cookieJar->store(...$cookies);
     }
 
     private function parse(string $line): ?ResponseCookie
