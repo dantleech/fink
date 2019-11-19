@@ -5,6 +5,7 @@ namespace DTL\Extension\Fink\Tests\Unit\Adapter\Artax;
 use Amp\Http\Client\Cookie\CookieJar;
 use Amp\Http\Client\Request;
 use Amp\Http\Cookie\ResponseCookie;
+use Amp\Success;
 use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -36,30 +37,20 @@ class ImmutableCookieJarTest extends TestCase
 
     public function testDelegatesToInnerJarForGet()
     {
-        $this->innerJar->get(new Request("http://" . self::EXAMPLE_DOMAIN . self::EXAMPLE_PATH))->willReturn([self::EXAMPLE_VALUE]);
+        $uri = (new Request('http://' . self::EXAMPLE_DOMAIN . self::EXAMPLE_PATH))->getUri();
+        $returnValue = new Success(self::EXAMPLE_VALUE);
 
-        $value = $this->jar->get(new Request('http://' . self::EXAMPLE_DOMAIN . self::EXAMPLE_PATH));
+        $this->innerJar->get($uri)->willReturn($returnValue);
 
-        $this->assertEquals([self::EXAMPLE_VALUE], $value);
-    }
+        $value = $this->jar->get($uri);
 
-    public function testDelegatesToInnerJarForGetAll()
-    {
-        $this->innerJar->getAll()->willReturn(['foo' => self::EXAMPLE_VALUE]);
-
-        $value = $this->jar->getAll();
-
-        $this->assertEquals(['foo' => self::EXAMPLE_VALUE], $value);
+        $this->assertSame($returnValue, $value);
     }
 
     public function testNoOpsForMutableActions()
     {
-        $this->innerJar->remove(Argument::any())->shouldNotBeCalled();
-        $this->innerJar->removeAll()->shouldNotBeCalled();
         $this->innerJar->store(Argument::any())->shouldNotBeCalled();
 
-        $this->jar->remove(ResponseCookie::fromHeader('foo=bar'));
-        $this->jar->removeAll();
         $this->jar->store(ResponseCookie::fromHeader('foo=bar'));
     }
 }

@@ -5,7 +5,6 @@ namespace DTL\Extension\Fink\Model;
 use Amp\Http\Client\Interceptor\FollowRedirects;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use DTL\Extension\Fink\Model\Exception\InvalidUrlComparison;
-use League\Uri\Exception;
 use League\Uri\Http as HttpUri;
 use League\Uri\Uri;
 
@@ -33,6 +32,10 @@ final class Url
 
     private function __construct(HttpUri $uri, Url $referrer = null, int $distance = 0, ReferringElement $referringElement = null)
     {
+        if ($uri->getPath() === '') {
+            $uri = $uri->withPath('/');
+        }
+
         $this->uri = $uri;
         $this->referrer = $referrer;
         $this->distance = $distance;
@@ -43,7 +46,7 @@ final class Url
     {
         try {
             $new = new self(HttpUri::createFromString($url));
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             throw new InvalidUrl($e->getMessage(), 0, $e);
         }
 
@@ -59,7 +62,7 @@ final class Url
     {
         try {
             $parsedLink = HttpUri::createFromString($link);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             throw new InvalidUrl($e->getMessage(), 0, $e);
         }
 

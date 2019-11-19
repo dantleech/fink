@@ -23,6 +23,6 @@ class DedupeQueueTest extends TestCase
         $this->assertCount(2, $queue);
 
         $url = $queue->dequeue();
-        $this->assertEquals('https://www.dantleech.com', $url->__toString());
+        $this->assertEquals('https://www.dantleech.com/', $url->__toString());
     }
 }

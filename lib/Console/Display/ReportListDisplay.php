@@ -20,7 +20,7 @@ class ReportListDisplay implements Display
                 sprintf(
                     '[%3s][%s] %s',
                     $statusCode ? $this->formatStatusCode($statusCode) : '---',
-                    $report->httpVersion(),
+                    $report->httpVersion() ?? '?',
                     $report->url()->__toString()
                 )
             );

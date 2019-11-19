@@ -64,9 +64,9 @@ class Dispatcher
             if ($this->limiter->limitReached($this->status)) {
                 return;
             }
-            
+
             $url = $this->queue->dequeue();
-            
+
             if (null === $url) {
                 return;
             }
@@ -80,17 +80,17 @@ class Dispatcher
         \Amp\asyncCall(function (Url $url) {
             $this->status->nbConcurrentRequests++;
             $reportBuilder = ReportBuilder::forUrl($url);
-        
+
             try {
                 yield from $this->crawler->crawl($url, $this->queue, $reportBuilder);
             } catch (Exception $exception) {
                 $reportBuilder->withException($exception);
             }
-        
+
             $report = $reportBuilder->build();
             $this->publisher->publish($report);
             $this->store->add($report);
-        
+
             $this->status->queueSize = count($this->queue);
             $this->status->nbFailures += $report->isSuccess() ? 0 : 1;
             $this->status->lastUrl = $url->__toString();

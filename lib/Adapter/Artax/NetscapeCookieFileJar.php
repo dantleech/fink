@@ -56,6 +56,11 @@ class NetscapeCookieFileJar implements CookieJar
         return $this->cookieJar->store(...$cookies);
     }
 
+    public function getAll(): array
+    {
+        return $this->cookieJar->getAll();
+    }
+
     private function parse(string $line): ?ResponseCookie
     {
         $line = trim($line);
