@@ -2,7 +2,7 @@
 
 namespace DTL\Extension\Fink\Model;
 
-use Amp\Artax\Response;
+use Amp\Http\Client\Response;
 
 interface Reporter
 {

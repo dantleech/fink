@@ -80,12 +80,17 @@ class NetscapeCookieFileJar implements CookieJar
             return null;
         }
 
+        /** @var string $domain */
+        /** @var string $flag */
+        /** @var string $path */
+        /** @var string $secure */
+        /** @var string $expiration */
         [$domain, $flag, $path, $secure, $expiration, $name, $value] = $parts + [6 => null];
 
-        $expiration = DateTimeImmutable::createFromFormat('U', $expiration);
+        $parsedExpiration = DateTimeImmutable::createFromFormat('U', $expiration);
 
         // could not parse date
-        if (false === $expiration) {
+        if (false === $parsedExpiration) {
             return null;
         }
 
@@ -93,7 +98,7 @@ class NetscapeCookieFileJar implements CookieJar
             '%s=%s; expires=%s; domain=%s; path=%s',
             $name,
             $value,
-            $expiration->format('D, d M Y H:i:s T'),
+            $parsedExpiration->format('D, d M Y H:i:s T'),
             $domain,
             $path
         );

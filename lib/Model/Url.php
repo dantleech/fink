@@ -6,12 +6,12 @@ use Amp\Http\Client\Interceptor\FollowRedirects;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use DTL\Extension\Fink\Model\Exception\InvalidUrlComparison;
 use League\Uri\Http as HttpUri;
-use League\Uri\Uri;
+use Psr\Http\Message\UriInterface as PsrUri;
 
 final class Url
 {
     /**
-     * @var Uri
+     * @var PsrUri
      */
     private $uri;
 
@@ -30,7 +30,7 @@ final class Url
      */
     private $referringElement;
 
-    private function __construct(HttpUri $uri, Url $referrer = null, int $distance = 0, ReferringElement $referringElement = null)
+    private function __construct(PsrUri $uri, Url $referrer = null, int $distance = 0, ReferringElement $referringElement = null)
     {
         if ($uri->getPath() === '') {
             $uri = $uri->withPath('/');
