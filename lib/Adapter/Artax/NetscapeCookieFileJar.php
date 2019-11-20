@@ -80,13 +80,9 @@ class NetscapeCookieFileJar implements CookieJar
             return null;
         }
 
-        /** @var string $domain */
-        /** @var string $flag */
-        /** @var string $path */
-        /** @var string $secure */
-        /** @var string $expiration */
         [$domain, $flag, $path, $secure, $expiration, $name, $value] = $parts + [6 => null];
 
+        \assert($expiration !== null); // silence phpstan
         $parsedExpiration = DateTimeImmutable::createFromFormat('U', $expiration);
 
         // could not parse date
@@ -103,6 +99,7 @@ class NetscapeCookieFileJar implements CookieJar
             $path
         );
 
+        \assert($secure !== null); // silence phpstan
         if (strtolower($secure) === 'true') {
             $string .= '; secure';
         }
