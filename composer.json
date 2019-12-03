@@ -14,8 +14,9 @@
     "prefer-stable": true,
     "require": {
         "php": "^7.2",
-        "amphp/http-client": "dev-interceptor-redesign as dev-master",
+        "amphp/http-client": "dev-master as 4.0.0",
         "amphp/http-client-cookies": "dev-master",
+        "amphp/file": "^1",
         "league/uri": "^6",
         "phpactor/console-extension": "~0.1",
         "phpactor/container": "^1.0",

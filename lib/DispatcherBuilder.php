@@ -3,6 +3,7 @@
 namespace DTL\Extension\Fink;
 
 use Amp\ByteStream\ResourceOutputStream;
+use Amp\Http\Client\Connection\DefaultConnectionFactory;
 use Amp\Http\Client\Connection\UnlimitedConnectionPool;
 use Amp\Http\Client\Cookie\CookieInterceptor;
 use Amp\Http\Client\Cookie\NullCookieJar;
@@ -344,8 +345,9 @@ class DispatcherBuilder
             $tlsContext = $tlsContext->withoutPeerVerification();
         }
 
+        /** @var HttpClientBuilder $clientBuilder */
         $clientBuilder = (new HttpClientBuilder)
-            ->usingPool(new UnlimitedConnectionPool(null, (new ConnectContext)->withTlsContext($tlsContext)))
+            ->usingPool(new UnlimitedConnectionPool(new DefaultConnectionFactory(null, (new ConnectContext)->withTlsContext($tlsContext))))
             ->interceptNetwork(new ModifyRequest(function (Request $request): Request {
                 $request->setTransferTimeout($this->clientTransferTimeout);
                 $request->setHeaderSizeLimit($this->clientMaxHeaderSize);
