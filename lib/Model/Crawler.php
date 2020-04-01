@@ -29,6 +29,10 @@ class Crawler
         $report->withReferringElement($documentUrl->referringElement());
         $response = yield $this->client->request(new Request((string) $documentUrl));
         $time = (microtime(true) - $start) * 1E6;
+        assert($response instanceof Response);
+
+        // if there was a redirect, use the redirect URL as the base
+        $ultimateUrl = $documentUrl->withPsiUrl($response->getRequest()->getUri());
 
         $report->withRequestTime((int) $time);
 
@@ -38,7 +42,7 @@ class Crawler
 
         $body = yield $response->getBody()->buffer();
 
-        $this->enqueueLinks($this->loadXpath($body), $documentUrl, $report, $queue);
+        $this->enqueueLinks($this->loadXpath($body), $ultimateUrl, $report, $queue);
     }
 
     private function enqueueLinks(DOMXPath $xpath, Url $documentUrl, ReportBuilder $report, UrlQueue $queue): void

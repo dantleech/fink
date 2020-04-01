@@ -53,6 +53,16 @@ final class Url
         return $new;
     }
 
+    public function withPsiUrl(PsrUri $uri): self
+    {
+        return new self(
+            $uri,
+            $this->referrer,
+            $this->distance,
+            $this->referringElement
+        );
+    }
+
     public function __toString(): string
     {
         return (string) $this->uri;
