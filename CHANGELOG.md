@@ -1,5 +1,11 @@
 # Changelog
 
+## develop
+
+- Upgrade from amphp/artax to amphp/http-client - @kelunik
+    - Adds `http_version` to report data
+    - 
+
 ## [0.9.0] 2019-06-08
 
 - Record referrer title if client encounters error while requesting URL, fixes #88
