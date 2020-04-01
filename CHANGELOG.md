@@ -1,10 +1,11 @@
 # Changelog
 
-## develop
+## master
 
 - Upgrade from amphp/artax to amphp/http-client - @kelunik
     - Adds `http_version` to report data
-    - 
+- Fix end of link concat (#96) - @kelunik
+- Fix redirect URL resolution (#93) - @dantleech
 
 ## [0.9.0] 2019-06-08
 
