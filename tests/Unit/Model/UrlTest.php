@@ -99,9 +99,15 @@ tids[n]+" ];
             'https://example.com:1234/templates.html'
         ];
 
-        yield 'ignores fragments' => [
+        yield 'ignores fragments 1' => [
             'https://example.com',
             '#foobar',
+            'https://example.com/'
+        ];
+
+        yield 'ignores fragments 2' => [
+            'https://example.com',
+            '#0',
             'https://example.com/'
         ];
 

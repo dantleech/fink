@@ -1,0 +1,8 @@
+array (
+  'User-Agent' => 'Mozilla/5.0 (compatible; Artax; FinkPHP)',
+  'X-One' => 'Teapot',
+  'X-Two' => 'Pottea',
+  'accept' => '*/*',
+  'Accept-Encoding' => 'gzip, deflate, identity',
+  'host' => '127.0.0.1:8124',
+)

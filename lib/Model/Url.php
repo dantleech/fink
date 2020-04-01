@@ -68,7 +68,7 @@ final class Url
 
         $resolvedLink = FollowRedirects::resolve($this->uri, $parsedLink);
 
-        if ($resolvedLink->getFragment()) {
+        if ('' !== $resolvedLink->getFragment()) {
             // unconditionally remove fragments
             $resolvedLink = $resolvedLink->withFragment('');
         }
