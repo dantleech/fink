@@ -16,8 +16,8 @@
         "php": "^7.2",
         "amphp/http-client": "^4.1.0",
         "amphp/http-client-cookies": "^1.0",
-        "amphp/file": "^1.0",
-        "league/uri": "^6.2",
+        "amphp/file": "^1",
+        "league/uri": "^6",
         "phpactor/console-extension": "~0.1",
         "phpactor/container": "^1.0",
         "webmozart/path-util": "^2.3"
