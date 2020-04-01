@@ -32,7 +32,7 @@ class Crawler
         assert($response instanceof Response);
 
         // if there was a redirect, use the redirect URL as the base
-        $ultimateUrl = $documentUrl->withPsiUrl($response->getRequest()->getUri());
+        $ultimateUrl = $documentUrl->withPsiUri($response->getRequest()->getUri());
 
         $report->withRequestTime((int) $time);
 

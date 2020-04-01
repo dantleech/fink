@@ -53,7 +53,7 @@ final class Url
         return $new;
     }
 
-    public function withPsiUrl(PsrUri $uri): self
+    public function withPsiUri(PsrUri $uri): self
     {
         return new self(
             $uri,
