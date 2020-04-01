@@ -356,11 +356,7 @@ class DispatcherBuilder
                 return $request;
             }));
 
-        if ($this->clientMaxRedirects > 0) {
-            $clientBuilder = $clientBuilder->followRedirects($this->clientMaxRedirects);
-        } else {
-            $clientBuilder = $clientBuilder->followRedirects(0);
-        }
+        $clientBuilder = $clientBuilder->followRedirects($this->clientMaxRedirects);
 
         foreach ($this->headers as $headerField => $headerValue) {
             $clientBuilder = $clientBuilder->interceptNetwork(new SetRequestHeaderIfUnset($headerField, $headerValue));
