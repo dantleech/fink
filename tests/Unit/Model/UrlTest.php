@@ -20,10 +20,6 @@ class UrlTest extends TestCase
     public function provideFromString()
     {
         yield [
-            'https:://example.com'
-        ];
-
-        yield [
             'example.com'
         ];
     }
@@ -41,6 +37,10 @@ class UrlTest extends TestCase
     {
         yield [ "https://twitter.com/intent/favorite?tweet_id='+
 tids[n]+" ];
+
+        yield [
+            'https:://example.com'
+        ];
     }
 
     /**
@@ -60,7 +60,7 @@ tids[n]+" ];
         yield [
             'https://example.com',
             'https://example.com',
-            'https://example.com'
+            'https://example.com/'
         ];
 
         yield [
@@ -78,13 +78,13 @@ tids[n]+" ];
         yield [
             'https://example.com',
             '?foo',
-            'https://example.com?foo'
+            'https://example.com/?foo'
         ];
 
         yield [
             'https://example.com',
             '?foo&bar',
-            'https://example.com?foo&bar'
+            'https://example.com/?foo&bar'
         ];
 
         yield 'path only' => [
@@ -99,22 +99,28 @@ tids[n]+" ];
             'https://example.com:1234/templates.html'
         ];
 
-        yield 'ignores fragments' => [
+        yield 'ignores fragments 1' => [
             'https://example.com',
             '#foobar',
-            'https://example.com'
+            'https://example.com/'
+        ];
+
+        yield 'ignores fragments 2' => [
+            'https://example.com',
+            '#0',
+            'https://example.com/'
         ];
 
         yield 'link to host only from path' => [
             'https://github.com/phpactor/behat-extension',
             'https://training.github.com',
-            'https://training.github.com'
+            'https://training.github.com/'
         ];
 
         yield 'does not include document parameters' => [
             'https://github.com/phpactor/behat-extension?foo=bar',
             'https://training.github.com',
-            'https://training.github.com'
+            'https://training.github.com/'
         ];
 
         yield 'makes relative URLs absolute' => [

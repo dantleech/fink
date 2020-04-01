@@ -23,8 +23,8 @@ class ReportListDisplayTest extends DisplayTestCase
 
         $output = $this->create()->render($this->formatter, $status);
         $this->assertEquals(<<<'EOT'
-[200] https://www.example1.com
-[200] https://www.example2.com
+[200] https://www.example1.com/
+[200] https://www.example2.com/
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
     }

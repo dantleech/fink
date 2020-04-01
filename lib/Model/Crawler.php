@@ -2,8 +2,9 @@
 
 namespace DTL\Extension\Fink\Model;
 
-use Amp\Artax\Client;
-use Amp\Artax\Response;
+use Amp\Http\Client\HttpClient;
+use Amp\Http\Client\Request;
+use Amp\Http\Client\Response;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
@@ -13,11 +14,11 @@ use Generator;
 class Crawler
 {
     /**
-     * @var Client
+     * @var HttpClient
      */
     private $client;
 
-    public function __construct(Client $client)
+    public function __construct(HttpClient $client)
     {
         $this->client = $client;
     }
@@ -26,20 +27,22 @@ class Crawler
     {
         $start = microtime(true);
         $report->withReferringElement($documentUrl->referringElement());
-        $response = yield $this->client->request($documentUrl->__toString());
+        $response = yield $this->client->request(new Request((string) $documentUrl));
         $time = (microtime(true) - $start) * 1E6;
+        assert($response instanceof Response);
+
+        // if there was a redirect, use the redirect URL as the base
+        $ultimateUrl = $documentUrl->withPsiUri($response->getRequest()->getUri());
 
         $report->withRequestTime((int) $time);
 
         assert($response instanceof Response);
         $report->withStatus($response->getStatus());
+        $report->withHttpVersion($response->getProtocolVersion());
 
-        $body = '';
-        while ($chunk = yield $response->getBody()->read()) {
-            $body .= $chunk;
-        }
+        $body = yield $response->getBody()->buffer();
 
-        $this->enqueueLinks($this->loadXpath($body), $documentUrl, $report, $queue);
+        $this->enqueueLinks($this->loadXpath($body), $ultimateUrl, $report, $queue);
     }
 
     private function enqueueLinks(DOMXPath $xpath, Url $documentUrl, ReportBuilder $report, UrlQueue $queue): void
@@ -47,22 +50,22 @@ class Crawler
         foreach ($xpath->query('//a') as $linkElement) {
             assert($linkElement instanceof DOMElement);
             $href = $linkElement->getAttribute('href');
-        
+
             if (!$href) {
                 continue;
             }
-        
+
             try {
                 $url = $documentUrl->resolveUrl($href, ReferringElement::fromDOMNode($linkElement));
             } catch (InvalidUrl $invalidUrl) {
                 $report->withException($invalidUrl);
                 continue;
             }
-        
+
             if (!$url->isHttp()) {
                 continue;
             }
-        
+
             $queue->enqueue($url);
         }
     }

@@ -38,9 +38,9 @@ class CircularReportStoreTest extends TestCase
         }
 
         $this->assertEquals([
-            'https://www.example1.com',
-            'https://www.example2.com',
-            'https://www.example3.com',
+            'https://www.example1.com/',
+            'https://www.example2.com/',
+            'https://www.example3.com/',
         ], $reports);
     }
 

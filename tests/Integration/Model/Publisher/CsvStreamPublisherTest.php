@@ -22,7 +22,7 @@ class CsvStreamPublisherTest extends IntegrationTestCase
 
         $serialized = $this->create()->publish($report);
         $this->assertEquals(<<<'EOT'
-0,,,,,0,200,https://www.dantleech.com,2019-01-01T00:00:00+00:00
+0,,,,,0,200,,https://www.dantleech.com/,2019-01-01T00:00:00+00:00
 
 EOT
         , file_get_contents($this->workspace()->path(self::EXAMPLE_FILEANME)));
@@ -37,8 +37,8 @@ EOT
 
         $serialized = $this->create(true)->publish($report);
         $this->assertContains(<<<'EOT'
-distance,exception,referrer,referrer_title,referrer_xpath,request_time,status,url,timestamp
-0,,,,,0,200,https://www.dantleech.com,2019-01-01T00:00:00+00:00
+distance,exception,referrer,referrer_title,referrer_xpath,request_time,status,http_version,url,timestamp
+0,,,,,0,200,,https://www.dantleech.com/,2019-01-01T00:00:00+00:00
 
 EOT
         , file_get_contents($this->workspace()->path(self::EXAMPLE_FILEANME)));

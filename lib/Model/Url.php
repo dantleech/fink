@@ -2,17 +2,16 @@
 
 namespace DTL\Extension\Fink\Model;
 
+use Amp\Http\Client\Interceptor\FollowRedirects;
 use DTL\Extension\Fink\Model\Exception\InvalidUrl;
 use DTL\Extension\Fink\Model\Exception\InvalidUrlComparison;
-use League\Uri\AbstractUri;
-use League\Uri\Exception;
-use League\Uri\Uri;
-use Webmozart\PathUtil\Path;
+use League\Uri\Http as HttpUri;
+use Psr\Http\Message\UriInterface as PsrUri;
 
 final class Url
 {
     /**
-     * @var Uri
+     * @var PsrUri
      */
     private $uri;
 
@@ -31,8 +30,12 @@ final class Url
      */
     private $referringElement;
 
-    private function __construct(Uri $uri, Url $referrer = null, int $distance = 0, ReferringElement $referringElement = null)
+    private function __construct(PsrUri $uri, Url $referrer = null, int $distance = 0, ReferringElement $referringElement = null)
     {
+        if ($uri->getPath() === '') {
+            $uri = $uri->withPath('/');
+        }
+
         $this->uri = $uri;
         $this->referrer = $referrer;
         $this->distance = $distance;
@@ -42,49 +45,45 @@ final class Url
     public static function fromUrl(string $url): self
     {
         try {
-            $new = new self(Uri::createFromString($url));
-        } catch (Exception $e) {
+            $new = new self(HttpUri::createFromString($url));
+        } catch (\Throwable $e) {
             throw new InvalidUrl($e->getMessage(), 0, $e);
         }
 
         return $new;
     }
 
+    public function withPsiUri(PsrUri $uri): self
+    {
+        return new self(
+            $uri,
+            $this->referrer,
+            $this->distance,
+            $this->referringElement
+        );
+    }
+
     public function __toString(): string
     {
-        return rtrim($this->uri->__toString(), '/');
+        return (string) $this->uri;
     }
 
     public function resolveUrl(string $link, ReferringElement $referringElement = null): self
     {
         try {
-            $link = Uri::createFromString($link);
-        } catch (Exception $e) {
+            $parsedLink = HttpUri::createFromString($link);
+        } catch (\Throwable $e) {
             throw new InvalidUrl($e->getMessage(), 0, $e);
         }
 
-        if ($link->getPath()) {
-            $link = $link->withPath($this->normalizePath($link));
-        }
+        $resolvedLink = FollowRedirects::resolve($this->uri, $parsedLink);
 
-        if (!$link->getScheme()) {
-            $link = $link->withScheme($this->uri->getScheme());
-        }
-
-        if (!$link->getHost()) {
-            $link = $link->withHost($this->uri->getHost());
-        }
-
-        if (!$link->getPort()) {
-            $link = $link->withPort($this->uri->getPort());
-        }
-
-        if ($link->getFragment()) {
+        if ('' !== $resolvedLink->getFragment()) {
             // unconditionally remove fragments
-            $link = $link->withFragment('');
+            $resolvedLink = $resolvedLink->withFragment('');
         }
 
-        return new self($link, $this, $this->distance + 1, $referringElement);
+        return new self(HttpUri::createFromString((string) $resolvedLink), $this, $this->distance + 1, $referringElement);
     }
 
     public function isHttp(): bool
@@ -153,20 +152,6 @@ final class Url
         }
 
         return $this->referrer->originUrl();
-    }
-
-    private function normalizePath(AbstractUri $link): string
-    {
-        $path = $link->getPath();
-
-        if ($this->uri->getPath()) {
-            $path = Path::makeAbsolute($path, Path::getDirectory($this->uri->getPath()));
-        }
-
-        // prepend non-absolute paths with "/" to prevent them being
-        // concatenated with the host, for example:
-        // https://www.example.comtemplate.html
-        return '/'.ltrim($path, '/');
     }
 
     public function referringElement(): ?ReferringElement

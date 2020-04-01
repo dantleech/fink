@@ -2,13 +2,19 @@
 
 namespace DTL\Extension\Fink\Adapter\Artax;
 
-use Amp\Artax\Cookie\ArrayCookieJar;
-use Amp\Artax\Cookie\Cookie;
+use Amp\Http\Client\Cookie\CookieJar;
+use Amp\Http\Client\Cookie\InMemoryCookieJar;
+use Amp\Http\Cookie\ResponseCookie;
+use Amp\Promise;
 use DateTimeImmutable;
+use Psr\Http\Message\UriInterface as PsrUri;
 use RuntimeException;
 
-class NetscapeCookieFileJar extends ArrayCookieJar
+class NetscapeCookieFileJar implements CookieJar
 {
+    /** @var InMemoryCookieJar */
+    private $cookieJar;
+
     public function __construct(string $filePath)
     {
         if (!file_exists($filePath)) {
@@ -25,6 +31,8 @@ class NetscapeCookieFileJar extends ArrayCookieJar
             ));
         }
 
+        $this->cookieJar = new InMemoryCookieJar;
+
         while (!feof($cookieFileHandle)) {
             if (!$line = fgets($cookieFileHandle)) {
                 continue;
@@ -38,7 +46,22 @@ class NetscapeCookieFileJar extends ArrayCookieJar
         }
     }
 
-    private function parse(string $line): ?Cookie
+    public function get(PsrUri $uri): Promise
+    {
+        return $this->cookieJar->get($uri);
+    }
+
+    public function store(ResponseCookie ...$cookies): Promise
+    {
+        return $this->cookieJar->store(...$cookies);
+    }
+
+    public function getAll(): array
+    {
+        return $this->cookieJar->getAll();
+    }
+
+    private function parse(string $line): ?ResponseCookie
     {
         $line = trim($line);
 
@@ -46,7 +69,7 @@ class NetscapeCookieFileJar extends ArrayCookieJar
             return null;
         }
 
-        if (substr($line, 0, 1) === '#') {
+        if ($line[0] === '#') {
             return null;
         }
 
@@ -57,18 +80,13 @@ class NetscapeCookieFileJar extends ArrayCookieJar
             return null;
         }
 
-        $domain = $parts[0];
-        $flag = $parts[1];
-        $path = $parts[2];
-        $secure = $parts[3];
-        $expiration = $parts[4];
-        $name = $parts[5];
-        $value = @$parts[6];
+        [$domain, $flag, $path, $secure, $expiration, $name, $value] = $parts + [6 => null];
 
-        $expiration = DateTimeImmutable::createFromFormat('U', $expiration);
+        \assert($expiration !== null); // silence phpstan
+        $parsedExpiration = DateTimeImmutable::createFromFormat('U', $expiration);
 
         // could not parse date
-        if (false === $expiration) {
+        if (false === $parsedExpiration) {
             return null;
         }
 
@@ -76,15 +94,16 @@ class NetscapeCookieFileJar extends ArrayCookieJar
             '%s=%s; expires=%s; domain=%s; path=%s',
             $name,
             $value,
-            $expiration->format('D, d M Y H:i:s T'),
+            $parsedExpiration->format('D, d M Y H:i:s T'),
             $domain,
             $path
         );
 
+        \assert($secure !== null); // silence phpstan
         if (strtolower($secure) === 'true') {
             $string .= '; secure';
         }
 
-        return Cookie::fromString($string);
+        return ResponseCookie::fromHeader($string);
     }
 }

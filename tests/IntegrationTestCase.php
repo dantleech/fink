@@ -2,18 +2,20 @@
 
 namespace DTL\Extension\Fink\Tests;
 
-use PHPUnit\Framework\TestCase;
+use Amp\PHPUnit\AsyncTestCase;
 use Phpactor\TestUtils\Workspace;
 
-class IntegrationTestCase extends TestCase
+class IntegrationTestCase extends AsyncTestCase
 {
     /**
      * @var Workspace
      */
     private $workspace;
 
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
+
         $this->workspace = Workspace::create(__DIR__ . '/Workspace');
         $this->workspace->reset();
     }

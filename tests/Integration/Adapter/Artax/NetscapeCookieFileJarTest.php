@@ -2,6 +2,8 @@
 
 namespace DTL\Extension\Fink\Tests\Integration\Adapter\Artax;
 
+use Amp\Http\Client\Request;
+use Amp\Http\Cookie\ResponseCookie;
 use DTL\Extension\Fink\Adapter\Artax\NetscapeCookieFileJar;
 use DTL\Extension\Fink\Tests\IntegrationTestCase;
 use DateTimeImmutable;
@@ -40,27 +42,33 @@ EOT
 
         $jar = new NetscapeCookieFileJar($path);
 
-        $this->assertCount(4, $jar->getAll()['.php-fig.org']['/']);
+        $this->assertCount(4, \array_filter($jar->getAll(), static function (ResponseCookie $cookie) {
+            return $cookie->getDomain() !== '.php-fig.org' || $cookie->getPath() !== '/';
+        }));
 
         $this->assertEquals(
             '-5061451:',
-            $jar->get('.google.com', '', 'OGP')[0]->getValue()
+            (yield $jar->get((new Request('https://google.com/'))->getUri()))[0]->getValue()
         );
+
         $this->assertEquals(
             '19010135-2:',
-            $jar->get('.google.com', '/', 'OGPC')[0]->getValue()
+            (yield $jar->get((new Request('https://google.com/'))->getUri()))[1]->getValue()
         );
+
         $this->assertEquals(
             'hello',
-            $jar->get('.google.com', '/complete/search', 'CGIC')[0]->getValue()
+            (yield $jar->get((new Request('https://google.com/complete/search'))->getUri()))[2]->getValue()
         );
+
         $this->assertEquals(
             '19010135-2:',
-            $jar->get('.google.com', '/', 'OGPC')[0]->getValue()
+            (yield $jar->get((new Request('https://google.com/'))->getUri()))[1]->getValue()
         );
+
         $this->assertEquals(
             'world',
-            $jar->get('127.0.0.1', '/', 'hello')[0]->getValue()
+            (yield $jar->get((new Request('http://127.0.0.1/'))->getUri()))[0]->getValue()
         );
     }
 }
