@@ -1,6 +1,6 @@
 # Changelog
 
-## master
+## [0.10.0] 2020-06-18
 
 - Upgrade from amphp/artax to amphp/http-client - @kelunik
     - Adds `http_version` to report data
