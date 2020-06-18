@@ -1,39 +1,34 @@
 language: php
 sudo: false
-
 cache:
   directories:
-    - "$HOME/.composer/cache"
-
+  - "$HOME/.composer/cache"
 before_script:
-  - composer install
-
+- composer install
 stages:
-  - qa
-  - deploy
-
+- qa
+- deploy
 jobs:
   include:
-    - &QA
-      stage: qa
-      php: 7.2
-      script:
-          - "./vendor/bin/php-cs-fixer fix --dry-run"
-          - "./vendor/bin/phpstan analyse"
-          - "./vendor/bin/phpunit"
-    - <<: *QA
-      php: 7.3
-
-    - stage: Deploy
-      php: 7.2
-      script:
-          - "./vendor/bin/box compile"
-      deploy:
-        provider: releases
-        skip_cleanup: true
-        api_key:
-          secure: "etKVc6Pd2hVkvLr3/RPE/7qFs72QGo4TDODvS5J4/aH02FfiNTOdjL4vt8GKZPm1P+RCeJPF33CQy6QiDHnkFs39xbOmVE9kyzVyOIB4YAqLKsKdyY53zQNxg8bc6MLRa2UeszshOTB8T+O+2rVhae42OjdroqACI46erWlZsEKIMCCZI/9k/mPeGkK3u8GEQ8Ih6qD3pBvx1eQBQmQ2ajlvnocWgqE9huYj6mKX6eQs+ewmW6cJBiRXLZetFH1kFG07C+BId+xQULWSWf9pGqxTe/yHtTnbmhCEd4PCdZMCzJo5OaE8f1lbuJmJTyxyNLjVX60Wim6QQKnmru59hYiGlj7kGn1YCtLxjP5xtmx+Y6nYZXVWOp9nRY+ur2CbAnkYz6OJQclGbINP2D2YfpVVqupHVP8x9oLlgLwrV9KxRM8G9b/zKPMK1y1rpGRnER5fgEaPiwLbYuJl5drJvkq31F013ZNkYmXQTUWSEsPGU8vN1D8XRa1+hfP1VYIHgvccxja7z8JnPBInl92X5p7uehkz4VCq3eZWDjxtkNVmRfqH+N6V7pGYvhFiQpu1+/IuH51xts/BLSwzD2sYcUXhxNZB1BqnzpUZGStCFdW+GfDuoaBKoNdWClhHnD20O07Oxd+upFxPgp05ZX4iCmZz9AquhPeA7WNRfov0M4E="
-        file: bin/fink.phar
-        on:
-          repo: dantleech/fink
-          tags: true
+  - stage: qa
+    php: 7.2
+    script: &1
+    - "./vendor/bin/php-cs-fixer fix --dry-run"
+    - "./vendor/bin/phpstan analyse"
+    - "./vendor/bin/phpunit"
+  - stage: qa
+    php: 7.3
+    script: *1
+  - stage: Deploy
+    php: 7.2
+    script:
+    - "./vendor/bin/box compile"
+    deploy:
+      provider: releases
+      skip_cleanup: true
+      api_key:
+        secure: W5HR+Qex63vHy055xjav2/5GT5Glv7kpl838TN5yvUo/aAhXtx5C8pzpLertV/eAldZt0JofVuBw3KIXPb/6RScOp1XvIcZoCfSUBBKUXD7Tm++rwyON2iLvAYBTkOZt+asPbiPCaeJ6mAC8O6fo5UlYvaFzB93DTw5AiZz81/Rao3Xpkqrqv4Yq6RNARBg8045UDVYLJ2P5VRGYlpL5+jUdBKea04iI/L7UZhf9QqoxJ6pKfP/ts6QyomLJTcXD8GWzjOcPH5fLNQRPbDMG4wUpQjzWDAkPcK4oRUm8ZDFnGctSKsrBltYgqUTLwLo012dqv9o8/GOJdL96H26nJCw8eIEXDqFhpsSAgMbw8c1//cIfLU5LWzpxLqo9hFI2vPMMsE7GeTIj49tlAiArcgBJBo+n8ODom6J5rFo/kRKqJ4oSatDMWa6F6VDmlurkQkMyUo4ZQpFBVb5P6dsf79H6SvQ5yTnDaYjs8Q2YU4g3x10NZTuCuXsdBXhSyD8ox/fJp83JxJeB7/wXnozPt/6RdWT3fO6hxmQvGAOvOnfemknUKCBie+x6VO6xI0GVweNe+RmNLrG8b0j+n2bpjp8hqwWqN6OovHHAegT+fOLeF2nOU/KbLmibuNgeoPrKw0awxmMV8fL8tctF/1GLkGUIJBgbLWYipfPsT4PU2sA=
+      file: bin/fink.phar
+      on:
+        repo: dantleech/fink
+        tags: true
