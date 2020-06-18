@@ -3,7 +3,7 @@ Fink
 
 [![Build Status](https://travis-ci.org/dantleech/fink.svg?branch=master)](https://travis-ci.org/dantleech/fink)
 
-Fink (pronounced "Phpink") is a command line tool for checking HTTP links written in PHP.
+Fink (pronounced "Phpink") is a command line tool, written in PHP, for checking HTTP links.
 
 - Check websites for broken links or error pages.
 - Asynchronous HTTP requests.
