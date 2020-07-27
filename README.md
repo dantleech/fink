@@ -77,7 +77,7 @@ Options
   (prefix with `-` or `+` to modify the default set).
 - `--exclude-url=logout`: (multiple) Exclude URLs matching the given PCRE pattern.
 - `--header="Foo: Bar"`: (multiple) Specify custom header(s).
-- `--help`: See documentation in this file.
+- `--help`: Display available options.
 - `--include-link=foobar.html`: Include given link as if it were linked from the
   base URL.
 - `--insecure`: Do not verify SSL certificates.
