@@ -63,21 +63,22 @@ Arguments
 Options
 -------
 
-- `--client-max-body-size` 'Max body size for HTTP client (in bytes).
-- `--client-max-header-size` 'Max header size for HTTP client (in bytes).
-- `--client-redirects=5` Set the maximum number of times the client should redirect (`0` to never redirect).
-- `--client-security-level=1` Set the default SSL [security
+- `--client-max-body-size`: 'Max body size for HTTP client (in bytes).
+- `--client-max-header-size`: 'Max header size for HTTP client (in bytes).
+- `--client-redirects=5`: Set the maximum number of times the client should redirect (`0` to never redirect).
+- `--client-security-level=1`: Set the default SSL [security
   level](https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_security_level.html)
-- `--client-timeout=15000` Set the maximum amount of time (in milliseconds)
+- `--client-timeout=15000`: Set the maximum amount of time (in milliseconds)
   the client should wait for a response, defaults to 15,000 (15 seconds).
 - `--concurrency`: Number of simultaneous HTTP requests to use.
-- `--display-bufsize=10` Set the number of URLs to consider when showing the
+- `--display-bufsize=10`: Set the number of URLs to consider when showing the
   display.
-- `--display=+memory` Set, add or remove elements of the runtime display
+- `--display=+memory`: Set, add or remove elements of the runtime display
   (prefix with `-` or `+` to modify the default set).
-- `--exclude-url=logout` (multiple) Exclude URLs matching the given PCRE pattern.
-- `--header="Foo: Bar"` (multiple) Specify custom header(s).
-- `--include-link=foobar.html` Include given link as if it were linked from the
+- `--exclude-url=logout`: (multiple) Exclude URLs matching the given PCRE pattern.
+- `--header="Foo: Bar"`: (multiple) Specify custom header(s).
+- `--help`: Display available options.
+- `--include-link=foobar.html`: Include given link as if it were linked from the
   base URL.
 - `--insecure`: Do not verify SSL certificates.
 - `--load-cookies`: Load from a [cookies.txt](http://www.cookiecentral.com/faq/#3.5).
@@ -89,10 +90,10 @@ Options
   non-terminating process).
 - `--output=out.json`: Output JSON report for each URL to given file
   (truncates existing content).
-- `--publisher=csv` Set the publisher (defaults to `json`) can be either
+- `--publisher=csv`: Set the publisher (defaults to `json`) can be either
   `json` or `csv`.
-- `--rate` Set a maximum number of requests to make in a second.
-- `--stdout` Stream to STDOUT directly, disables display and any specified outfile.
+- `--rate`: Set a maximum number of requests to make in a second.
+- `--stdout`: Stream to STDOUT directly, disables display and any specified outfile.
 
 Examples
 --------
