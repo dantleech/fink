@@ -76,8 +76,8 @@ final class Url
             throw new InvalidUrl($e->getMessage(), 0, $e);
         }
 
-        if ($referringElement && ($baseURI = $referringElement->baseURI())) {
-            $base = self::fromUrl($baseURI);
+        if ($referringElement && ($baseUri = $referringElement->baseUri())) {
+            $base = self::fromUrl($baseUri);
         } else {
             $base = $this;
         }
