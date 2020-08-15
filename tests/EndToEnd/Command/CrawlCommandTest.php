@@ -16,6 +16,21 @@ class CrawlCommandTest extends EndToEndTestCase
         $this->assertProcessSuccess($process);
     }
 
+    public function testBaseUrl()
+    {
+        $process = $this->execute([
+            self::EXAMPLE_URL,
+            '--output='.$this->workspace()->path('/out.json'),
+        ], 'base-url');
+        
+        $this->assertProcessSuccess($process);
+        
+        $rows = $this->parseResults($this->workspace()->path('/out.json'));
+
+        $url = $this->findUrl($rows, 'http://example.com/index.html');
+        $this->assertNotNull($url);
+    }
+
     public function testPublishesReport()
     {
         $process = $this->execute([
