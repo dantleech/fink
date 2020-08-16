@@ -1,5 +1,9 @@
 # Changelog
 
+## develop
+
+- Consider `base` element when resolving URLs (#109) - @eHtmlu
+
 ## [0.10.0] 2020-06-18
 
 - Upgrade from amphp/artax to amphp/http-client - @kelunik
