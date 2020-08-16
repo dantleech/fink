@@ -8,6 +8,7 @@ class ReferringElement
 {
     private $xpath = '';
     private $title = '';
+    private $baseUri = '';
 
     public static function none(): ReferringElement
     {
@@ -19,8 +20,14 @@ class ReferringElement
         $new = new self();
         $new->xpath = $element->getNodePath();
         $new->title = trim($element->nodeValue);
+        $new->baseUri = $element->baseURI;
 
         return $new;
+    }
+
+    public function baseUri(): ?string
+    {
+        return $this->baseUri;
     }
 
     public function title(): string

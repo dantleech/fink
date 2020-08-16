@@ -76,7 +76,9 @@ final class Url
             throw new InvalidUrl($e->getMessage(), 0, $e);
         }
 
-        $resolvedLink = FollowRedirects::resolve($this->uri, $parsedLink);
+        $baseUri = $this->resolveBaseUri($referringElement);
+
+        $resolvedLink = FollowRedirects::resolve($baseUri->uri, $parsedLink);
 
         if ('' !== $resolvedLink->getFragment()) {
             // unconditionally remove fragments
@@ -157,5 +159,14 @@ final class Url
     public function referringElement(): ?ReferringElement
     {
         return $this->referringElement;
+    }
+
+    private function resolveBaseUri(ReferringElement $referringElement = null): Url
+    {
+        if ($referringElement && ($baseUri = $referringElement->baseUri())) {
+            return self::fromUrl($baseUri);
+        }
+
+        return $this;
     }
 }
