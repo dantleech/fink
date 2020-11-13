@@ -110,6 +110,14 @@ $ fink http://www.example.com --max-external-distance=0
 $ fink http://www.example.com --max-external-distance=1
 ```
 
+### Crawl a website re-using a http-session e.g. to mimic a log-in
+
+export a [cookies.txt](http://www.cookiecentral.com/faq/#3.5) file from your browser using an extension, e.g. [rotemdan/ExportCookies](https://github.com/rotemdan/ExportCookies). Then specify it using the --load-cookies option.
+
+```
+$ fink http://www.example.com --load-cookies=cookies.txt
+```
+
 ### Use `jq` to analyse results
 
 [jq](https://stedolan.github.io/jq/) is a tool which can be used to query and
