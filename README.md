@@ -118,6 +118,8 @@ export a [cookies.txt](http://www.cookiecentral.com/faq/#3.5) file from your bro
 $ fink http://www.example.com --load-cookies=cookies.txt
 ```
 
+note: on most servers http-session will only be continued when issued from the same client ip. this means you cannot store a cookie jar on a different computer then you will use it later on.
+
 ### Use `jq` to analyse results
 
 [jq](https://stedolan.github.io/jq/) is a tool which can be used to query and
