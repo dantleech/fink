@@ -1,5 +1,3 @@
-includes:
-    - vendor/phpstan/phpstan/conf/config.level7.neon
-
 parameters:
+    level: 7
     paths: [ lib ]

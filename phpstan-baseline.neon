@@ -1,0 +1,362 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Adapter\\\\Artax\\\\ImmutableCookieJar\\:\\:store\\(\\) return type with generic interface Amp\\\\Promise does not specify its types\\: TValue$#"
+			count: 1
+			path: lib/Adapter/Artax/ImmutableCookieJar.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Adapter\\\\Artax\\\\NetscapeCookieFileJar\\:\\:store\\(\\) return type with generic interface Amp\\\\Promise does not specify its types\\: TValue$#"
+			count: 1
+			path: lib/Adapter/Artax/NetscapeCookieFileJar.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Adapter\\\\Artax\\\\NetscapeCookieFileJar\\:\\:getAll\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Adapter/Artax/NetscapeCookieFileJar.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Command\\\\CrawlCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Command/CrawlCommand.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Command\\\\CrawlCommand\\:\\:castToInt\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Command/CrawlCommand.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Command\\\\CrawlCommand\\:\\:castToString\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Command/CrawlCommand.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Command\\\\CrawlCommand\\:\\:castToBool\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Command/CrawlCommand.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Command\\\\CrawlCommand\\:\\:castToArray\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Command/CrawlCommand.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Command\\\\CrawlCommand\\:\\:castToArray\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/Command/CrawlCommand.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Command\\\\CrawlCommand\\:\\:castToFloat\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Command/CrawlCommand.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Display\\\\ConcatenatingDisplay\\:\\:__construct\\(\\) has parameter \\$displays with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/Display/ConcatenatingDisplay.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Console\\\\Display\\\\RateDisplay\\:\\:\\$lastRequestCount has no typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Display/RateDisplay.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Console\\\\Display\\\\RateDisplay\\:\\:\\$requestCounts has no typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Display/RateDisplay.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Console\\\\Display\\\\RateDisplay\\:\\:\\$initialTime has no typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Display/RateDisplay.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Display\\\\RateDisplay\\:\\:averageRequestTime\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Display/RateDisplay.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Display\\\\RateDisplay\\:\\:averageRequestTime\\(\\) has parameter \\$reportStore with no value type specified in iterable type DTL\\\\Extension\\\\Fink\\\\Model\\\\Store\\\\ImmutableReportStore\\.$#"
+			count: 1
+			path: lib/Console/Display/RateDisplay.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\Display\\\\ReportListDisplay\\:\\:resolveFormat\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Console/Display/ReportListDisplay.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Console\\\\DisplayBuilder\\:\\:\\$default type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/DisplayBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\DisplayBuilder\\:\\:__construct\\(\\) has parameter \\$defaut with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/DisplayBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\DisplayBuilder\\:\\:initializeDisplayNames\\(\\) has parameter \\$units with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/DisplayBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\DisplayBuilder\\:\\:initializeDisplayNames\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/DisplayBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\DisplayBuilder\\:\\:removeDisplayNames\\(\\) has parameter \\$units with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/DisplayBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\DisplayBuilder\\:\\:removeDisplayNames\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/DisplayBuilder.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Console\\\\DisplayRegistry\\:\\:\\$displays type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/DisplayRegistry.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\DisplayRegistry\\:\\:__construct\\(\\) has parameter \\$displays with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/DisplayRegistry.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\DisplayRegistry\\:\\:get\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Console/DisplayRegistry.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\DisplayRegistry\\:\\:add\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Console/DisplayRegistry.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\HeaderParser\\:\\:parseHeaders\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Console/HeaderParser.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Console\\\\HeaderParser\\:\\:parseHeaders\\(\\) has parameter \\$rawHeaders with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Console/HeaderParser.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\DispatcherBuilder\\:\\:create\\(\\) has parameter \\$urls with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/DispatcherBuilder.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\DispatcherBuilder\\:\\:\\$excludeUrlPatterns type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/DispatcherBuilder.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\DispatcherBuilder\\:\\:\\$headers type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/DispatcherBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\DispatcherBuilder\\:\\:__construct\\(\\) has parameter \\$baseUrls with no value type specified in iterable type DTL\\\\Extension\\\\Fink\\\\Model\\\\Urls\\.$#"
+			count: 1
+			path: lib/DispatcherBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\DispatcherBuilder\\:\\:excludeUrlPatterns\\(\\) has parameter \\$urlPatterns with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/DispatcherBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\DispatcherBuilder\\:\\:publishResource\\(\\) has parameter \\$resource with no typehint specified\\.$#"
+			count: 1
+			path: lib/DispatcherBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\DispatcherBuilder\\:\\:headers\\(\\) has parameter \\$headers with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/DispatcherBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\DispatcherBuilder\\:\\:includeLinks\\(\\) has parameter \\$includeLinks with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/DispatcherBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\DispatcherBuilder\\:\\:buildPublisher\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/DispatcherBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\DispatcherBuilder\\:\\:buildPublishStream\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/DispatcherBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Crawler\\:\\:crawl\\(\\) return type has no value type specified in iterable type Generator\\.$#"
+			count: 1
+			path: lib/Model/Crawler.php
+
+		-
+			message: "#^Argument of an invalid type DOMNodeList\\|false supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: lib/Model/Crawler.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Model\\\\Dispatcher\\:\\:\\$store type has no value type specified in iterable type DTL\\\\Extension\\\\Fink\\\\Model\\\\ReportStore\\.$#"
+			count: 1
+			path: lib/Model/Dispatcher.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Dispatcher\\:\\:__construct\\(\\) has parameter \\$store with no value type specified in iterable type DTL\\\\Extension\\\\Fink\\\\Model\\\\ReportStore\\.$#"
+			count: 1
+			path: lib/Model/Dispatcher.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Dispatcher\\:\\:dispatch\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Model/Dispatcher.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\DispatcherBuilderFactory\\:\\:createForUrls\\(\\) has parameter \\$urls with no typehint specified\\.$#"
+			count: 1
+			path: lib/Model/DispatcherBuilderFactory.php
+
+		-
+			message: "#^Interface DTL\\\\Extension\\\\Fink\\\\Model\\\\ImmutableReportStore extends generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
+			count: 1
+			path: lib/Model/ImmutableReportStore.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Limiter\\\\ChainLimiter\\:\\:__construct\\(\\) has parameter \\$limiters with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Model/Limiter/ChainLimiter.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Limiter\\\\ChainLimiter\\:\\:add\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Model/Limiter/ChainLimiter.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Model\\\\Limiter\\\\RateLimiter\\:\\:\\$lastRequest has no typehint specified\\.$#"
+			count: 1
+			path: lib/Model/Limiter/RateLimiter.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Publisher\\\\CsvStreamPublisher\\:\\:__construct\\(\\) has parameter \\$stream with no typehint specified\\.$#"
+			count: 1
+			path: lib/Model/Publisher/CsvStreamPublisher.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Model\\\\Queue\\\\DedupeQueue\\:\\:\\$seen has no typehint specified\\.$#"
+			count: 1
+			path: lib/Model/Queue/DedupeQueue.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Model\\\\Queue\\\\ExcludingQueue\\:\\:\\$patterns type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Model/Queue/ExcludingQueue.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Queue\\\\ExcludingQueue\\:\\:__construct\\(\\) has parameter \\$patterns with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Model/Queue/ExcludingQueue.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Model\\\\Queue\\\\RealUrlQueue\\:\\:\\$urls has no typehint specified\\.$#"
+			count: 1
+			path: lib/Model/Queue/RealUrlQueue.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Model\\\\ReferringElement\\:\\:\\$xpath has no typehint specified\\.$#"
+			count: 1
+			path: lib/Model/ReferringElement.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Model\\\\ReferringElement\\:\\:\\$title has no typehint specified\\.$#"
+			count: 1
+			path: lib/Model/ReferringElement.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Model\\\\ReferringElement\\:\\:\\$baseUri has no typehint specified\\.$#"
+			count: 1
+			path: lib/Model/ReferringElement.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Report\\:\\:toArray\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Model/Report.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\ReportBuilder\\:\\:withTimestamp\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Model/ReportBuilder.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Status\\:\\:__construct\\(\\) has parameter \\$reportStore with no value type specified in iterable type DTL\\\\Extension\\\\Fink\\\\Model\\\\Store\\\\ImmutableReportStore\\.$#"
+			count: 1
+			path: lib/Model/Status.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Status\\:\\:reportStore\\(\\) return type has no value type specified in iterable type DTL\\\\Extension\\\\Fink\\\\Model\\\\Store\\\\ImmutableReportStore\\.$#"
+			count: 1
+			path: lib/Model/Status.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Store\\\\CircularReportStore\\:\\:getIterator\\(\\) return type has no value type specified in iterable type Iterator\\.$#"
+			count: 1
+			path: lib/Model/Store/CircularReportStore.php
+
+		-
+			message: "#^Property DTL\\\\Extension\\\\Fink\\\\Model\\\\Store\\\\ImmutableReportStore\\:\\:\\$innerStore type has no value type specified in iterable type DTL\\\\Extension\\\\Fink\\\\Model\\\\ReportStore\\.$#"
+			count: 1
+			path: lib/Model/Store/ImmutableReportStore.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Store\\\\ImmutableReportStore\\:\\:__construct\\(\\) has parameter \\$innerStore with no value type specified in iterable type DTL\\\\Extension\\\\Fink\\\\Model\\\\ReportStore\\.$#"
+			count: 1
+			path: lib/Model/Store/ImmutableReportStore.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Store\\\\ImmutableReportStore\\:\\:getIterator\\(\\) return type has no value type specified in iterable type Traversable\\<mixed, mixed\\>\\.$#"
+			count: 1
+			path: lib/Model/Store/ImmutableReportStore.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Store\\\\NullReportStore\\:\\:getIterator\\(\\) return type has no value type specified in iterable type Traversable\\<mixed, mixed\\>\\.$#"
+			count: 1
+			path: lib/Model/Store/NullReportStore.php
+
+		-
+			message: "#^Class DTL\\\\Extension\\\\Fink\\\\Model\\\\Urls implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
+			count: 1
+			path: lib/Model/Urls.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Urls\\:\\:__construct\\(\\) has parameter \\$urls with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Model/Urls.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Urls\\:\\:fromUrls\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Model/Urls.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Urls\\:\\:fromUrls\\(\\) has parameter \\$urls with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: lib/Model/Urls.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Urls\\:\\:add\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: lib/Model/Urls.php
+
+		-
+			message: "#^Method DTL\\\\Extension\\\\Fink\\\\Model\\\\Urls\\:\\:getIterator\\(\\) return type has no value type specified in iterable type Traversable\\<mixed, mixed\\>\\.$#"
+			count: 1
+			path: lib/Model/Urls.php
+
