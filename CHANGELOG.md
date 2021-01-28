@@ -1,8 +1,9 @@
 # Changelog
 
-## develop
+## [0.10.2] 2021-01-28
 
 - Consider `base` element when resolving URLs (#109) - @eHtmlu
+- PHP 7.3 minimum requirement and PHP 8.0 support - @dantleech
 
 ## [0.10.0] 2020-06-18
 
