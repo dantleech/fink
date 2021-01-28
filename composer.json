@@ -13,7 +13,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.2",
+        "php": "^7.2|^8.0",
         "amphp/dns": "^v1.2.2",
         "amphp/file": "^1",
         "amphp/http-client": "^4.1.0",
