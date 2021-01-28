@@ -104,7 +104,7 @@ jobs:
                     tools: composer:v2
             -
                 name: "Remove BOX"
-                run: "composer remove humbug/box --no-update"
+                run: "composer remove humbug/box --no-update --dev"
             -
                 name: "Composer install"
                 uses: "ramsey/composer-install@v1"
