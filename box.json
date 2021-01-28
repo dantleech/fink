@@ -2,8 +2,7 @@
   "chmod": "0755",
   "compression": "GZ",
   "directories": [
-    "lib",
-    "extensions"
+    "lib"
   ],
   "files": [
     "LICENSE"
