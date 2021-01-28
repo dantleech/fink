@@ -3,7 +3,7 @@ on:
     types:
       - created
 
-name: Append phpbench.phar to release
+name: Append fink.phar to release
 
 jobs:
   build:
@@ -18,11 +18,11 @@ jobs:
         with:
           php-version: '7.3'
 
-      - name: Compile phpbench.phar
+      - name: Compile fink.phar
         run: |
           composer install
           wget https://github.com/box-project/box/releases/download/3.9.1/box.phar
-          php box.phar compile -c box.json.gh-release
+          php box.phar compile
 
       - name: Check existence of compiled .phar
         run: test -e fink.phar && exit 0 || exit 10
@@ -33,6 +33,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./phpbench.phar
-          asset_name: phpbench.phar
+          asset_path: ./fink.phar
+          asset_name: fink.phar
           asset_content_type: application/octet-stream
