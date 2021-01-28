@@ -103,7 +103,9 @@ jobs:
                     extensions: "${{ env.REQUIRED_PHP_EXTENSIONS }}"
                     php-version: "${{ matrix.php-version }}"
                     tools: composer:v2
-
+            -
+                name: "Remove BOX"
+                run: "composer remove humbug/box --no-update"
             -
                 name: "Composer install"
                 uses: "ramsey/composer-install@v1"
