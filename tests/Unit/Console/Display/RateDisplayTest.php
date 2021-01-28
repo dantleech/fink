@@ -14,7 +14,7 @@ class RateDisplayTest extends DisplayTestCase
         $display = $this->create();
         $output = $display->render($this->formatter, new Status());
 
-        $this->assertContains(<<<'EOT'
+        $this->assertStringContainsString(<<<'EOT'
 Rate: 0.00 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
@@ -25,7 +25,7 @@ EOT
         $display = $this->create(2, microtime(true) - 1);
         $output = $display->render($this->formatter, new Status());
 
-        $this->assertContains(<<<'EOT'
+        $this->assertStringContainsString(<<<'EOT'
 Rate: 0.00 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
@@ -40,7 +40,7 @@ EOT
         $display->render($this->formatter, $status);
         $output = $display->render($this->formatter, new Status());
 
-        $this->assertContains(<<<'EOT'
+        $this->assertStringContainsString(<<<'EOT'
 Rate: 1.00 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));
@@ -56,7 +56,7 @@ EOT
         $display->render($this->formatter, $status);
         $output = $display->render($this->formatter, new Status());
 
-        $this->assertContains(<<<'EOT'
+        $this->assertStringContainsString(<<<'EOT'
 Rate: 0.25 r/sec
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));

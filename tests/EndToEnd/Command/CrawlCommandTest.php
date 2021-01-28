@@ -200,7 +200,7 @@ class CrawlCommandTest extends EndToEndTestCase
         $server->stop();
 
         $this->assertEquals(130, $process->getExitCode());
-        $this->assertContains('SIGINT received', $process->getOutput());
+        $this->assertStringContainsString('SIGINT received', $process->getOutput());
     }
 
 

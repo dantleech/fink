@@ -6,9 +6,12 @@ use DTL\Extension\Fink\Model\Limiter;
 use DTL\Extension\Fink\Model\Limiter\ChainLimiter;
 use DTL\Extension\Fink\Model\Status;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class ChainLimiterTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var Status
      */
@@ -19,7 +22,7 @@ class ChainLimiterTest extends TestCase
      */
     private $limiter1;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->status = new Status();
         $this->limiter1 = $this->prophesize(Limiter::class);

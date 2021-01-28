@@ -7,9 +7,12 @@ use DTL\Extension\Fink\Console\DisplayBuilder;
 use DTL\Extension\Fink\Console\DisplayRegistry;
 use DTL\Extension\Fink\Console\Display\ConcatenatingDisplay;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class DisplayBuilderTest extends TestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ObjectProphecy
      */
@@ -28,7 +31,7 @@ class DisplayBuilderTest extends TestCase
      */
     private $builder;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->registry = $this->prophesize(DisplayRegistry::class);
         $this->display1 = $this->prophesize(Display::class);

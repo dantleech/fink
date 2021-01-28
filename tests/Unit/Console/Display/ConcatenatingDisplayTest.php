@@ -5,9 +5,12 @@ namespace DTL\Extension\Fink\Tests\Unit\Console\Display;
 use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Console\Display\ConcatenatingDisplay;
 use DTL\Extension\Fink\Model\Status;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class ConcatenatingDisplayTest extends DisplayTestCase
 {
+    use ProphecyTrait;
+
     /**
      * @var ObjectProphecy|Display
      */
@@ -18,7 +21,7 @@ class ConcatenatingDisplayTest extends DisplayTestCase
      */
     private $display2;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

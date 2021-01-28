@@ -13,7 +13,7 @@ class HeaderParserTest extends TestCase
      */
     private $parser;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->parser = new HeaderParser();
     }

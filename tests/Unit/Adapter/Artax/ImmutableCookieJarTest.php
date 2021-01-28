@@ -9,6 +9,7 @@ use Amp\Success;
 use DTL\Extension\Fink\Adapter\Artax\ImmutableCookieJar;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
 class ImmutableCookieJarTest extends TestCase
@@ -17,6 +18,8 @@ class ImmutableCookieJarTest extends TestCase
     public const EXAMPLE_PATH = self::EXAMPLE_VALUE;
     public const EXAMPLE_NAME = 'bar';
     public const EXAMPLE_VALUE = 'foo';
+
+    use ProphecyTrait;
 
 
     /**
@@ -29,7 +32,7 @@ class ImmutableCookieJarTest extends TestCase
      */
     private $jar;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->innerJar = $this->prophesize(CookieJar::class);
         $this->jar = new ImmutableCookieJar($this->innerJar->reveal());
