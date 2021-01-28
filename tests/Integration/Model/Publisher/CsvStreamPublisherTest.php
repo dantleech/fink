@@ -36,7 +36,7 @@ EOT
             ->build();
 
         $serialized = $this->create(true)->publish($report);
-        $this->assertContains(<<<'EOT'
+        $this->assertStringContainsString(<<<'EOT'
 distance,exception,referrer,referrer_title,referrer_xpath,request_time,status,http_version,url,timestamp
 0,,,,,0,200,,https://www.dantleech.com/,2019-01-01T00:00:00+00:00
 

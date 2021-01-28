@@ -15,7 +15,7 @@ class RateLimiterTest extends TestCase
      */
     private $status;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->status = new Status();
     }

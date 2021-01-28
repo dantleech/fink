@@ -10,7 +10,7 @@ class HttpStatusCodeTest extends TestCase
     /**
      * @dataProvider provideSuccess
      */
-    public function testIsSuccess(int $code, bool $expected)
+    public function testIsSuccess(string $code, bool $expected)
     {
         $code = HttpStatusCode::fromInt($code);
         $this->assertEquals($expected, $code->isSuccess());
@@ -28,7 +28,7 @@ class HttpStatusCodeTest extends TestCase
     /**
      * @dataProvider provideRedirect
      */
-    public function testIsRedirect(int $code, bool $expected)
+    public function testIsRedirect(string $code, bool $expected)
     {
         $code = HttpStatusCode::fromInt($code);
         $this->assertEquals($expected, $code->isRedirect());
@@ -45,7 +45,7 @@ class HttpStatusCodeTest extends TestCase
     /**
      * @dataProvider provideError
      */
-    public function testIsError(int $code, bool $expected)
+    public function testIsError(string $code, bool $expected)
     {
         $code = HttpStatusCode::fromInt($code);
         $this->assertEquals($expected, $code->isError());

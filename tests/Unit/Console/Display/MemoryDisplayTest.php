@@ -13,7 +13,7 @@ class MemoryDisplayTest extends DisplayTestCase
         $display = new MemoryDisplay();
         $output = $display->render($this->formatter, new Status());
 
-        $this->assertContains(<<<'EOT'
+        $this->assertStringContainsString(<<<'EOT'
 Memory
 EOT
         , FormatterHelper::removeDecoration($this->formatter, $output));

@@ -1,0 +1,38 @@
+on:
+  release:
+    types:
+      - created
+
+name: Append phpbench.phar to release
+
+jobs:
+  build:
+    name: Compile and upload Phar
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set PHP 7.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.3'
+
+      - name: Compile phpbench.phar
+        run: |
+          composer install
+          wget https://github.com/box-project/box/releases/download/3.9.1/box.phar
+          php box.phar compile -c box.json.gh-release
+
+      - name: Check existence of compiled .phar
+        run: test -e fink.phar && exit 0 || exit 10
+
+      - name: Upload to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: ./phpbench.phar
+          asset_name: phpbench.phar
+          asset_content_type: application/octet-stream

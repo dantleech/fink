@@ -12,7 +12,7 @@ class IntegrationTestCase extends AsyncTestCase
      */
     private $workspace;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 

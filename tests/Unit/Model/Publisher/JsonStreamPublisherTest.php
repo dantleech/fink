@@ -11,10 +11,13 @@ use DTL\Extension\Fink\Model\Report;
 use DTL\Extension\Fink\Model\ReportBuilder;
 use DTL\Extension\Fink\Model\Url;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
 class JsonStreamPublisherTest extends TestCase
 {
+    use ProphecyTrait;
+
     public const EXAMPLE_SERIALIZED_REPORT = 'serialized report';
 
     /**
@@ -32,7 +35,7 @@ class JsonStreamPublisherTest extends TestCase
      */
     private $publisher;
 
-    public function setUp()
+    protected function setUp(): void
     {
         $this->outputStream = $this->prophesize(OutputStream::class);
         $this->report = ReportBuilder::forUrl(Url::fromUrl('https://www.dantleech.com'))

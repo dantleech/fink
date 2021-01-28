@@ -6,9 +6,12 @@ use DTL\Extension\Fink\Console\Display;
 use DTL\Extension\Fink\Console\DisplayRegistry;
 use DTL\Extension\Fink\Console\Exception\DisplayNotFound;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class DisplayRegistryTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testItThrowsExceptionIfDisplayNodeFound()
     {
         $this->expectException(DisplayNotFound::class);

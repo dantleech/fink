@@ -42,6 +42,10 @@ class Crawler
 
         $body = yield $response->getBody()->buffer();
 
+        if (!$body) {
+            return;
+        }
+
         $this->enqueueLinks($this->loadXpath($body), $ultimateUrl, $report, $queue);
     }
 
