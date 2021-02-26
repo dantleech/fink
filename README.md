@@ -123,6 +123,19 @@ $ fink http://www.example.com -x0 -oreport.json
 $ cat report.json| jq -c '. | select(.status==404) | {url: .url, referrer: .referrer}' | jq
 ```
 
+### Crawl pages behind a login
+
+```
+# create a cookies file for later re-use (simulate a login in this case via HTTP-POST)
+$ curl -L --cookie-jar mycookies.txt -d username=myLogin -d password=MyP4ssw0rd https://www.example.org/my/login/url
+
+# re-use the cookies file with your fink crawl command
+$ fink https://www.example.org/myaccount --load-cookies=mycookies.txt
+```
+
+note: its not possible to create the cookie jar on computer A, store it and read it in again on e.g. a linux server.
+you need to create the cookie file from the very same ip, because otherwise server side session handling might not continue the http-session because of a IP mismatch
+
 Exit Codes
 ----------
 
