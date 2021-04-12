@@ -98,7 +98,7 @@ class CrawlCommand extends Command
         $this->addOption(self::OPT_PUBLISHER, 'p', InputOption::VALUE_REQUIRED, 'Publisher to use: `json` or `csv`', 'json');
         $this->addOption(self::OPT_DISPLAY_BUFSIZE, null, InputOption::VALUE_REQUIRED, 'Size of report buffer to display', 5);
         $this->addOption(self::OPT_CLIENT_MAX_BODY_SIZE, null, InputOption::VALUE_REQUIRED, 'Max body size for HTTP client (in bytes)', 10485760);
-        $this->addOption(self::OPT_CLIENT_MAX_HEADER_SIZE, null, InputOption::VALUE_REQUIRED, 'Max header size for HTTP client (in bytes)', 8192);
+        $this->addOption(self::OPT_CLIENT_MAX_HEADER_SIZE, null, InputOption::VALUE_REQUIRED, 'Max header size for HTTP client (in bytes)', 16384);
         $this->addOption(self::OPT_CLIENT_MAX_REDIRECTS, null, InputOption::VALUE_REQUIRED, 'Maximum number of redirects to follow', 5);
         $this->addOption(self::OPT_CLIENT_MAX_TIMEOUT, null, InputOption::VALUE_REQUIRED, 'Number of milliseconds to wait for URL', 15000);
         $this->addOption(self::OPT_CLIENT_SECURITY_LEVEL, null, InputOption::VALUE_REQUIRED, 'TLS Security level, see https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_security_level.html');
