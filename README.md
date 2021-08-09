@@ -63,8 +63,8 @@ Arguments
 Options
 -------
 
-- `--client-max-body-size`: 'Max body size for HTTP client (in bytes).
-- `--client-max-header-size`: 'Max header size for HTTP client (in bytes).
+- `--client-max-body-size`: Max body size for HTTP client (in bytes).
+- `--client-max-header-size`: Max header size for HTTP client (in bytes).
 - `--client-redirects=5`: Set the maximum number of times the client should redirect (`0` to never redirect).
 - `--client-security-level=1`: Set the default SSL [security
   level](https://www.openssl.org/docs/manmaster/man3/SSL_CTX_set_security_level.html)
