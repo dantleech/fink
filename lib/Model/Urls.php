@@ -34,6 +34,7 @@ class Urls implements IteratorAggregate
     /**
      * {@inheritDoc}
      */
+    #[\ReturnTypeWillChange]
     public function getIterator()
     {
         return new ArrayIterator($this->urls);
