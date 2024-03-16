@@ -4,6 +4,7 @@ namespace DTL\Extension\Fink\Model;
 
 use ArrayIterator;
 use IteratorAggregate;
+use Traversable;
 
 class Urls implements IteratorAggregate
 {
@@ -32,9 +33,9 @@ class Urls implements IteratorAggregate
     }
 
     /**
-     * {@inheritDoc}
+     * @return Traversable<int,Url>
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->urls);
     }

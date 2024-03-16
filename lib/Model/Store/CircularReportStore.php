@@ -36,7 +36,7 @@ final class CircularReportStore implements ReportStore
     /**
      * {@inheritDoc}
      */
-    public function count()
+    public function count(): int
     {
         return count($this->reports);
     }

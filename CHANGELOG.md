@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.11.0] 2024-03-16
+
+- Bump minimum version to PHP 8.0
+- Include `.dat` files @M-arcus
+
 ## [0.10.2] 2021-01-28
 
 - Consider `base` element when resolving URLs (#109) - @eHtmlu

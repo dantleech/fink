@@ -1,11 +1,14 @@
 <?php
 
+use PhpCsFixer\Config;
+
 $finder = PhpCsFixer\Finder::create()
     ->in('lib')
     ->in('tests')
 ;
 
-return PhpCsFixer\Config::create()
+return (new Config())
+    ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
         'array_syntax' => ['syntax' => 'short'],
@@ -20,3 +23,4 @@ return PhpCsFixer\Config::create()
     ])
     ->setFinder($finder)
 ;
+

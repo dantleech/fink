@@ -13,7 +13,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.3||^8.0",
+        "php": "^8.0",
         "amphp/dns": "^v1.2.2",
         "amphp/file": "^1",
         "amphp/http-client": "^4.1.0",
@@ -25,10 +25,10 @@
     },
     "require-dev": {
         "amphp/phpunit-util": "^1.3",
-        "friendsofphp/php-cs-fixer": "^2.14",
+        "friendsofphp/php-cs-fixer": "^3.0",
         "phpactor/test-utils": "^1.0",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpstan/phpstan": "^0.12.0",
+        "phpstan/phpstan": "^1.0",
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {
