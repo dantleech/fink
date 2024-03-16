@@ -5,21 +5,22 @@ namespace DTL\Extension\Fink\Model\Store;
 use ArrayIterator;
 use DTL\Extension\Fink\Model\Report;
 use DTL\Extension\Fink\Model\ReportStore;
+use Traversable;
 
 class NullReportStore implements ReportStore
 {
     /**
      * {@inheritDoc}
      */
-    public function count()
+    public function count(): int
     {
         return 0;
     }
 
     /**
-     * {@inheritDoc}
+     * @return Traversable<int,Report>
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator();
     }
