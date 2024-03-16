@@ -1,6 +1,6 @@
 /vendor
 /bin/fink.phar
-/.php_cs.cache
+/.php-cs-fixer.cache
 /composer.lock
 /tests/Workspace
 /.phpactor.yml
