@@ -18,7 +18,7 @@ Install as a stand-alone tool or as a project dependency:
 ### Installing as a project dependency
 
 ```bash
-$ composer require dantleech/fink --dev
+composer require dantleech/fink --dev
 ```
 
 ### Installing from a PHAR
@@ -31,7 +31,7 @@ Download the PHAR from the
 You can build your own PHAR by cloning this repository and running:
 
 ```bash
-$ ./vendor/bin/box compile
+./vendor/bin/box compile
 ```
 
 Usage
@@ -39,8 +39,8 @@ Usage
 
 Run the command with a single URL to start crawling:
 
-```
-$ ./vendor/bin/fink https://www.example.com
+```bash
+./vendor/bin/fink https://www.example.com
 ```
 
 Use `--output=somefile` to log verbose information for each URL in JSON format, including:
@@ -100,14 +100,14 @@ Examples
 
 ### Crawl a single website
 
-```
-$ fink http://www.example.com --max-external-distance=0
+```bash
+fink http://www.example.com --max-external-distance=0
 ```
 
 ### Crawl a single website and check the status of external links
 
-```
-$ fink http://www.example.com --max-external-distance=1
+```bash
+fink http://www.example.com --max-external-distance=1
 ```
 
 ### Use `jq` to analyse results
@@ -115,22 +115,22 @@ $ fink http://www.example.com --max-external-distance=1
 [jq](https://stedolan.github.io/jq/) is a tool which can be used to query and
 manipulate JSON data.
 
-```
-$ fink http://www.example.com -x0 -oreport.json
+```bash
+fink http://www.example.com -x0 -oreport.json
 ```
 
-```
-$ cat report.json| jq -c '. | select(.status==404) | {url: .url, referrer: .referrer}' | jq
+```bash
+cat report.json| jq -c '. | select(.status==404) | {url: .url, referrer: .referrer}' | jq
 ```
 
 ### Crawl pages behind a login
 
-```
+```bash
 # create a cookies file for later re-use (simulate a login in this case via HTTP-POST)
-$ curl -L --cookie-jar mycookies.txt -d username=myLogin -d password=MyP4ssw0rd https://www.example.org/my/login/url
+curl -L --cookie-jar mycookies.txt -d username=myLogin -d password=MyP4ssw0rd https://www.example.org/my/login/url
 
 # re-use the cookies file with your fink crawl command
-$ fink https://www.example.org/myaccount --load-cookies=mycookies.txt
+fink https://www.example.org/myaccount --load-cookies=mycookies.txt
 ```
 
 note: its not possible to create the cookie jar on computer A, store it and read it in again on e.g. a linux server.
