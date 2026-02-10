@@ -71,4 +71,41 @@ EOT
             (yield $jar->get((new Request('http://127.0.0.1/'))->getUri()))[0]->getValue()
         );
     }
+
+    public function testLoadHttpOnlyCookies()
+    {
+        $expire = (new DateTimeImmutable())->modify('+1 day')->format('U');
+
+        $cookies = <<<EOT
+# Netscape HTTP Cookie File
+# This is a comment and should be ignored
+
+#HttpOnly_.example.com	TRUE	/	FALSE	$expire	session_id	abc123
+#HttpOnly_example.com	FALSE	/admin	TRUE	$expire	admin_token	xyz789
+.example.com	TRUE	/	FALSE	$expire	regular_cookie	normal_value
+EOT
+        ;
+
+        $this->workspace()->put('httponly_cookies.txt', $cookies);
+        $path = $this->workspace()->path('httponly_cookies.txt');
+
+        $jar = new NetscapeCookieFileJar($path);
+
+        $allCookies = $jar->getAll();
+
+        // Should have 3 cookies total (2 httponly + 1 regular)
+        $this->assertCount(3, $allCookies);
+
+        // Get cookies for example.com
+        $exampleCookies = yield $jar->get((new Request('https://example.com/'))->getUri());
+
+        // Should include the httponly cookie
+        $cookieNames = array_map(fn ($cookie) => $cookie->getName(), $exampleCookies);
+        $this->assertContains('session_id', $cookieNames);
+        $this->assertContains('regular_cookie', $cookieNames);
+
+        // Verify httponly cookie value
+        $sessionCookie = array_filter($exampleCookies, fn ($cookie) => $cookie->getName() === 'session_id');
+        $this->assertEquals('abc123', reset($sessionCookie)->getValue());
+    }
 }

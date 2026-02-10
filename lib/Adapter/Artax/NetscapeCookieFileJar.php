@@ -69,7 +69,14 @@ class NetscapeCookieFileJar implements CookieJar
             return null;
         }
 
-        if ($line[0] === '#') {
+        // Handle httponly cookies - lines starting with #HttpOnly_ should be parsed
+        // See: https://curl.se/docs/http-cookies.html
+        $isHttpOnly = false;
+        if (str_starts_with($line, '#HttpOnly_')) {
+            $line = substr($line, 10); // Remove the '#HttpOnly_' prefix
+            $isHttpOnly = true;
+        } elseif ($line[0] === '#') {
+            // Regular comment line, skip it
             return null;
         }
 
@@ -102,6 +109,10 @@ class NetscapeCookieFileJar implements CookieJar
         \assert($secure !== null); // silence phpstan
         if (strtolower($secure) === 'true') {
             $string .= '; secure';
+        }
+
+        if ($isHttpOnly) {
+            $string .= '; httponly';
         }
 
         return ResponseCookie::fromHeader($string);
