@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.11.3] 2026-02-10
+
+- Support for httponly cookies @aszenz
+
 ## [0.11.0] 2024-03-16
 
 - Bump minimum version to PHP 8.0
